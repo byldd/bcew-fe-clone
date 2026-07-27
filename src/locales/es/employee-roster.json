@@ -1,0 +1,16 @@
+{
+	"allEmployees": "Todos los empleados",
+	"timeConfigurationFor": "Configuración de tiempo para",
+	"employee": "Empleado",
+	"role": "Rol",
+	"scheduledHours": "Horas programadas",
+	"loggedHours": "Horas registradas",
+	"syncStandardTiming": "Sincronizar horario estándar",
+	"adjustTimingBeforeSyncingWeeklyScheduleFor": "Ajuste el horario antes de sincronizar la programación semanal para",
+	"day": "Día",
+	"type": "Tipo",
+	"rosterTime": "Tiempo de turno",
+	"extendedTime": "Tiempo extendido",
+	"loggedTime": "Tiempo registrado",
+	"overrideTime": "Tiempo de anulación"
+}

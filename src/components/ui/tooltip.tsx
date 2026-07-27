@@ -1,0 +1,72 @@
+"use client";
+
+import * as React from "react";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+
+import { cn } from "@/lib/utils/utils";
+
+const TooltipProvider = TooltipPrimitive.Provider;
+
+const Tooltip = TooltipPrimitive.Root;
+
+const TooltipTrigger = TooltipPrimitive.Trigger;
+
+const TooltipContent = React.forwardRef<
+	React.ElementRef<typeof TooltipPrimitive.Content>,
+	React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+>(({ className = " text-black ", sideOffset = 4, ...props }, ref) => (
+	<TooltipPrimitive.Portal>
+		<TooltipPrimitive.Content
+			ref={ref}
+			sideOffset={sideOffset}
+			className={cn(
+				"z-50 overflow-hidden rounded-md bg-white px-3 py-1.5 text-xs text-black text-primary-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+				className
+			)}
+			{...props}
+		/>
+	</TooltipPrimitive.Portal>
+));
+TooltipContent.displayName = TooltipPrimitive.Content.displayName;
+
+interface AppTooltipProps extends Pick<
+	React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>,
+	"side" | "align"
+> {
+	text?: string | React.ReactNode;
+	label?: string;
+	trigger?: React.ReactNode;
+	labelClassName?: string;
+	contentClassName?: string;
+}
+
+export function AppTooltip({
+	text,
+	label,
+	trigger,
+	labelClassName,
+	contentClassName,
+	align = "center",
+	side = "top",
+}: AppTooltipProps) {
+	return (
+		<Tooltip>
+			<TooltipTrigger asChild>
+				{trigger ? (
+					trigger
+				) : (
+					<p className={cn("w-full text-left text-[10px] font-semibold text-brand-dark50", labelClassName)}>{label}</p>
+				)}
+			</TooltipTrigger>
+			<TooltipContent
+				side={side}
+				align={align}
+				className={cn("max-w-[550px] whitespace-normal break-words text-brand-black", contentClassName)}
+			>
+				{typeof text === "string" ? <p className="text-sm leading-snug">{text}</p> : text}
+			</TooltipContent>
+		</Tooltip>
+	);
+}
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };

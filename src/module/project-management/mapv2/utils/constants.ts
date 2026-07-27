@@ -1,0 +1,2 @@
+export const MIN_ZONE_POLYGON_POINTS = 3;
+export const MAX_ZONE_POLYGON_POINTS = 15;

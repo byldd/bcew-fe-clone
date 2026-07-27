@@ -1,0 +1,14 @@
+enum MIDDAY_STOP_REQUEST_TYPE {
+	VEHICLE_BREAKDOWN = "vehicle_breakdown",
+	VEHICLE_MAINTENANCE = "vehicle_maintenance",
+	ADD_NEW_STOP = "add_new_stop",
+	PAID_IDLE_TIME = "paid_idle_time",
+}
+
+enum MIDDAY_STOP_TYPE {
+	PROJECT = "PROJECT",
+	SPECIAL_JOB = "SPECIAL_JOB",
+	WORK_ORDER = "WORK_ORDER",
+}
+
+export { MIDDAY_STOP_REQUEST_TYPE, MIDDAY_STOP_TYPE };

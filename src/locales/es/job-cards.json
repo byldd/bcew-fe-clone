@@ -1,0 +1,48 @@
+{
+	"foreman": "Capataz",
+	"crewMembers": "Tripulación",
+	"crewMember": "Tripulante",
+
+	"stopNumber": "Número de parada",
+	"timeLogs": "Registros de tiempo",
+	"overrideTimeLogs": "Sobrescribir registros de tiempo",
+	"action": "Acción",
+
+	"addNewMember": "Agregar nuevo miembro",
+	"searchMember": "Buscar al miembro",
+	"selectMember": "Seleccionar un miembro",
+
+	"placeholders": {
+		"stopNumber": "Ingrese el número de parada"
+	},
+
+	"title": "Actualizaciones del trabajo",
+	"completedToday": "¿Se completó el trabajo hoy?",
+	"forecastTomorrow": "¿Prevé completar mañana?",
+	"expectedCompletionDate": "Fecha estimada de finalización",
+	"selectDate": "Seleccionar fecha",
+	"forecastTimeQuestion": "¿Cuánto tiempo necesitará para completar el trabajo?",
+	"images": "Imágenes",
+	"note": "Nota",
+	"taskLeader": "Líder de tarea",
+	"selectTaskLeader": "Seleccionar líder de tarea",
+	"crewLeader": "Jefe de cuadrilla",
+	"selectCrewLeader": "Seleccionar jefe de cuadrilla",
+
+	"subContractorCrewLeader": "Líder del equipo del subcontratista",
+	"subContractorCrewName": "Nombre del equipo del subcontratista",
+	"subContractor": "Subcontratista",
+
+	"stopNumberUpdatedSuccessfully": "El número de parada se actualizó correctamente.",
+	"employeeReplacedSuccessfully": "El empleado fue reemplazado correctamente.",
+	"employeeAlreadyInNewDailyJob": "El empleado ya está en un nuevo trabajo diario",
+	"jobSwitchedSuccessfully": "El trabajo se cambió correctamente.",
+	"crewMemberRemovedSuccessfully": "El miembro del equipo se eliminó correctamente.",
+	"rightClickEmployeeOptionsDescription": "Al hacer clic derecho en un empleado dentro de la tarjeta del trabajo se muestran cuatro opciones, todas visibles en inglés. Los cinco mensajes emergentes anteriores están relacionados con estas cuatro opciones que se activan después de hacer clic derecho sobre el empleado en la tarjeta del trabajo.",
+	"dailyJobUpdatedSuccessfully": "El trabajo diario se actualizó correctamente.",
+	"scheduleValidationFailed": "La validación de la programación falló. Se encontraron {count} error(es).",
+	"publishScheduleSuccess": "La programación se publicó correctamente",
+	"jobUpdateReasons": "Razones (por líder de tarea)",
+	"forecastDate": "Fecha de pronóstico",
+	"forecastCrew": "Tripulación de pronóstico"
+}

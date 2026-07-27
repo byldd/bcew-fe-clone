@@ -1,0 +1,45 @@
+{
+	"foreman": "Foreman",
+	"crewMembers": "Crew Members",
+	"crewMember": "Crew Member",
+	"stopNumber": "Stop Number",
+	"timeLogs": "Time Logs",
+	"overrideTimeLogs": "Override Time Logs",
+	"action": "Action",
+	"addNewMember": "Add New Member",
+	"searchMember": "Search for the member",
+	"selectMember": "Select a member",
+
+	"placeholders": {
+		"stopNumber": "Enter stop number"
+	},
+
+	"title": "Job Updates",
+	"completedToday": "Was the job completed today?",
+	"forecastTomorrow": "Do you forecast completion tomorrow?",
+	"expectedCompletionDate": "Expected Completion Date",
+	"selectDate": "Select date",
+	"forecastTimeQuestion": "How much time you will need to complete the job?",
+	"images": "Images",
+	"note": "Note",
+	"taskLeader": "Task Leader",
+	"selectTaskLeader": "Select Task Leader",
+	"crewLeader": "Crew Leader",
+	"selectCrewLeader": "Select Crew Leader",
+
+	"subContractorCrewLeader": "Sub-Contractor Crew Leader",
+	"subContractorCrewName": "Sub-Contractor Crew Name",
+	"subContractor": "Sub-Contractor",
+	"stopNumberUpdatedSuccessfully": "Stop number updated successfully",
+	"employeeReplacedSuccessfully": "Employee replaced successfully",
+	"employeeAlreadyInNewDailyJob": "Employee already in new daily job",
+	"jobSwitchedSuccessfully": "Job switched successfully",
+	"crewMemberRemovedSuccessfully": "Crew member removed successfully",
+	"rightClickEmployeeOptionsDescription": "Right-clicking on an employee in the job card shows four options, all of which are visible in English. The above five pop-ups are related to these four options triggered after right-clicking on the employee in the job card.",
+	"dailyJobUpdatedSuccessfully": "Daily job updated successfully",
+	"scheduleValidationFailed": "Schedule validation failed. {count} error(s) found.",
+	"publishScheduleSuccess": "Publish Schedule Success",
+	"jobUpdateReasons": "Reasons (By Task Leader)",
+	"forecastDate": "Forecast Date",
+	"forecastCrew": "Forecast Crew"
+}

@@ -1,0 +1,16 @@
+{
+	"allEmployees": "All Employees",
+	"timeConfigurationFor": "Time Configuration for",
+	"employee": "Employee",
+	"role": "Role",
+	"scheduledHours": "Scheduled Hours",
+	"loggedHours": "Logged Hours",
+	"syncStandardTiming": "Sync Standard Timing",
+	"adjustTimingBeforeSyncingWeeklyScheduleFor": "Adjust timing before syncing weekly schedule for",
+	"day": "Day",
+	"type": "Type",
+	"rosterTime": "Roster Time",
+	"extendedTime": "Extended Time",
+	"loggedTime": "Logged Time",
+	"overrideTime": "Override Time"
+}

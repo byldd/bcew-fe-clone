@@ -1,0 +1,51 @@
+export const vehicleHistoryData = [
+    {
+        vehicleNumber: 'AB12 CD3456',
+        date: '5/11/25',
+        startTime: '--',
+        endTime: '--',
+        miles: 25,
+    },
+    {
+        vehicleNumber: 'CV12 HG3456',
+        date: '5/11/25',
+        startTime: '9:00am',
+        endTime: '9:00pm',
+        miles: 32,
+    },
+    {
+        vehicleNumber: 'XY12 VZ3456',
+        date: '4/11/25',
+        startTime: '9:00am',
+        endTime: '9:00pm',
+        miles: 32,
+    },
+    {
+        vehicleNumber: 'AB12 CD3456',
+        date: '4/11/25',
+        startTime: '9:00am',
+        endTime: '9:00pm',
+        miles: 60,
+    },
+    {
+        vehicleNumber: 'AB12 CD3456',
+        date: '4/11/25',
+        startTime: '12:00pm',
+        endTime: '16:00pm',
+        miles: 32,
+    },
+    {
+        vehicleNumber: 'AB12 CD3456',
+        date: '4/11/25',
+        startTime: '12:00pm',
+        endTime: '16:00pm',
+        miles: 48,
+    },
+    {
+        vehicleNumber: 'AB12 CD3456',
+        date: '4/11/25',
+        startTime: '16:00pm',
+        endTime: '16:00pm',
+        miles: 3,
+    },
+];

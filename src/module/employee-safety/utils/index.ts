@@ -1,0 +1,9 @@
+import { MATERIAL_JOB_PHASE } from "../types";
+
+export const MATERIAL_JOB_PHASE_LABEL: Record<MATERIAL_JOB_PHASE, string> = {
+	[MATERIAL_JOB_PHASE.SERVICE]: "Service",
+	[MATERIAL_JOB_PHASE.ROUGH]: "Rough",
+	[MATERIAL_JOB_PHASE.FINAL]: "Final",
+	[MATERIAL_JOB_PHASE.SECOND_HIT]: "Second Hit",
+	[MATERIAL_JOB_PHASE.SLAB_ROUGH]: "Slab Rough",
+};

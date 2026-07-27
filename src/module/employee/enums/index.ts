@@ -1,0 +1,53 @@
+export enum ACCESS_LEVEL {
+	NONE = "none",
+	READ = "read",
+	WRITE = "write",
+}
+
+export enum MODULE_HEADING {
+	DASHBOARD = "Dashboard Access",
+	SCHEDULE_MANAGEMENT = "Schedule Management ",
+	READINESS_AND_QUALITY = "Readiness and Quality",
+	PEOPLE_MANAGEMENT = "People Management ",
+	REPORTS_AND_EXPORT = "Reports and Export Access",
+	BUILDER_COMMUNICATIONS = "Builder Communications",
+}
+
+export enum SKIP_HEADINGS {
+	DASHBOARD_ACCESS = MODULE_HEADING.DASHBOARD,
+	REPORTS_AND_EXPORT_ACCESS = MODULE_HEADING.REPORTS_AND_EXPORT,
+	BUILDER_COMMUNICATIONS = MODULE_HEADING.BUILDER_COMMUNICATIONS,
+}
+
+export enum DISABLED_HEADINGS {
+	READINESS_AND_QUALITY = "Readiness and Quality",
+}
+
+export enum HAS_ACCESS {
+	YES = "Yes",
+	NO = "No",
+}
+
+export enum USER_PERMISSION {
+	DEFAULT = "Default",
+	CUSTOMIZED = "Customized",
+}
+
+export enum COVERAGE_REASON {
+	VACATION = "VACATION",
+	SICK_LEAVE = "SICK_LEAVE",
+	TRAINING = "TRAINING",
+	OTHER = "OTHER",
+}
+
+export enum TRANSFER_ITEM_CATEGORY {
+	OPEN_TASKS = "OPEN_TASKS",
+	PENDING_APPROVALS = "PENDING_APPROVALS",
+	SCHEDULE_ASSIGNMENTS = "SCHEDULE_ASSIGNMENTS",
+	ACCESS_PERMISSIONS = "ACCESS_PERMISSIONS",
+}
+
+export enum HISTORY_TAB {
+	ROLE_CHANGE = "role",
+	PERMISSION_CHANGE = "permission",
+}

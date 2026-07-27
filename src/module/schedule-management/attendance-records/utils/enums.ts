@@ -1,0 +1,13 @@
+export enum BCEW_ATTENDANCE_TYPE {
+	LATENESS = 1,
+	ABSENTEE = 2,
+	EARLY_QUIT = 3,
+	TIME_OFF = 4,
+	LEAVE_RETURN = 5,
+}
+
+export enum ATTENDANCE_SOURCE {
+	ALL = "ALL",
+	BYLDD = "BYLDD",
+	BCEW = "BCEW",
+}

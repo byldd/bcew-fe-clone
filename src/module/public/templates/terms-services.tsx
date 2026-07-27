@@ -54,15 +54,7 @@ const TermsServices = () => {
 			<div className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
 				{/* Header */}
 				<div className="mb-12 flex flex-col items-center justify-center text-center lg:mb-20">
-					<div className="mb-8 rounded-2xl p-4 shadow-sm ring-1 ring-gray-900/5">
-						<Image
-							src="/assets/svg/bcew-logo.svg"
-							alt="Company Logo"
-							width={140}
-							height={140}
-							className="object-contain"
-						/>
-					</div>
+					<div className="mb-8 rounded-2xl p-4 shadow-sm ring-1 ring-gray-900/5"></div>
 					<h1 className="text-4xl font-extrabold tracking-tight text-brand-dark sm:text-5xl lg:text-6xl">
 						Terms of Service
 					</h1>
@@ -94,111 +86,6 @@ const TermsServices = () => {
 									</button>
 								))}
 							</nav>
-						</div>
-					</div>
-
-					{/* Main Content */}
-					<div className="lg:w-3/4">
-						<div className="rounded-3xl bg-white p-8 shadow-md ring-1 ring-gray-900/5 sm:p-12 lg:p-16">
-							<div className="prose prose-brand max-w-none text-gray-600">
-								<section id="acceptance" className="scroll-mt-24 pb-12">
-									<h2 className="text-2xl font-bold tracking-tight text-brand-dark sm:text-3xl">
-										1. Acceptance of Terms
-									</h2>
-									<p className="mt-4 leading-loose">
-										Welcome to Bucks County Electric Works (BCEW). By creating an account, accessing, or using our
-										platform, you accept and agree to be bound by these Terms of Service (“Terms”) and our{" "}
-										<Link href={routes.privacyPolicy} className="text-brand-blue font-medium hover:underline">
-											Privacy Policy
-										</Link>
-										. If you do not agree to these terms, you may not use our services.
-									</p>
-								</section>
-
-								<section id="use-services" className="scroll-mt-24 border-t border-gray-100 pb-12 pt-12">
-									<h2 className="text-2xl font-bold tracking-tight text-brand-dark sm:text-3xl">2. Use of Services</h2>
-									<p className="mt-4 leading-loose">
-										Our services are intended for operational and scheduling purposes. You agree to use the platform
-										only for lawful purposes and in a way that does not infringe the rights of, restrict, or inhibit
-										anyone else&apos;s use and enjoyment of the platform. You are responsible for maintaining the
-										confidentiality of your account credentials and for all activities that occur under your account.
-									</p>
-								</section>
-
-								<section id="messaging-terms" className="scroll-mt-24 border-t border-gray-100 pb-12 pt-12">
-									<h2 className="text-2xl font-bold tracking-tight text-brand-dark sm:text-3xl">
-										3. SMS & Messaging Terms
-									</h2>
-									<p className="mt-4 leading-loose">
-										By opting into our SMS communications, you agree to receive text messages strictly for operational
-										purposes, such as schedule updates, job reminders, and service notifications.
-									</p>
-									<div className="border-brand-blue/20 bg-brand-blue/5 mt-6 space-y-4 rounded-xl border p-6 shadow-sm">
-										<ul className="list-inside list-disc space-y-3 font-medium text-gray-700">
-											<li>
-												<strong className="text-gray-900">Message Frequency:</strong> Message frequency varies depending
-												on your schedule and operational needs.
-											</li>
-											<li>
-												<strong className="text-gray-900">Pricing:</strong> Message and data rates may apply. Check with
-												your mobile carrier for details.
-											</li>
-											<li>
-												<strong className="text-gray-900">Cancellation/Opt-Out:</strong> You can cancel the SMS service
-												at any time. Simply reply{" "}
-												<strong className="rounded bg-white px-2 py-0.5 uppercase ring-1 ring-gray-200">STOP</strong> to
-												any message you receive from us. Upon receiving your &quot;STOP&quot; message, we will send one
-												final confirmation message before removing you from our SMS list.
-											</li>
-											<li>
-												<strong className="text-gray-900">Customer Support:</strong> If you experience issues with the
-												messaging program, reply{" "}
-												<strong className="rounded bg-white px-2 py-0.5 uppercase ring-1 ring-gray-200">HELP</strong>{" "}
-												for assistance, or contact us directly at support@bcew.com.
-											</li>
-											<li className="text-sm text-gray-500">
-												<strong className="text-gray-700">Carrier Liability:</strong> Carriers are not liable for
-												delayed or undelivered messages.
-											</li>
-										</ul>
-									</div>
-								</section>
-
-								<section id="termination" className="scroll-mt-24 border-t border-gray-100 pb-12 pt-12">
-									<h2 className="text-2xl font-bold tracking-tight text-brand-dark sm:text-3xl">4. Termination</h2>
-									<p className="mt-4 leading-loose">
-										We may terminate or suspend your account and access to the services immediately, without prior
-										notice or liability, for any reason whatsoever, including without limitation if you breach the Terms
-										of Service.
-									</p>
-								</section>
-
-								<section id="modifications" className="scroll-mt-24 border-t border-gray-100 pb-12 pt-12">
-									<h2 className="text-2xl font-bold tracking-tight text-brand-dark sm:text-3xl">
-										5. Modifications to Terms & Services
-									</h2>
-									<p className="mt-4 leading-loose">
-										We reserve the right to modify or discontinue the service with or without notice. We also reserve
-										the right to update or modify these Terms of Service at any time. Any changes will be effective
-										immediately upon posting. Your continued use of the services after any such changes constitutes your
-										acceptance of the new Terms of Service.
-									</p>
-								</section>
-
-								<section id="contact-us" className="scroll-mt-24 border-t border-gray-100 pt-12">
-									<h2 className="text-2xl font-bold tracking-tight text-brand-dark sm:text-3xl">6. Contact Us</h2>
-									<p className="mt-4 leading-loose">
-										If you have any questions about these Terms of Service, please contact us.
-									</p>
-									<a
-										href="mailto:info@bcew.net"
-										className="focus:ring-brand-blue group mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-dark px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2"
-									>
-										<Mail className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-										Email info@bcew.net
-									</a>
-								</section>
-							</div>
 						</div>
 					</div>
 				</div>

@@ -56,7 +56,7 @@ export const MEDICAL_DRUG_SCREEN_LABEL: Record<MEDICAL_DRUG_SCREEN, string> = {
 };
 
 export const ACCIDENT_DOCUMENT_CATEGORY_LABEL: Record<VEHICLE_ACCIDENT_PHOTO_CATEGORY, string> = {
-	[VEHICLE_ACCIDENT_PHOTO_CATEGORY.BCEW_VEHICLE]: "BCEW vehicle",
+	[VEHICLE_ACCIDENT_PHOTO_CATEGORY.BCEW_VEHICLE]: "vehicle",
 	[VEHICLE_ACCIDENT_PHOTO_CATEGORY.OTHER_VEHICLE_PROPERTY]: "Other vehicle / property",
 	[VEHICLE_ACCIDENT_PHOTO_CATEGORY.INSURANCE_CORRESPONDENCE]: "Insurance correspondence",
 	[VEHICLE_ACCIDENT_PHOTO_CATEGORY.SUPPORTING_DOCUMENT]: "Supporting document",
@@ -71,14 +71,14 @@ export interface IBreakdownKeyResource {
 export const BREAKDOWN_KEY_RESOURCES: IBreakdownKeyResource[] = [
 	{
 		label: "Route 1 / I-95",
-		description: "use All-County Towing (24/7) — (215) 555-0110. BCEW account #4471.",
+		description: "use All-County Towing (24/7) — (215) 555-0110.  account #4471.",
 	},
 	{
 		label: "Turnpike (PA-276)",
 		description: "only PA Turnpike-authorized operators may respond. Dispatch *11.",
 	},
 	{
-		label: "Local roads, Bucks County",
+		label: "Local roads,  County",
 		description: "Dawson's Garage preferred — (267) 555-0187.",
 	},
 	{

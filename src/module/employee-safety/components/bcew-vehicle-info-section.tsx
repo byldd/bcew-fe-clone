@@ -40,7 +40,7 @@ const BcewVehicleInfoSection = ({
 	const lookupError = debouncedTruck && isError ? "No vehicle found for this truck number." : undefined;
 
 	return (
-		<ReportSection title="Which BCEW vehicle was involved?">
+		<ReportSection title="Which  vehicle was involved?">
 			<div className="space-y-4 text-sm">
 				<InputField
 					name="truckNumber"

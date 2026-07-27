@@ -10,7 +10,7 @@ export const attendanceSourceTabs = [
 		key: ATTENDANCE_SOURCE.BYLDD,
 	},
 	{
-		label: "BCEW",
+		label: "Test",
 		key: ATTENDANCE_SOURCE.BCEW,
 	},
 ];

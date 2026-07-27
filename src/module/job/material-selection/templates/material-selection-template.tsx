@@ -393,8 +393,8 @@ export default function MaterialSelectionTemplate({ jobnum, tsknum }: { jobnum?:
 									)}
 								</div>
 								<p className="text-[10px] font-medium text-rose-500">
-									Foreman: If ordering material for a BCEW employee please list the employee. If left blank the
-									receiving employee will be you.
+									Foreman: If ordering material for a our employee please list the employee. If left blank the receiving
+									employee will be you.
 								</p>
 							</div>
 						)}

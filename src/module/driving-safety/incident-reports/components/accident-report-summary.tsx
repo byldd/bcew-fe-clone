@@ -38,7 +38,7 @@ const AccidentReportSummary = ({ report }: { report: IAccidentReviewDetail }) =>
 
 		<div className="mt-1">
 			<ReviewRow label="Describe the accident" value={orDash(report.describeAccident)} />
-			<ReviewRow label="Damage to BCEW vehicle" value={orDash(report.damageToBcewVehicle)} />
+			<ReviewRow label="Damage to BYLDD vehicle" value={orDash(report.damageToBcewVehicle)} />
 			<ReviewRow label="Damage to other vehicle" value={orDash(report.damageToOtherProperty)} />
 		</div>
 	</ReviewCard>

@@ -111,7 +111,7 @@ export default function LoginPage() {
 			<Modal />
 			{/* Left Side Image */}
 			<div className="h-64 w-full lg:h-full lg:w-1/2">
-				<Image src="/assets/png/login-img.png" width={460} height={64} alt="Side" className="h-full object-cover" />
+				<div className="h-[64] w-[460]"></div>
 			</div>
 			{/* Right Side Form */}
 			<div className="flex w-full items-center justify-center bg-white px-2 py-6 lg:w-1/2 lg:py-0">

@@ -71,9 +71,7 @@ const SmsConsent = ({ onClose, isSubCrew = false, showCloseButton = true }: SmsC
 
 	return (
 		<div className="flex w-full flex-col gap-2 px-2">
-			<div className="relative h-[46px] w-[162px]">
-				<Image src="/assets/svg/bcew-logo.svg" alt="bcew-logo" fill className="object-contain" priority />
-			</div>
+			<div className="relative h-[46px] w-[162px]"></div>
 
 			<h2 className="text-lg font-medium">{tAdmin.provideDetails}</h2>
 
@@ -85,7 +83,7 @@ const SmsConsent = ({ onClose, isSubCrew = false, showCloseButton = true }: SmsC
 
 				<div className="grid gap-0 space-y-1">
 					<Label className="text-sm text-brand-grey">{tAdmin.email}</Label>
-					<Input value={email} readOnly className="w-full" />
+					<Input value={"test@email.com"} readOnly className="w-full" />
 				</div>
 
 				<div className="grid gap-0 space-y-1">

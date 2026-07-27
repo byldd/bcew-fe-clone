@@ -70,7 +70,7 @@ export const whatHappenedFields: AccidentField[] = [
 	{
 		name: "damageToBcewVehicle",
 		fieldVariant: FIELD_VARIANT.TEXTAREA,
-		label: "What damage was caused to the BCEW vehicle?",
+		label: "What damage was caused to the  vehicle?",
 		placeholder: "Describe damage to our vehicle",
 	},
 	{
@@ -85,7 +85,7 @@ export const whatHappenedFields: AccidentField[] = [
 export const bcewVehiclePhotosField: AccidentField = {
 	name: "bcewVehiclePhotos",
 	fieldVariant: FIELD_VARIANT.MULTI_IMAGE,
-	label: "Photos of the BCEW Vehicle*",
+	label: "Photos of the  Vehicle*",
 	description: "Take photos of all damage from multiple angles, including wide and close-up views",
 };
 

@@ -345,7 +345,7 @@ export const useAdminMenu = () => {
 					url: "#",
 				},
 				{
-					title: "BCEW Portal Guide",
+					title: "BYLDD Portal Guide",
 					icon: BcewIconImage,
 					url: "#",
 				},

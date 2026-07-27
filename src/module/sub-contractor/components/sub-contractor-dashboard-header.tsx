@@ -110,9 +110,7 @@ export function SubContractorDashboardHeader() {
 		<div className="fixed z-[2] w-full bg-brand-bgLightgrey px-4 py-2">
 			<div className="flex items-center justify-between">
 				{/* Left - Logo */}
-				<div className="relative z-10 my-4">
-					<Image src="/assets/png/logo1.png" alt="Company Logo" width={160} height={120} />
-				</div>
+				<div className="relative z-10 my-4"></div>
 
 				{/* Right - Icons and Avatar */}
 

@@ -9,5 +9,5 @@ export enum BCEW_ATTENDANCE_TYPE {
 export enum ATTENDANCE_SOURCE {
 	ALL = "ALL",
 	BYLDD = "BYLDD",
-	BCEW = "BCEW",
+	BCEW = "Test",
 }

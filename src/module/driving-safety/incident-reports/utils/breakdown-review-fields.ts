@@ -7,7 +7,7 @@ type BreakdownReviewField = FormFieldConfig<IBreakdownReviewSchema>;
 export const bcewVehicleTowedField: BreakdownReviewField = {
 	name: "bcewVehicleTowed",
 	fieldVariant: FIELD_VARIANT.TOGGLE,
-	label: "BCEW vehicle towed",
+	label: " vehicle towed",
 	labelPosition: LABEL_POSITION.LEFT,
 };
 

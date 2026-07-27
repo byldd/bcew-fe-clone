@@ -389,7 +389,7 @@ export default function AdminMaterialSelectionTemplate({
 								)}
 							</div>
 							<p className="text-[10px] font-medium text-rose-500">
-								If ordering material for a BCEW employee please list the employee. If left blank the receiving employee
+								If ordering material for a our employee please list the employee. If left blank the receiving employee
 								will be the foreman of this job.
 							</p>
 						</div>

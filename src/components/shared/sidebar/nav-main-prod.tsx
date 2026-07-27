@@ -99,9 +99,7 @@ const NavMain = ({ items }: NavMainProps) => {
 			<div className="px-5 py-6">
 				<div className="flex items-center gap-4">
 					<SidebarToggleButton onClick={toggleSidebar} />
-					<div className="relative h-[46px] w-[162px]">
-						<Image src="/assets/svg/bcew-logo.svg" alt="bcew-logo" fill className="object-contain" priority />
-					</div>
+					<div className="relative h-[46px] w-[162px]"></div>
 				</div>
 			</div>
 

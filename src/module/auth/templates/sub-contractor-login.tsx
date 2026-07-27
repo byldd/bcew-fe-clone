@@ -69,9 +69,7 @@ export default function SubContractorCrewLeaderSignInForm() {
 		>
 			<div className="absolute inset-0 bg-black/70" />
 
-			<div className="relative z-10 my-12">
-				<Image src="/assets/png/logo.png" alt="Company Logo" width={170} height={170} />
-			</div>
+			<div className="relative z-10 my-12"></div>
 
 			<div className="relative z-10 flex w-full max-w-md flex-col px-4 py-6">
 				<div className="my-8 text-center">

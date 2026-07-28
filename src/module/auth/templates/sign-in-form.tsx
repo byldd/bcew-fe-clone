@@ -110,9 +110,7 @@ export default function LoginPage() {
 		<div className="flex h-screen w-full flex-col lg:flex-row">
 			<Modal />
 			{/* Left Side Image */}
-			<div className="h-64 w-full lg:h-full lg:w-1/2">
-				<div className="h-[64] w-[460]"></div>
-			</div>
+			<div className="h-full w-full min-w-[440px]"></div>
 			{/* Right Side Form */}
 			<div className="flex w-full items-center justify-center bg-white px-2 py-6 lg:w-1/2 lg:py-0">
 				<div className="min-w-md w-full space-y-6 text-center lg:pl-4">

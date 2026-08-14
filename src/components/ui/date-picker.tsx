@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toDate, toFormattedDate } from "@/lib/utils/date";
+import { cn } from "@/lib/utils/utils";
 import { Matcher } from "react-day-picker";
 import { DayPicker } from "react-day-picker";
 import { getWeekRange } from "@/module/schedule-management/weekly-schedule-management/utils";
@@ -16,6 +17,7 @@ import { DATE_FORMAT } from "@/types/date";
 
 export function DatePicker({
 	className,
+	iconClassName = "h-5 w-5",
 
 	disabled,
 	value,
@@ -23,6 +25,7 @@ export function DatePicker({
 	disabledDate,
 	onClear,
 	placeholder,
+	alwaysShowLabel,
 	...props
 }: React.ComponentProps<typeof DayPicker> & {
 	buttonVariant?: React.ComponentProps<typeof Button>["variant"];
@@ -32,17 +35,18 @@ export function DatePicker({
 	onChange?: (value: Date) => void;
 	disabledDate?: Matcher;
 	onClear?: () => void;
+	alwaysShowLabel?: boolean;
+	iconClassName?: string;
 }) {
 	const [open, setOpen] = React.useState(false);
 	const tCommon = useTypedTranslations(NAMESPACE.COMMON);
-	const emptyStateLabel = placeholder ?? tCommon.pickDate;
 
 	const hasSingleSelection = (!props.mode || props.mode === "single") && !!value;
 	const hasRangeSelection = props.mode === "range" && !!(props.selected?.from || props.selected?.to);
 	const hasSelection = hasSingleSelection || hasRangeSelection;
 
 	// When onClear is wired up and nothing is selected, show icon-only button
-	const iconOnlyMode = !!onClear && !hasSelection;
+	const iconOnlyMode = !!onClear && !hasSelection && !alwaysShowLabel;
 
 	return (
 		<div className="relative flex gap-2">
@@ -51,9 +55,11 @@ export function DatePicker({
 					<Button
 						disabled={disabled}
 						variant="outline"
-						className={`flex h-10 rounded-[8px] bg-brand-bgLightgrey text-sm outline-none focus:ring-0 ${
-							iconOnlyMode ? "w-9 justify-center p-0" : "w-full justify-between px-3 py-2"
-						} ${className}`}
+						className={cn(
+							"flex h-10 rounded-[8px] bg-brand-bgLightgrey text-sm outline-none focus:ring-0",
+							iconOnlyMode ? "w-9 justify-center p-0" : "w-full justify-between px-3 py-2",
+							className
+						)}
 					>
 						{!iconOnlyMode && (
 							<div>
@@ -80,7 +86,7 @@ export function DatePicker({
 											toFormattedDate(props.selected.from)
 										) : (
 											<span className="mt-0.5 text-xs font-normal text-brand-lightgrey">
-												{placeholder ?? tCommon.pickDate}
+												{placeholder ?? tCommon.pickDateRange}
 											</span>
 										)}
 									</>
@@ -107,7 +113,7 @@ export function DatePicker({
 								<X className="h-3.5 w-3.5" />
 							</span>
 						) : (
-							<CalendarIcon className="h-5 w-5" />
+							<CalendarIcon className={iconClassName} />
 						)}
 					</Button>
 				</PopoverTrigger>

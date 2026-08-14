@@ -76,7 +76,6 @@ export default function RoleEmulationModal({ currentRole, onContinue, onSelectRo
 				}))}
 				value={selectedRoleId}
 				onValueChange={handleRoleChange}
-				disabled={!!selectedUserId}
 			/>
 
 			<SelectField
@@ -90,7 +89,6 @@ export default function RoleEmulationModal({ currentRole, onContinue, onSelectRo
 				}
 				value={selectedUserId}
 				onValueChange={handleUserChange}
-				disabled={!!selectedRoleId}
 			/>
 
 			<div className="flex gap-2">

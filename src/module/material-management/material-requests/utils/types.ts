@@ -169,7 +169,6 @@ export type MaterialRequestColumnsProps = {
 	isForeman?: boolean;
 	currentUserId?: string | null;
 	userAssignRole?: MATERIAL_REQUEST_ASSIGN_TO | null;
-	onMissingItemRespond?: (id: string) => void;
 };
 
 export type MaterialRequestFiltersState = {
@@ -268,6 +267,10 @@ export type FilterSelectPopoverProps = {
 	options: { value: string; label: string }[];
 	onApply: (value: string) => void;
 	triggerClassName?: string;
+	searchable?: boolean;
+	onSearch?: (value: string) => void;
+	searchPlaceholder?: string;
+	loading?: boolean;
 };
 
 export type MaterialRequestNoteModalProps = {

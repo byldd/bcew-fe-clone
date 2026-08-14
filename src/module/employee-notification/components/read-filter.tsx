@@ -12,7 +12,7 @@ const ReadFilter = () => {
 
 	return (
 		<SelectField
-			className="mr-1 h-10 w-full rounded-[8px] border-brand-bgLightgrey04 bg-white text-sm shadow-md"
+			className="mr-1 h-10 w-full rounded-[8px] border-brand-bgLightgrey04 bg-white text-sm shadow-sm"
 			value={readFilter || undefined}
 			placeholder="Select read status"
 			onValueChange={(value) => {

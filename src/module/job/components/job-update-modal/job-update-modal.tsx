@@ -53,7 +53,7 @@ export default function JobUpdateForm({ job, onClose, onSubmitSuccess }: IJobUpd
 	const isScheduledOnlyTillToday = jobEndDate.getTime() <= today.getTime();
 	const isSlabRoughJob = Number(job.schedule?.tsknum) === JOB_PHASE_LABEL_NUM["Slab Rough"];
 
-	const isMarkedAsNotReady = job.notReadyUpdate?.isReady == false || job.notReadyUpdate?.isClean == false;
+	const isMarkedAsNotReady = job.notReadyUpdate?.isReady == false;
 
 	const stableInitialValues = useMemo(() => {
 		return {

@@ -57,17 +57,24 @@ export const routes = {
 			jobDailyRecordId,
 			jobnum,
 			tsknum,
+			userId,
+			missingItemRequestId,
 		}: {
 			jobDailyRecordId: string;
 			jobnum?: number;
 			tsknum?: number;
+			userId?: string;
+			missingItemRequestId?: string;
 		}) => {
 			const params = new URLSearchParams({ jobDailyRecordId });
 			if (jobnum !== undefined) params.set("jobnum", String(jobnum));
 			if (tsknum !== undefined) params.set("tsknum", String(tsknum));
+			if (userId !== undefined) params.set("userId", String(userId));
+			if (missingItemRequestId !== undefined) params.set("missingItemRequestId", missingItemRequestId);
 			return `/admin/job-level-details/material-selection?${params.toString()}`;
 		},
 		storageUnitReport: "/admin/storage-unit-report",
+		crateActivity: "/admin/crate-activity",
 		materialRequests: "/admin/material-requests",
 		missingItemRequests: "/admin/missing-item-requests",
 		gpsExceptionEvents: "/admin/gps-exception-events",
@@ -76,9 +83,20 @@ export const routes = {
 		payroll: "/admin/schedule-management/payroll",
 		config: "/admin/setting/config",
 		pages: "/admin/setting/config/pages",
+		drivingSafetyDashboard: "/admin/driving-safety/dashboard",
 		drivingSafetyPolicies: "/admin/driving-safety/policies",
 		drivingSafetyIncidentReports: "/admin/driving-safety/incident-reports",
 		drivingSafetyAccidentReview: (id: string) => `/admin/driving-safety/incident-reports/${id}`,
+		jobSiteSafetyAddNewRecord: "/admin/job-site-safety/add-new-record",
+		jobSiteSafetyDashboard: "/admin/job-site-safety/dashboard",
+		jobSiteSafetyIncidentReports: "/admin/job-site-safety/incident-reports",
+		jobSiteSafetyInjuryReview: (id: string) => `/admin/job-site-safety/incident-reports/${id}`,
+		jobSiteSafetyInsuranceEmailReview: (id: string) => `/admin/job-site-safety/incident-reports/${id}/insurance-email`,
+		jobSiteSafetyViolationReview: (id: string) => `/admin/job-site-safety/incident-reports/violation/${id}`,
+		jobSiteSafetyViolationInsuranceEmailReview: (id: string) =>
+			`/admin/job-site-safety/incident-reports/violation/${id}/insurance-email`,
+		drivingSafetyInsuranceEmailReview: (id: string) => `/admin/driving-safety/incident-reports/${id}/insurance-email`,
+		drivingSafetyAddNewRecord: "/admin/driving-safety/add-new-record",
 	},
 	subContractorAdminDesktop: {
 		dashboard: "/admin/sub-contractor/dashboard",
@@ -127,6 +145,7 @@ export const routes = {
 		history: "/employee/history",
 		reportJobSiteInjury: "/employee/report-job-site-injury",
 		newJobSiteInjuryReport: "/employee/report-job-site-injury/new",
+		reportVehicleIssue: "/employee/report-vehicle-issue",
 		reportVehicleBreakdown: "/employee/report-vehicle-breakdown",
 		newVehicleBreakdownReport: "/employee/report-vehicle-breakdown/new",
 		reportVehicleAccident: "/employee/report-vehicle-accident",
@@ -136,6 +155,9 @@ export const routes = {
 			`/employee/safety/vehicle-documents?truckNumber=${encodeURIComponent(truckNumber)}`,
 		crateManagement: "/employee/crate-management",
 		crateManagementScanReceive: "/employee/crate-management/scan-receive",
+		crateManagementScanReturn: "/employee/crate-management/scan-return",
+		crateManagementReportIssue: "/employee/crate-management/report-issue",
+		crateManagementHistory: "/employee/crate-management/history",
 		safetyPolicies: "/employee/safety/policies",
 	},
 	subContractor: {
@@ -165,7 +187,7 @@ export const routes = {
 		workOrder: (WorkOrderNum: number) =>
 			`https://bcewonline.com:444/portal/secure/Site/WorkOrders/Work%20Order%20Details.aspx?WorkOrderNum=${WorkOrderNum}`,
 		fieldFiles: (jobRecNum: number) =>
-			` https://bcewonline.com:444/Portal/secure/Site/ToDo/FieldFiles.aspx?Job=${jobRecNum}`,
+			`https://portal.bcew.net/office/legacy?page=secure%2FSite%2FToDo%2FToDoJob.aspx&Job=${jobRecNum}`,
 		pullList: (jobNumber: string | number, taskNum: string | number) =>
 			`https://bcewonline.com:444/Portal/secure/Site/Pull%20Lists.aspx?Job=${jobNumber}&TaskNum=${taskNum}&Epull=1`,
 		attendance: "https://bcewonline.com:444/Portal/secure/Site/Attendance/Attendance.aspx",

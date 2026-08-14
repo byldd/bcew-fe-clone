@@ -21,6 +21,7 @@ export const jobSiteInjurySchema = z.object({
 	treatmentStartDate: z.date().optional(),
 	treatmentEndDate: z.date().optional(),
 	doctorsMedics: z.string().optional(),
+	drugScreenLocation: z.string().optional(),
 
 	// Recommendations
 	immediateAction: z.string().optional(),

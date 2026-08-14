@@ -23,7 +23,7 @@ const EmployeeTimeConfigDatePick = () => {
 	};
 
 	return (
-		<div className="z-20 flex h-9 items-center rounded-[10px] border border-brand-dark10 bg-white text-xl font-semibold 3xl:h-[80px]">
+		<div className="z-20 flex h-10 items-center rounded-[10px] border border-brand-dark10 bg-white text-xl font-semibold 3xl:h-[80px]">
 			<Button onClick={goToPreviousWeek} variant="ghost" size="icon" className="h-11 w-6 p-0 hover:bg-transparent">
 				<ChevronLeft className="mb-0.5 h-11 w-6 font-semibold" />
 			</Button>

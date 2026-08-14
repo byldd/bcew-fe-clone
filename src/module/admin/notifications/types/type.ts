@@ -45,6 +45,11 @@ export const ADMIN_NOTIFICATION_GROUP = {
 	[NOTIFICATION_TYPE.GPS_EXCEPTION_EVENT]: "Geotab Exception Events",
 	[NOTIFICATION_TYPE.MATERIAL_REQUEST]: "Material Requests",
 	[NOTIFICATION_TYPE.ROLES_AND_PERMISSIONS_UPDATED]: "Roles and Permissions Updated",
+	[NOTIFICATION_TYPE.VEHICLE_ACCIDENT_REPORT]: "Vehicle Accident",
+	[NOTIFICATION_TYPE.VEHICLE_BREAKDOWN_REPORT]: "Vehicle Breakdown",
+	[NOTIFICATION_TYPE.DRIVING_SAFETY_VIOLATION_REPORT]: "Driving Safety Violation",
+	[NOTIFICATION_TYPE.JOB_SITE_INJURY_REPORT]: "Job Site Injury",
+	[NOTIFICATION_TYPE.JOB_SITE_SAFETY_VIOLATION_REPORT]: "Job Site Safety Violation",
 } as const;
 
 export const ADMIN_NOTIFICATION_TOOLTIP: Partial<Record<NOTIFICATION_TYPE, string>> = {
@@ -78,6 +83,13 @@ export const ADMIN_NOTIFICATION_TOOLTIP: Partial<Record<NOTIFICATION_TYPE, strin
 	[NOTIFICATION_TYPE.MATERIAL_REQUEST]:
 		"Includes notifications for material requests and related updates such as submissions, approvals, rejections, assignments, responses, and notes.",
 	[NOTIFICATION_TYPE.ROLES_AND_PERMISSIONS_UPDATED]: "Roles and Permissions Updated",
+	[NOTIFICATION_TYPE.VEHICLE_ACCIDENT_REPORT]: "Notifications related to vehicle accidents and required actions.",
+	[NOTIFICATION_TYPE.VEHICLE_BREAKDOWN_REPORT]: "Notifications related to vehicle breakdowns and required actions.",
+	[NOTIFICATION_TYPE.DRIVING_SAFETY_VIOLATION_REPORT]:
+		"Notifications related to driving safety violations and required actions.",
+	[NOTIFICATION_TYPE.JOB_SITE_INJURY_REPORT]: "Notifications related to job site injuries and required actions.",
+	[NOTIFICATION_TYPE.JOB_SITE_SAFETY_VIOLATION_REPORT]:
+		"Notifications related to job site safety violations and required actions.",
 };
 
 export type IAdminNotificationGroup = (typeof ADMIN_NOTIFICATION_GROUP)[keyof typeof ADMIN_NOTIFICATION_GROUP];
@@ -124,7 +136,8 @@ export const MODULE_GROUP_TOOLTIP: Partial<Record<MODULE_GROUP, string>> = {
 	[MODULE_GROUP.PEOPLE_MANAGEMENT]: "Includes notifications for attendance approved.",
 	[MODULE_GROUP.TECHNICAL_ISSUE]: "Includes notifications for technical issue reported.",
 	[MODULE_GROUP.BUILDER_COMMUNICATIONS]: "No notifications mapped yet.",
-	[MODULE_GROUP.SAFETY_MANAGEMENT]: "No notifications mapped yet.",
+	[MODULE_GROUP.SAFETY_MANAGEMENT]:
+		"Notifications related to vehicle accidents, breakdowns, driving safety violations, job site injuries, and job site safety violations.",
 	[MODULE_GROUP.REPORTS_AND_EXPORTS]: "Includes notifications for release note.",
 	[MODULE_GROUP.MATERIAL]:
 		"Includes notifications for material requests and related updates such as submissions, approvals, rejections, assignments, responses, and notes.",

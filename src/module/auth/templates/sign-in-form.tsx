@@ -7,35 +7,32 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthAPI } from "@/module/auth/hooks/useAuth";
 import { loginFormSchema, type UserLoginType } from "@/module/auth/types";
 import { openErrorToast, openSuccessToast } from "@/components/toast";
-import { clearCookies, redirectUser, setEmulatedRoleCookie, setLoginCookies } from "@/module/auth/utils/helpers";
+import { clearCookies, getSafeRedirect, redirectUser, setLoginCookies } from "@/module/auth/utils/helpers";
 import Image from "next/image";
 import { LOGIN_MODE } from "@/utils/enums";
-import { loginParamKey } from "@/utils/constants";
-import { FaArrowRight } from "react-icons/fa";
-import { useModal } from "@/hooks/useModal";
-import RoleEmulationModal from "../components/role-emulation-modal";
+import { AUTH_QUERY_PARAM } from "@/module/auth/utils/constants";
+import { routes } from "@/config/routes";
 import { ROLES } from "@/types";
+import { FaArrowRight } from "react-icons/fa";
 
 export default function LoginPage() {
-	const { openModal, closeModal, Modal } = useModal();
 	const [showPassword, setShowPassword] = useState(false);
 	const [rememberMe, setRememberMe] = useState(false);
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const formSchema = loginFormSchema();
 	const form = useForm<UserLoginType>({
 		resolver: zodResolver(formSchema),
 		mode: "onChange",
 	});
 	const { register, handleSubmit, formState } = form;
-	const { useLoginMutation, useImpersonateUserMutation } = useAuthAPI();
+	const { useLoginMutation } = useAuthAPI();
 
 	const { mutate: loginMutation, isPending } = useLoginMutation;
-
-	const { mutate: impersonateUserMutation } = useImpersonateUserMutation;
 
 	const onSubmit = (data: UserLoginType) => {
 		clearCookies();
@@ -48,58 +45,14 @@ export default function LoginPage() {
 				setLoginCookies({ token, userType });
 				openSuccessToast("Logged in successfully");
 
-				const redirectRoute = redirectUser(userType);
-
-				if (!user?.isEmulationAllowed) {
-					router.replace(redirectRoute);
-					return;
-				}
-
-				// Staging/Production → role emulation modal
-				openModal({
-					modalTitle: "View as Role",
-					showDefaultClose: false, // hide X button
-					closeOnOutsideClick: false, // already default, but explicit
-					modalView: (
-						<RoleEmulationModal
-							currentRole={user.role}
-							onContinue={() => {
-								closeModal();
-								router.replace(redirectUser(userType));
-							}}
-							onSelectRole={(roleId) => {
-								setEmulatedRoleCookie(roleId);
-
-								closeModal();
-
-								router.replace(redirectUser(userType));
-							}}
-							onSelectUser={(userId) => {
-								handleImpersonateUser(userId, userType);
-							}}
-						/>
-					),
-				});
+				const safeRedirect =
+					userType === ROLES.TECHNICIAN_EMPLOYEE
+						? getSafeRedirect(searchParams.get(AUTH_QUERY_PARAM.REDIRECT), routes.employee.root)
+						: null;
+				const redirectRoute = safeRedirect ?? redirectUser(userType);
+				router.replace(redirectRoute);
 			},
 
-			onError: (error) => {
-				openErrorToast({ error });
-			},
-		});
-	};
-
-	const handleImpersonateUser = (userId: string, userType: ROLES) => {
-		impersonateUserMutation(userId, {
-			onSuccess: ({ token }) => {
-				setLoginCookies({
-					token,
-					userType,
-				});
-
-				closeModal();
-
-				router.replace(redirectUser(userType));
-			},
 			onError: (error) => {
 				openErrorToast({ error });
 			},
@@ -108,7 +61,6 @@ export default function LoginPage() {
 
 	return (
 		<div className="flex h-screen w-full flex-col lg:flex-row">
-			<Modal />
 			{/* Left Side Image */}
 			<div className="h-full w-full min-w-[440px]"></div>
 			{/* Right Side Form */}
@@ -179,7 +131,7 @@ export default function LoginPage() {
 								type="button"
 								onClick={() => {
 									const params = new URLSearchParams(window.location.search);
-									params.set(loginParamKey, LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER);
+									params.set(AUTH_QUERY_PARAM.LOGIN, LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER);
 									router.replace(`?${params.toString()}`);
 								}}
 								className="flex items-center gap-2 rounded-none px-0 font-inter text-[10px] font-normal text-brand-grey shadow-none hover:border-b hover:border-brand-grey hover:bg-none hover:pb-[1px] sm:text-sm"

@@ -73,6 +73,7 @@
 	"reportTechnicalIssue": "Report a Technical Issue",
 	"logout": "Logout",
 	"switchToDesktopView": "Switch to Desktop View",
-	"pickDate": "Date Range",
+	"pickDate": "Select Date",
+	"pickDateRange": "Select Date Range",
 	"storageUnitReport": "Storage Unit Report"
 }

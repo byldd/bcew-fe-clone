@@ -8,14 +8,14 @@ interface PhotoGridProps {
 
 export default function PhotoGrid({ photos, onRemove }: PhotoGridProps) {
 	return (
-		<div className="grid grid-cols-3 gap-2">
+		<div className="grid grid-cols-3 gap-2 rounded-xl border border-gray-100">
 			{photos.map((photo, index) => (
-				<div key={`${photo.name}-${index}`} className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+				<div key={`${photo.name}-${index}`} className="relative aspect-square overflow-hidden rounded-xl bg-gray-100">
 					{/* eslint-disable-next-line @next/next/no-img-element */}
 					<img
 						src={URL.createObjectURL(photo)}
 						alt={`Crate photo ${index + 1}`}
-						className="h-full w-full object-cover"
+						className="h-full w-full rounded-xl object-cover"
 					/>
 					{onRemove && (
 						<Button

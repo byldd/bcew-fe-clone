@@ -80,7 +80,7 @@ const AttendanceRecords = () => {
 					<div className="flex items-center gap-2">
 						{attendanceSourceTabs.map((tab) => (
 							<Button
-								className="h-9"
+								className="h-10"
 								key={tab.key}
 								onClick={() =>
 									setParams({
@@ -100,7 +100,7 @@ const AttendanceRecords = () => {
 							<input
 								type="text"
 								placeholder="Search by employee name"
-								className="h-9 w-[240px] rounded-[8px] border border-brand-dark10 bg-white pl-9 pr-3 text-sm outline-none"
+								className="h-10 w-[240px] rounded-[8px] border border-brand-dark10 bg-white pl-9 pr-3 text-sm outline-none"
 								value={search}
 								onChange={(e) => setSearch(e.target.value)}
 							/>
@@ -109,7 +109,7 @@ const AttendanceRecords = () => {
 						{/* TYPE FILTER */}
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Button variant={"outline"} className="h-9 border-gray-200 bg-white text-sm shadow-sm">
+								<Button variant={"outline"} className="h-10 border-gray-200 bg-white text-sm shadow-sm">
 									<span className={types?.length ? "font-medium text-brand-dark" : "font-normal text-gray-400"}>
 										{types?.length ? `${types.length} Type${types.length > 1 ? "s" : ""} Selected` : "Select Types"}
 									</span>

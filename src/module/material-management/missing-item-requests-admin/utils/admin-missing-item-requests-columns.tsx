@@ -1,9 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils/utils";
 import { toFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
 import { ScreenshotPreview } from "@/module/admin-technical-issues/components/screenshot-previews";
 import { Pencil } from "lucide-react";
+import { MISSING_ITEM_REQUEST_STATUS_UI } from "./missing-item-request-status";
 import type { AdminMissingItemRequest } from "./types";
 
 export const getAdminMissingItemRequestsColumns = ({
@@ -88,6 +90,17 @@ export const getAdminMissingItemRequestsColumns = ({
 				{row.original.foremanNote ?? "—"}
 			</span>
 		),
+	},
+	{
+		id: "status",
+		size: 100,
+		header: () => <span className="w-full text-center">Status</span>,
+		cell: ({ row }) => {
+			const status = MISSING_ITEM_REQUEST_STATUS_UI[row.original.status];
+			return (
+				<span className={cn("block w-full text-center text-sm font-semibold", status?.className)}>{status.label}</span>
+			);
+		},
 	},
 	{
 		id: "action",

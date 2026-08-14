@@ -30,6 +30,7 @@ export default function SearchableSelect({
 	const [open, setOpen] = useState(false);
 
 	const selectedOption = options.find((option) => option.value === value);
+	const filteredOptions = options.filter((option) => option.label.toLowerCase().includes(inputValue.toLowerCase()));
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -40,7 +41,7 @@ export default function SearchableSelect({
 					aria-expanded={open}
 					disabled={disabled}
 					className={cn(
-						"w-full justify-between rounded-[10px] border-none bg-brand-bgLightgrey font-normal",
+						"h-10 w-full justify-between rounded-[8px] border-none bg-brand-bgLightgrey text-sm font-normal",
 						!value && "text-muted-foreground",
 						className
 					)}
@@ -49,7 +50,7 @@ export default function SearchableSelect({
 					<ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-full p-0" align="start">
+			<PopoverContent className="w-full p-0" align="start" onCloseAutoFocus={(event) => event.preventDefault()}>
 				<div className="p-2">
 					<Input
 						placeholder="Search..."
@@ -62,10 +63,10 @@ export default function SearchableSelect({
 					/>
 
 					<div className="max-h-60 max-w-full overflow-y-auto">
-						{options.length === 0 && (
+						{filteredOptions.length === 0 && (
 							<p className="py-2 text-center text-xs text-muted-foreground">No results found.</p>
 						)}
-						{options.map((option) => {
+						{filteredOptions.map((option) => {
 							const isSelected = value === option.value;
 							return (
 								<div

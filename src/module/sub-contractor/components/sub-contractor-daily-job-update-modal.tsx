@@ -26,7 +26,7 @@ const SubContractorJobUpdateForm = ({
 	onClose: () => void;
 	subContractorType: IAuthStore;
 }) => {
-	const isMarkedAsNotReady = job.notReadyUpdate?.isReady == false || job.notReadyUpdate?.isClean == false;
+	const isMarkedAsNotReady = job.notReadyUpdate?.isReady == false;
 
 	const [jobCompleted, setJobCompleted] = useState<boolean | null>(
 		isMarkedAsNotReady ? false : (job.isJobFinishToday ?? null)

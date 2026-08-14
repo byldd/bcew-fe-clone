@@ -2,21 +2,19 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { addDays } from "date-fns";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 import BackButton from "@/components/common/back-button";
 import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils/utils";
 import { routes } from "@/config/routes";
-import { toFormattedDate } from "@/lib/utils/date";
-import { DATE_FORMAT } from "@/types/date";
-import { getWeekStartAndEndForDate } from "@/module/schedule-management/weekly-schedule-management/utils";
+import { toDate } from "@/lib/utils/date";
 
 import MyRecordCard from "../components/my-record-card";
 import { useMyRecords } from "../hooks/useVehicleAccident";
 import { useMyRecordsParams } from "../hooks/useMyRecordsParams";
-import { filterMyRecordsByDateRange, filterMyRecordsByQuery } from "../utils/filter-my-records";
+import { filterMyRecordsByQuery } from "../utils/filter-my-records";
 import { MY_RECORD_TAB, SAFETY_REPORT_TYPE, TECHNICIAN_REPORT_STATUS } from "../enums";
 import { IMyRecord } from "../types";
 import { Button } from "@/components/ui/button";
@@ -31,43 +29,35 @@ const recordEditRoute = (record: IMyRecord): string => {
 
 const MyRecordsTemplate = () => {
 	const router = useRouter();
-	const { data: records } = useMyRecords();
 	const { getParams, setParams } = useMyRecordsParams();
 	const { startDate, endDate } = getParams();
+	const { data: records } = useMyRecords(startDate, endDate);
 
 	const [search, setSearch] = useState("");
 	const [activeTab, setActiveTab] = useState<MY_RECORD_TAB>(MY_RECORD_TAB.ALL);
 
-	const handleDateRangeChange = (nextStart: Date | null, nextEnd: Date | null) => {
-		setParams({ startDate: nextStart, endDate: nextEnd });
-	};
+	const matched = useMemo(() => filterMyRecordsByQuery(records ?? [], search), [records, search]);
 
-	const currentWeek = getWeekStartAndEndForDate(new Date());
-	const weekStart = startDate ?? currentWeek.start;
-	const weekEnd = endDate ?? currentWeek.end;
-
-	const handleMoveWeek = (direction: 1 | -1) => {
-		handleDateRangeChange(addDays(weekStart, 7 * direction), addDays(weekEnd, 7 * direction));
-	};
-
-	const matched = useMemo(
-		() => filterMyRecordsByQuery(filterMyRecordsByDateRange(records ?? [], weekStart, weekEnd), search),
-		[records, search, weekStart, weekEnd]
-	);
-
-	const draftCount = matched.filter((record) => record.status === TECHNICIAN_REPORT_STATUS.DRAFT).length;
-	const pendingCount = matched.filter((record) => record.status === TECHNICIAN_REPORT_STATUS.PENDING).length;
+	const countByStatus = (status: TECHNICIAN_REPORT_STATUS) =>
+		matched.filter((record) => record.status === status).length;
 
 	const visible = matched.filter((record) => {
 		if (activeTab === MY_RECORD_TAB.DRAFT) return record.status === TECHNICIAN_REPORT_STATUS.DRAFT;
 		if (activeTab === MY_RECORD_TAB.PENDING) return record.status === TECHNICIAN_REPORT_STATUS.PENDING;
+		if (activeTab === MY_RECORD_TAB.ADDITIONAL_INFO_REQUESTED)
+			return record.status === TECHNICIAN_REPORT_STATUS.ADDITIONAL_INFO_REQUESTED;
 		return true;
 	});
 
 	const tabs: { tab: MY_RECORD_TAB; label: string; count: number }[] = [
 		{ tab: MY_RECORD_TAB.ALL, label: "All", count: matched.length },
-		{ tab: MY_RECORD_TAB.DRAFT, label: "Drafts", count: draftCount },
-		{ tab: MY_RECORD_TAB.PENDING, label: "Pending", count: pendingCount },
+		{ tab: MY_RECORD_TAB.DRAFT, label: "Drafts", count: countByStatus(TECHNICIAN_REPORT_STATUS.DRAFT) },
+		{ tab: MY_RECORD_TAB.PENDING, label: "Pending", count: countByStatus(TECHNICIAN_REPORT_STATUS.PENDING) },
+		{
+			tab: MY_RECORD_TAB.ADDITIONAL_INFO_REQUESTED,
+			label: "Additional Info. Requested",
+			count: countByStatus(TECHNICIAN_REPORT_STATUS.ADDITIONAL_INFO_REQUESTED),
+		},
 	];
 
 	return (
@@ -77,17 +67,16 @@ const MyRecordsTemplate = () => {
 					<BackButton />
 					<h3 className="text-xl font-medium">My Records</h3>
 				</div>
-				<div className="flex h-9 shrink-0 items-center gap-2 rounded-[8px] border border-brand-dark10 bg-white px-3 text-xs font-medium text-brand-dark">
-					<button type="button" onClick={() => handleMoveWeek(-1)} aria-label="Previous week">
-						<ChevronLeft size={16} />
-					</button>
-					<span className="whitespace-nowrap">
-						{toFormattedDate(weekStart, DATE_FORMAT.DATE)} - {toFormattedDate(weekEnd, DATE_FORMAT.DD_MMM)}
-					</span>
-					<button type="button" onClick={() => handleMoveWeek(1)} aria-label="Next week">
-						<ChevronRight size={16} />
-					</button>
-				</div>
+				<DatePicker
+					className="border-none bg-white shadow-md hover:bg-white"
+					mode="range"
+					selected={{
+						from: startDate ? toDate(startDate) : undefined,
+						to: endDate ? toDate(endDate) : undefined,
+					}}
+					onSelect={(value) => setParams({ startDate: value?.from ?? null, endDate: value?.to ?? null })}
+					onClear={() => setParams({ startDate: null, endDate: null })}
+				/>
 			</div>
 
 			<div className="relative mb-3">
@@ -100,35 +89,31 @@ const MyRecordsTemplate = () => {
 				/>
 			</div>
 
-			<div className="mb-3 flex items-center gap-2">
-				{tabs.map(({ tab, label, count }) => (
-					<Button
-						key={tab}
-						type="button"
-						onClick={() => setActiveTab(tab)}
-						className={cn(
-							"h-9 rounded-[8px] px-3 text-xs font-medium",
-							activeTab === tab ? "bg-brand-dark text-white" : "bg-white text-brand-dark"
-						)}
-					>
-						{label} ({count})
-					</Button>
-				))}
+			<div className="mb-3 flex items-stretch gap-2">
+				{tabs.map(({ tab, label, count }) => {
+					const isWrapping = tab === MY_RECORD_TAB.ADDITIONAL_INFO_REQUESTED;
+					return (
+						<Button
+							key={tab}
+							type="button"
+							onClick={() => setActiveTab(tab)}
+							className={cn(
+								"h-auto min-h-9 rounded-[8px] px-3 py-1 text-xs font-medium leading-tight",
+								isWrapping ? "min-w-0 whitespace-normal text-center" : "shrink-0 whitespace-nowrap",
+								activeTab === tab ? "bg-brand-dark text-white" : "bg-white text-brand-dark"
+							)}
+						>
+							{label} ({count})
+						</Button>
+					);
+				})}
 			</div>
 
 			<div className="space-y-3">
-				{visible.map((record) => {
-					const isEditable =
-						record.status === TECHNICIAN_REPORT_STATUS.DRAFT || record.status === TECHNICIAN_REPORT_STATUS.PENDING;
-					return (
-						<MyRecordCard
-							key={record.id}
-							record={record}
-							onClick={isEditable ? () => router.push(recordEditRoute(record)) : undefined}
-						/>
-					);
-				})}
-				{visible.length === 0 && <p className="mt-10 text-center text-sm text-brand-grey">No records for this week.</p>}
+				{visible.map((record) => (
+					<MyRecordCard key={record.id} record={record} onClick={() => router.push(recordEditRoute(record))} />
+				))}
+				{visible.length === 0 && <p className="mt-10 text-center text-sm text-brand-grey">No records found.</p>}
 			</div>
 		</div>
 	);

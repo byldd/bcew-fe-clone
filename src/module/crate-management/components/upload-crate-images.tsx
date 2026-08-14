@@ -39,7 +39,7 @@ export default function UploadCrateImages({
 	};
 
 	return (
-		<div className="flex min-h-screen flex-col bg-white">
+		<div className="flex min-h-screen flex-col bg-brand-bgLightgrey">
 			<ScreenHeader title="Upload Crate Images" onBack={onBack} />
 
 			<div className="flex flex-1 flex-col px-4">
@@ -48,7 +48,7 @@ export default function UploadCrateImages({
 				<Button
 					type="button"
 					onClick={() => fileInputRef.current?.click()}
-					className="mt-3 flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-300 py-10 text-gray-400 transition-colors active:bg-gray-50"
+					className="mt-3 flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-300 bg-white py-10 text-gray-400 transition-colors active:bg-gray-50"
 				>
 					<Camera className="h-6 w-6" />
 					<span className="text-sm">Tap to add photo</span>
@@ -73,7 +73,7 @@ export default function UploadCrateImages({
 					</div>
 				)}
 
-				<div className="mt-4 flex flex-col gap-1.5">
+				<div className="mt-4 flex flex-col gap-1.5 rounded-2xl border border-gray-100 bg-white p-3">
 					<label htmlFor="crate-note" className="text-sm font-medium text-gray-700">
 						Note (optional)
 					</label>
@@ -82,7 +82,7 @@ export default function UploadCrateImages({
 						value={note}
 						onChange={(e) => setNote(e.target.value)}
 						placeholder="Add details"
-						className="min-h-[80px] rounded-xl bg-gray-50 text-sm"
+						className="min-h-[80px] rounded-xl bg-white text-sm"
 					/>
 				</div>
 

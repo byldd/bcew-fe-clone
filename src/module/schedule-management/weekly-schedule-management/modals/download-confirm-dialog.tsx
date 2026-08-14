@@ -62,7 +62,9 @@ const DownloadConfirmModal = ({ type, onClose }: DownloadConfirmModalProps) => {
 					window.URL.revokeObjectURL(url);
 
 					onClose();
-					openSuccessToast(tschedule.scheduleDownloadedSuccessfully);
+					openSuccessToast(
+						`${type == SCHEDULE_DOWNLOAD_MODAL_TYPE.SCHEDULE ? "Schedule" : "Payroll"} downloaded successfully`
+					);
 				},
 				onError: (error) => {
 					openErrorToast({ error });

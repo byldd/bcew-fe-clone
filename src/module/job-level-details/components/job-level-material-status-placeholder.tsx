@@ -2,16 +2,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiUser } from "react-icons/fi";
+import { FiUser, FiPackage } from "react-icons/fi";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import JobLevelPullListTemplate from "../templates/job-level-pull-list-template";
 import JobLevelAdditionalMaterialList from "./job-level-additional-material-list";
 import MaterialStatusPhotos from "./material-status-photos";
 import { useJobMaterialStatus } from "../hooks/useJobMaterialStatus";
+import { useJobCrateActivity } from "../hooks/useJobCrateActivity";
+import { CRATE_SCAN_ACTION } from "@/module/crate-management/enums";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/config/routes";
-import { STATUS_DONE } from "../utils/constants";
-import { buildRows } from "../utils";
+import { STATUS_DONE, DELIVERY_STATUS_ROW_TITLE } from "../utils/constants";
+import { buildRows, buildCrateActivityRows } from "../utils";
 
 export default function JobLevelMaterialStatusPlaceholder({
 	jobId,
@@ -41,10 +43,20 @@ export default function JobLevelMaterialStatusPlaceholder({
 	const [isPullListOpen, setIsPullListOpen] = useState(false);
 	const [isCollapsed, setIsCollapsed] = useState(true);
 	const [collapsedRows, setCollapsedRows] = useState<Record<string, boolean>>({});
+	const [isCrateActivityCollapsed, setIsCrateActivityCollapsed] = useState(false);
 
 	const { data, isLoading } = useJobMaterialStatus(jobId, phaseTsknum);
+	const { data: crateActivityData, isLoading: isCrateActivityLoading } = useJobCrateActivity(jobId, phaseTsknum);
 
-	const rows = useMemo(() => (data ? buildRows(data) : []), [data]);
+	const hasCrateReceived = useMemo(
+		() => (crateActivityData ?? []).some((item) => item.scan_action === CRATE_SCAN_ACTION.CRATE_SCANNED_TO_RECEIVE),
+		[crateActivityData]
+	);
+	const rows = useMemo(() => (data ? buildRows(data, hasCrateReceived) : []), [data, hasCrateReceived]);
+	const crateActivityRows = useMemo(
+		() => (crateActivityData ? buildCrateActivityRows(crateActivityData) : []),
+		[crateActivityData]
+	);
 
 	const completedCount = useMemo(() => rows.filter((r) => r.statusClassName === STATUS_DONE).length, [rows]);
 
@@ -56,6 +68,7 @@ export default function JobLevelMaterialStatusPlaceholder({
 		setIsPullListOpen(false);
 		setIsCollapsed(true);
 		setCollapsedRows({});
+		setIsCrateActivityCollapsed(false);
 	}, [jobId, phaseTsknum]);
 
 	const handleTogglePullList = () => {
@@ -152,6 +165,57 @@ export default function JobLevelMaterialStatusPlaceholder({
 													<>
 														{item.meta ? <p className="text-xs font-normal text-[#64748B]">{item.meta}</p> : null}
 														<MaterialStatusPhotos photos={item.photos} onOpenImagePreview={onOpenImagePreview} />
+														{item.title === DELIVERY_STATUS_ROW_TITLE && (
+															<div className="mt-3 space-y-3 rounded-[10px] border border-brand-dark10 p-4">
+																<div className="flex items-center justify-between gap-2 border-b border-brand-dark10 pb-2">
+																	<p className="text-xs font-semibold uppercase tracking-wide text-brand-greyLight">
+																		Crate Activity History
+																	</p>
+																	{crateActivityRows.length > 0 && (
+																		<Button
+																			type="button"
+																			variant="ghost"
+																			onClick={() => setIsCrateActivityCollapsed((prev) => !prev)}
+																			className="flex h-auto shrink-0 items-center gap-1 px-2 py-1 text-xs font-medium text-brand-dark hover:bg-gray-50"
+																		>
+																			{isCrateActivityCollapsed ? (
+																				<>
+																					Expand All <ChevronDown className="h-3.5 w-3.5" />
+																				</>
+																			) : (
+																				<>
+																					Collapse All <ChevronUp className="h-3.5 w-3.5" />
+																				</>
+																			)}
+																		</Button>
+																	)}
+																</div>
+																{isCrateActivityLoading ? (
+																	<p className="text-xs text-brand-dark50">Loading crate activity...</p>
+																) : crateActivityRows.length === 0 ? (
+																	<p className="text-xs text-brand-dark50">No crate activity found for this task.</p>
+																) : !isCrateActivityCollapsed ? (
+																	<div className="space-y-3">
+																		{crateActivityRows.map((crateRow, crateIndex) => (
+																			<div key={crateRow.id} className="relative flex gap-3">
+																				<div className="relative flex w-5 justify-center">
+																					<span className="z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[#2D63EA] text-white">
+																						<FiPackage className="h-3 w-3" />
+																					</span>
+																					{crateIndex < crateActivityRows.length - 1 ? (
+																						<span className="bg-brand-dark20 absolute top-5 h-[calc(100%+8px)] w-px" />
+																					) : null}
+																				</div>
+																				<div className="min-w-0 flex-1 space-y-0.5 pb-0.5">
+																					<p className="text-xs font-semibold text-brand-dark">{crateRow.title}</p>
+																					<p className="text-[11px] font-normal text-[#64748B]">{crateRow.meta}</p>
+																				</div>
+																			</div>
+																		))}
+																	</div>
+																) : null}
+															</div>
+														)}
 													</>
 												)}
 											</div>

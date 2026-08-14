@@ -14,7 +14,7 @@ import DocumentUpload from "@/components/shared/document-upload/document-upload"
 import { FormInputWrapper } from "@/components/common/form/form-input-wrapper";
 import BackButton from "@/components/common/back-button";
 import { openErrorToast, openSuccessToast } from "@/components/toast";
-import { toFormattedDate } from "@/lib/utils/date";
+import { getTodayDate, toFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
 import useAuthStore from "@/store/auth-store";
 import { useHandleFileUpload } from "@/hooks/useFile";
@@ -87,7 +87,7 @@ const NewJobSiteInjuryReportTemplate = () => {
 	const isFormComplete = jobSiteInjuryRequiredFieldsSchema.safeParse(formValues).success;
 	// Once submitted, the report is frozen — the technician can only attach more
 	// supporting photos, not edit any field or remove an already-uploaded one.
-	const isReadOnly = draft?.status === SAFETY_REPORT_STATUS.SUBMITTED;
+	const isReadOnly = Boolean(draft) && draft?.status !== SAFETY_REPORT_STATUS.DRAFT;
 
 	const { data: assignedJobs } = useAssignedJobs(injuryDate);
 	const { data: treatmentLocations } = useMedicalTreatmentLocations();
@@ -187,7 +187,7 @@ const NewJobSiteInjuryReportTemplate = () => {
 					<h3 className="text-xl font-medium">Report Job Site Injury</h3>
 				</div>
 				<span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs text-brand-dark60">
-					{draft?.status === SAFETY_REPORT_STATUS.SUBMITTED ? "Pending" : "Draft"}
+					{isReadOnly ? "Pending" : "Draft"}
 				</span>
 			</div>
 
@@ -254,6 +254,7 @@ const NewJobSiteInjuryReportTemplate = () => {
 												onChange={field.onChange}
 												placeholder="MM/DD/YY"
 												disabled={isReadOnly}
+												disabledDate={{ after: getTodayDate() }}
 											/>
 										</FormControl>
 										<FormMessage />
@@ -276,6 +277,7 @@ const NewJobSiteInjuryReportTemplate = () => {
 												date={injuryDate ?? new Date()}
 												value={field.value}
 												onChange={field.onChange}
+												placeholder="HH:MM"
 												minuteStep={15}
 												disabled={isReadOnly}
 											/>
@@ -331,6 +333,7 @@ const NewJobSiteInjuryReportTemplate = () => {
 													required={false}
 													disabled={isReadOnly}
 													selected={{ from: treatmentStartDate, to: treatmentEndDate }}
+													placeholder="Select Date"
 													onSelect={(range) => {
 														form.setValue("treatmentStartDate", range?.from);
 														form.setValue("treatmentEndDate", range?.to ?? range?.from);

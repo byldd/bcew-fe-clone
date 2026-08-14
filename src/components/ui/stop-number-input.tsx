@@ -20,7 +20,7 @@ const StopNumberInput = ({
 			placeholder={placeholder}
 			disabled={disabled}
 			className={cn(
-				"placeholder:text-brand-grey-200 h-4 w-10 rounded-lg p-2 text-xs",
+				"placeholder:text-brand-grey-200 h-4 w-8 rounded-[6px] p-2 text-[10px]",
 				disabled && "bg-brand-bgLightgrey",
 				className
 			)}

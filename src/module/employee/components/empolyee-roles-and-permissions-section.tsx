@@ -5,6 +5,7 @@ import {
 	useEmployeeUpdatePermissions,
 	useUpdateFingerprintPermission,
 	useUpdateMaterialRequestPermission,
+	useUpdateCrateHandlerPermission,
 	useUpdateMaterialRole,
 	useUpdateAsanaPermission,
 	useUpdatePastDateScheduleUpdatePermission,
@@ -40,6 +41,7 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 	const { mutate: updateSelfScheduling } = useUpdateSelfScheduling();
 	const { mutate: updateFingerprint } = useUpdateFingerprintPermission();
 	const { mutate: updateMaterialRequestPermission } = useUpdateMaterialRequestPermission();
+	const { mutate: updateCrateHandlerPermission } = useUpdateCrateHandlerPermission();
 	const { mutate: updateMaterialRole } = useUpdateMaterialRole();
 	const updateEmployeePermissionsMutation = useEmployeeUpdatePermissions(userId);
 	const { mutate: updateUserPagesPermissions, isPending: isSaving } = useUpdateUserPagesPermissions();
@@ -58,6 +60,7 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 		isWeekendSelfSchedulingAllowed: false,
 		isSelfSchedulingAllowed: false,
 		isMaterialRequestAllowed: false,
+		isCrateHandlerAllowed: false,
 		releaseNotePermission: ACCESS_LEVEL.READ,
 		isQcEnabled: false,
 		isAsanaEnabled: false,
@@ -84,6 +87,8 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 			isSelfSchedulingAllowed: userWithPermissions.items.user.isSelfSchedulingAllowed,
 
 			isMaterialRequestAllowed: userWithPermissions.items.user.isMaterialRequestAllowed,
+
+			isCrateHandlerAllowed: userWithPermissions.items.user.isCrateHandlerAllowed,
 
 			releaseNotePermission: currentPermission as ACCESS_LEVEL,
 
@@ -229,6 +234,28 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 				},
 				onError: () => {
 					openErrorToast({ message: "Failed to update material request permission." });
+				},
+			}
+		);
+	};
+
+	const handleCrateHandlerPermission = (value: boolean) => {
+		const message = `Crate handler permission ${value ? "enabled" : "disabled"} successfully`;
+
+		updateCrateHandlerPermission(
+			{
+				isAllowed: value,
+				userId,
+			},
+			{
+				onSuccess: () => {
+					queryClient.invalidateQueries({
+						queryKey: ["employeePermissions", userId],
+					});
+					openSuccessToast(message);
+				},
+				onError: () => {
+					openErrorToast({ message: "Failed to update crate handler permission." });
 				},
 			}
 		);
@@ -404,6 +431,7 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 			handleWeekendSelfScheduling={handleWeekendSelfScheduling}
 			handleFingerprintPermission={handleFingerprintPermission}
 			handleMaterialRequestPermission={handleMaterialRequestPermission}
+			handleCrateHandlerPermission={handleCrateHandlerPermission}
 			handleExemptChange={handleExemptChange}
 			handleMaterialRole={handleMaterialRole}
 			teamName={employee?.employee?.user?.team?.name}

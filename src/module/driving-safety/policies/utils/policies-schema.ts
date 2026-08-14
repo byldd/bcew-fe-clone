@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { VIOLATION_TYPE_CATEGORY } from "@/module/driving-safety/incident-reports/utils/enums";
 import { IDrivingSafetyPolicies, IUpdateDrivingSafetyPoliciesPayload } from "../types";
 
 // Numeric fields are held as strings while editing so the inputs can be cleared;
@@ -16,6 +17,7 @@ export const policiesSchema = z.object({
 			points: optionalNumber,
 			documentationRequired: requiredText("Documentation"),
 			policyVerbiage: requiredText("Policy verbiage"),
+			categories: z.array(z.nativeEnum(VIOLATION_TYPE_CATEGORY)),
 		})
 	),
 	pointThresholds: z.array(

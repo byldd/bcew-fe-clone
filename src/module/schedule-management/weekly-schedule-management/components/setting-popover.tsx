@@ -28,17 +28,18 @@ const SettingPopoverTrigger = () => {
 	};
 
 	const handleConfigurationClick = () => {
-		openModal({
-			variant: "medium",
-			modalTitle: tschedule.scheduleReminder,
-			modalView: (
-				<ScheduleReminderModal
-					onClose={() => {
-						closeModal();
-					}}
-				/>
-			),
-		});
+		router.push(routes.admin.configuration);
+		// openModal({
+		// 	variant: "medium",
+		// 	modalTitle: tschedule.scheduleReminder,
+		// 	modalView: (
+		// 		<ScheduleReminderModal
+		// 			onClose={() => {
+		// 				closeModal();
+		// 			}}
+		// 		/>
+		// 	),
+		// });
 	};
 	const handleDayTimeClick = () => {
 		openModal({

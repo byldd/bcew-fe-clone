@@ -13,6 +13,9 @@ type JobSiteInjuryTreatmentLocationSelectProps = {
 	form: UseFormReturn<IJobSiteInjurySchema>;
 	locations: IMedicalTreatmentLocation[];
 	disabled?: boolean;
+	// Lets a caller render its own, separately-positioned "Other" text field
+	// (e.g. spanning a wider grid column) instead of this inline one.
+	hideOtherInput?: boolean;
 };
 
 // Managed treatment-location dropdown that also allows a free-text "Other" entry
@@ -22,6 +25,7 @@ const JobSiteInjuryTreatmentLocationSelect = ({
 	form,
 	locations,
 	disabled,
+	hideOtherInput,
 }: JobSiteInjuryTreatmentLocationSelectProps) => {
 	const isOther = useWatch({ control: form.control, name: "isMedicalTreatmentLocationOther" }) === true;
 
@@ -66,13 +70,13 @@ const JobSiteInjuryTreatmentLocationSelect = ({
 							</SelectContent>
 						</Select>
 					</FormControl>
-					{isOther && (
+					{isOther && !hideOtherInput && (
 						<Input
 							value={field.value ?? ""}
 							onChange={field.onChange}
 							disabled={disabled}
 							placeholder="Enter location"
-							className="h-10 rounded-[10px] border-none bg-brand-bgLightgrey"
+							className="h-10 rounded-[8px] border-none bg-brand-bgLightgrey"
 						/>
 					)}
 					<FormMessage />

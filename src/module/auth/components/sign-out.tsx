@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import useAuthStore from "@/store/auth-store";
 import { LOGIN_MODE } from "@/utils/enums";
-import { loginParamKey } from "@/utils/constants";
+import { AUTH_QUERY_PARAM } from "@/module/auth/utils/constants";
 
 export default function SignOutBtn() {
 	const { user, subcontractorCrew } = useAuthStore((state) => state);
@@ -21,7 +21,7 @@ export default function SignOutBtn() {
 		// Sub-contractor crew leaders
 		if (subcontractorCrew) {
 			const url = new URL(routes.signIn, window.location.origin);
-			url.searchParams.set(loginParamKey, LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER);
+			url.searchParams.set(AUTH_QUERY_PARAM.LOGIN, LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER);
 			router.replace(url.toString());
 			return;
 		}

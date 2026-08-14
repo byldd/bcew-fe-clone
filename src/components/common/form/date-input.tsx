@@ -15,6 +15,7 @@ export function FormDateInput<TData extends FieldValues>({
 			value={field.value}
 			onChange={field.onChange}
 			disabled={disabled || fieldConfig.disabled}
+			disabledDate={fieldConfig.disabledDate}
 			className={className}
 			placeholder={fieldConfig.placeholder}
 		/>

@@ -18,6 +18,7 @@ const TimeInput = ({
 	minuteStep = 15,
 	disabled = false,
 	placeholder = "--:--",
+	className,
 }: {
 	onChange?: (value: string) => void;
 	value?: Date | string;
@@ -25,6 +26,7 @@ const TimeInput = ({
 	minuteStep?: number;
 	disabled?: boolean;
 	placeholder?: string;
+	className?: string;
 }) => {
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -252,7 +254,7 @@ const TimeInput = ({
 			<Popover open={isOpen} onOpenChange={(open) => !disabled && setIsOpen(open)}>
 				<PopoverTrigger asChild>
 					<div
-						className={`relative flex h-10 min-w-full items-center rounded-[10px] px-2 py-1.5 ${disabled ? "cursor-not-allowed bg-gray-200 opacity-60" : "cursor-pointer bg-brand-bgLightgrey"}`}
+						className={`relative flex h-10 min-w-full items-center rounded-[8px] px-2 py-1.5 ${disabled ? "cursor-not-allowed bg-gray-200 opacity-60" : "cursor-pointer bg-brand-bgLightgrey"} ${className ?? ""}`}
 					>
 						<input
 							readOnly
@@ -260,7 +262,7 @@ const TimeInput = ({
 							value={selectedTime}
 							placeholder={placeholder}
 							disabled={disabled}
-							className={`w-full border-none bg-transparent text-sm outline-none ${
+							className={`h-10 w-full border-none bg-transparent text-sm outline-none ${
 								disabled ? "cursor-not-allowed" : "cursor-pointer"
 							}`}
 						/>

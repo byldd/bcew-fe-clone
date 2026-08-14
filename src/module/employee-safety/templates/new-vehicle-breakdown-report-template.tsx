@@ -46,7 +46,7 @@ const NewVehicleBreakdownReportTemplate = () => {
 		form.setValue("issueTypeId", "");
 	}, [issueCategoryId, form]);
 
-	const categories = formOptions?.categories ?? [];
+	const categories = [...(formOptions?.categories ?? [])].sort((a, b) => a.name.localeCompare(b.name));
 	const selectedCategory = categories.find((category) => category.id === issueCategoryId);
 
 	const onSubmit = async (data: IVehicleBreakdownSchema) => {

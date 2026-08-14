@@ -37,6 +37,12 @@ export const getYearsSinceDate = (joiningDate: string | Date | null): number | n
 	return months !== null ? parseFloat((months / 12).toFixed(1)) : null;
 };
 
+export const isFutureDate = (date: string | Date) => {
+	const dateObj = new Date(date);
+	dateObj.setHours(0, 0, 0, 0);
+	return dateObj > getTodayDate();
+};
+
 export const isPastDate = (date: string | Date, checkFrom: DATE_CHECK_FROM = DATE_CHECK_FROM.TODAY) => {
 	const dateObj = new Date(date);
 	if (checkFrom === DATE_CHECK_FROM.TODAY) {

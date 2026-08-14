@@ -6,7 +6,7 @@ import {
 	IUser,
 } from "@/module/schedule-management/weekly-schedule-management/types/schedule-interface";
 import { ISubCrewPushSubscription } from "@/module/sub-contractor/notification/types/notification";
-import { ROLES, USER_TYPE } from "@/types";
+import { ROLES } from "@/types";
 import { MATERIAL_ROLE, MODULE, TEAM_NAME } from "@/utils/enums";
 
 export type UserType = {
@@ -53,6 +53,9 @@ export type UserType = {
 			isWeekendSelfSchedulingAllowed: boolean;
 			isSelfSchedulingAllowed: boolean;
 			isMaterialRequestAllowed?: boolean;
+			isCrateHandlerAllowed?: boolean;
+			incidentReportSecondReviewer?: boolean;
+			incidentReportThirdReviewer?: boolean;
 			isAsanaEnabled?: boolean;
 			materialRole?: MATERIAL_ROLE | null;
 			userType: ROLES;

@@ -59,7 +59,7 @@ const TreatmentLocationSelect = ({
 						<Input
 							value={(field.value as string) ?? ""}
 							onChange={field.onChange}
-							placeholder="Type Here"
+							placeholder="Type here"
 							disabled={disabled}
 							className="h-10 rounded-[10px] border-none bg-brand-bgLightgrey"
 						/>

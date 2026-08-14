@@ -1,3 +1,5 @@
+import { CRATE_ISSUE_CATEGORY, CRATE_ISSUE_SEVERITY, CRATE_SCAN_ACTION } from "../enums";
+
 export type ICrateScanAudit = {
 	id: string;
 	delivery_num: string;
@@ -9,7 +11,9 @@ export type ICrateScanAudit = {
 
 export type ICreateReceiveEventPayload = {
 	assetId: string;
-	sealIntact: boolean;
+	action: CRATE_SCAN_ACTION;
+	sealIntact?: boolean;
+	sealTagNumber?: string;
 	note?: string;
 	photos?: { keyFile: string; url: string }[];
 };
@@ -21,16 +25,20 @@ export type IRecentCrateScan = Pick<ICrateScanAudit, "id" | "scanned_crate" | "s
 export type IRecentCrateScansFilters = {
 	page?: number;
 	pageSize?: number;
+	action?: CRATE_SCAN_ACTION;
+	startDate?: string;
+	endDate?: string;
+};
+
+export type ICrateScanHistoryCounts = {
+	all: number;
+	received: number;
+	returned: number;
 };
 
 export type ICrateOrderProgress = {
 	totalCrates: number;
 	receivedCrates: number;
-};
-
-export type ICrateReceiveEventResult = ICrateScanAudit & {
-	jobName: string | null;
-	orderProgress: ICrateOrderProgress;
 };
 
 export type ICrateItem = {
@@ -47,4 +55,46 @@ export type ICrateConfirmationDetails = {
 	items: ICrateItem[];
 	orderProgress: ICrateOrderProgress;
 	completedDeliverySteps: string[];
+};
+
+export type ICrateReceiveScanSummary = {
+	assetId: string;
+	jobName: string | null;
+	deliveryNum: string;
+	itemsCount: number;
+	assemblerName: string | null;
+	sealStatus: boolean | null;
+	orderProgress: ICrateOrderProgress;
+};
+
+export type ICrateReturnScanSummary = {
+	assetId: string;
+	jobName: string | null;
+	sealTagNumber: string | null;
+	photosCount: number;
+	scannedDate: string;
+};
+
+export type ICrateScanSummary = ICrateReceiveScanSummary | ICrateReturnScanSummary;
+
+export type IReportCrateIssuePayload = {
+	crateId?: string;
+	jobNum: number;
+	category: CRATE_ISSUE_CATEGORY;
+	severity: CRATE_ISSUE_SEVERITY;
+	description: string;
+	photos?: { keyFile: string; url: string }[];
+};
+
+export type ICrateIssueReportSummary = {
+	id: string;
+	crateId: string | null;
+	jobNum: number;
+	jobName: string | null;
+	category: CRATE_ISSUE_CATEGORY;
+	severity: CRATE_ISSUE_SEVERITY | null;
+	description: string | null;
+	isResolved: boolean;
+	photosCount: number;
+	createdAt: string;
 };

@@ -17,7 +17,7 @@ const RadioGroupField = ({
 		<RadioGroup
 			value={value || ""}
 			onValueChange={onChange}
-			className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-16 sm:gap-y-3"
+			className="flex flex-wrap gap-3 sm:items-center sm:gap-x-20 sm:gap-y-6"
 			disabled={disabled}
 		>
 			{options.map((option) => (

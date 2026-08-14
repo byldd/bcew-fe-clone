@@ -74,5 +74,6 @@
 	"logout": "Cerrar sesión",
 	"switchToDesktopView": "Cambiar a vista de escritorio",
 	"pickDate": "Seleccionar una fecha",
+	"pickDateRange": "Rango de fechas",
 	"storageUnitReport": "Informe de unidad de almacenamiento"
 }

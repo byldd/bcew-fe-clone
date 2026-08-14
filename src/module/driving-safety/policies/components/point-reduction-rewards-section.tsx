@@ -22,13 +22,13 @@ const PointReductionRewardsSection = ({
 
 	return (
 		<section className="space-y-3">
-			<h4 className="text-base font-medium text-brand-dark">Point reduction & rewards</h4>
+			<h4 className="text-base font-medium text-brand-dark">Point Reduction & Rewards</h4>
 
 			<div className="grid gap-4 lg:grid-cols-2">
 				<div className="space-y-3 rounded-xl border border-brand-dark10 bg-white p-4">
 					<div className="flex items-center gap-2">
 						<Zap size={16} />
-						<h5 className="text-sm font-medium text-brand-dark">Point reduction</h5>
+						<h5 className="text-sm font-medium text-brand-dark">Point Reduction</h5>
 					</div>
 
 					{isEditing ? (
@@ -50,7 +50,7 @@ const PointReductionRewardsSection = ({
 					<FormError error={errors?.pointReductionPerQuarter?.message ?? errors?.maxPointReductionPerYear?.message} />
 
 					<div className="space-y-1">
-						<p className="text-xs uppercase text-brand-greyLight">Policy verbiage</p>
+						<p className="text-xs text-brand-greyLight">Policy Verbiage</p>
 						{isEditing ? (
 							<>
 								<Textarea {...form.register("config.pointReductionVerbiage")} />
@@ -69,9 +69,9 @@ const PointReductionRewardsSection = ({
 					</div>
 
 					<div className="space-y-1">
-						<p className="text-xs uppercase text-brand-greyLight">No points accumulated during a quarter</p>
+						<p className="text-xs text-brand-greyLight">No points accumulated during a quarter</p>
 						{isEditing ? (
-							<Input {...form.register("config.quarterlyReward")} />
+							<Input placeholder="--" {...form.register("config.quarterlyReward")} />
 						) : (
 							<p className="text-sm text-brand-dark">
 								One point reduction in overall point total → {config.quarterlyReward ?? "—"}
@@ -80,9 +80,9 @@ const PointReductionRewardsSection = ({
 					</div>
 
 					<div className="space-y-1">
-						<p className="text-xs uppercase text-brand-greyLight">No points accumulated during a year</p>
+						<p className="text-xs text-brand-greyLight">No points accumulated during a year</p>
 						{isEditing ? (
-							<Input {...form.register("config.annualReward")} />
+							<Input placeholder="--" {...form.register("config.annualReward")} />
 						) : (
 							<p className="text-sm text-brand-dark">{config.annualReward ?? "—"}</p>
 						)}

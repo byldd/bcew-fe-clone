@@ -21,7 +21,7 @@ const PointThresholdsSection = ({
 
 	return (
 		<PolicySectionCard
-			title="Disciplinary point thresholds"
+			title="Disciplinary Point Thresholds"
 			meta={
 				isEditing
 					? "Consequence triggered at each accumulated total"
@@ -32,7 +32,7 @@ const PointThresholdsSection = ({
 				{pointThresholds.map((threshold, index) => (
 					<li
 						key={threshold.id}
-						className="flex items-center justify-between gap-4 border-t border-brand-dark10 px-4 py-3"
+						className="flex flex-wrap items-center justify-between gap-3 border-t border-brand-dark10 px-4 py-3"
 					>
 						<div className="flex-1">
 							{isEditing ? (
@@ -54,7 +54,7 @@ const PointThresholdsSection = ({
 							) : (
 								<span className="text-sm font-medium text-brand-dark">{threshold.points}</span>
 							)}
-							<span className="text-xs uppercase text-brand-greyLight">Points</span>
+							<span className="text-xs text-brand-greyLight">Points</span>
 						</div>
 					</li>
 				))}

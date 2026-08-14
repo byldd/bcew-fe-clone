@@ -1,5 +1,6 @@
 import { type ComponentPropsWithoutRef } from "react";
 import type { ControllerRenderProps, FieldValues, Path, UseFormReturn } from "react-hook-form";
+import type { Matcher } from "react-day-picker";
 
 export enum FIELD_VARIANT {
 	INPUT = "input",
@@ -93,6 +94,8 @@ export interface CurrencyInputFieldConfig extends BaseFieldConfig {
 export interface DateInputFieldConfig extends BaseFieldConfig {
 	fieldVariant: FIELD_VARIANT.DATE;
 	inputProps?: Omit<ComponentPropsWithoutRef<"input">, "type" | "disabled" | "className" | "placeholder">;
+	//future dates to be disabled
+	disabledDate?: Matcher;
 }
 
 // Toggle (switch) field variant

@@ -249,6 +249,21 @@ export const useAdminMenu = () => {
 					url: routes.bcew.safetyIncidents,
 					newTab: true,
 				},
+				{
+					title: "Dashboard",
+					icon: ReportIconImage,
+					url: routes.admin.jobSiteSafetyDashboard,
+				},
+				{
+					title: "Incident Reports",
+					icon: ReportIconImage,
+					url: routes.admin.jobSiteSafetyIncidentReports,
+				},
+				{
+					title: "Add New Record",
+					icon: ReportIconImage,
+					url: routes.admin.jobSiteSafetyAddNewRecord,
+				},
 			],
 		},
 
@@ -345,7 +360,7 @@ export const useAdminMenu = () => {
 					url: "#",
 				},
 				{
-					title: "BYLDD Portal Guide",
+					title: "BCEW Portal Guide",
 					icon: BcewIconImage,
 					url: "#",
 				},

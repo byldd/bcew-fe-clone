@@ -20,7 +20,7 @@ import { breakdownReviewSchema, IBreakdownReviewSchema } from "../utils/breakdow
 import BreakdownKeyResources from "./breakdown-key-resources";
 
 const InfoRow = ({ label, value }: { label: string; value: string }) => (
-	<div className="flex items-start justify-between gap-4 text-sm">
+	<div className="flex items-start justify-between gap-4 border-b pb-1 text-sm">
 		<span className="text-brand-dark50">{label}</span>
 		<span className="max-w-[60%] text-right text-brand-dark">{value}</span>
 	</div>
@@ -66,9 +66,9 @@ const BreakdownReviewForm = ({ detail, onClose }: { detail: IBreakdownReportDeta
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)}>
-				<div className="space-y-5 px-2 pt-2">
+				<div className="space-y-4 px-2 pt-4">
 					<div className="space-y-3">
-						<h3 className="text-sm font-medium text-brand-dark">Basic Information</h3>
+						<h3 className="border-b pb-1 text-sm font-medium text-brand-dark50">Basic Information</h3>
 						<div className="space-y-2.5">
 							<InfoRow
 								label="Request #"
@@ -83,15 +83,15 @@ const BreakdownReviewForm = ({ detail, onClose }: { detail: IBreakdownReportDeta
 						</div>
 					</div>
 
-					<div className="space-y-4 border-t border-brand-dark10 pt-4">
-						<FormInputWrapper form={form} fieldConfig={bcewVehicleTowedField} wrapperClassName="py-2" />
+					<div className="space-y-2 border-brand-dark10">
+						<FormInputWrapper form={form} fieldConfig={bcewVehicleTowedField} wrapperClassName="py-1" />
 						{isTowed && <FormInputWrapper form={form} fieldConfig={costOnSpotField} />}
 					</div>
 
 					<BreakdownKeyResources />
 				</div>
 
-				<div className="sticky bottom-0 flex gap-3 border-t border-brand-dark10 bg-white px-2 pb-1 pt-3">
+				<div className="sticky bottom-0 flex gap-3 border-t border-brand-dark10 bg-white px-2 pt-4">
 					<Button type="button" variant="outline" className="w-full" onClick={onClose}>
 						Cancel
 					</Button>

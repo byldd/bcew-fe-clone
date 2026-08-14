@@ -51,14 +51,18 @@ export const useSubContractorMissingItemRequests = (params: { page: number; page
 	});
 };
 
-export const useCreateSubContractorMissingItemRequest = () => {
+export const useCreateSubContractorMissingItemRequest = ({
+	isSubContractorAdmin,
+}: {
+	isSubContractorAdmin: boolean;
+}) => {
+	const url = isSubContractorAdmin
+		? "/sub-contractor/material-selection/missing-item-requests"
+		: "/sub-crew/material-selection/missing-item-requests";
 	return useMutation({
 		mutationKey: ["create-subcontractor-missing-item-request"],
 		mutationFn: async (payload: CreateSubContractorMissingItemRequestPayload) => {
-			const { data } = await apiClient.post<IApiResponse<CreateMissingItemRequestResponse>>(
-				"/sub-contractor/material-selection/missing-item-requests",
-				payload
-			);
+			const { data } = await apiClient.post<IApiResponse<CreateMissingItemRequestResponse>>(url, payload);
 			return data.data;
 		},
 	});

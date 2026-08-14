@@ -158,6 +158,17 @@ export const useUpdateMaterialRequestPermission = () => {
 	});
 };
 
+export const useUpdateCrateHandlerPermission = () => {
+	return useMutation({
+		mutationFn: async ({ isAllowed, userId }: { isAllowed: boolean; userId: string }) => {
+			const { data } = await apiClient.put(`/admin/user/${userId}/crate-handler-permission`, {
+				isCrateHandlerAllowed: isAllowed,
+			});
+			return data;
+		},
+	});
+};
+
 export const useUpdateMaterialRole = () => {
 	return useMutation({
 		mutationFn: async ({ materialRole, userId }: { materialRole: string | null; userId: string }) => {

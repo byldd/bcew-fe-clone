@@ -35,7 +35,7 @@ const RolePermissionCard = ({ rolePermissions, children }: IRolePermissionCardPr
 	const tPmanagement = useTypedTranslations(NAMESPACE.PEOPLE_MANAGEMENT);
 
 	return (
-		<Card className="rounded-3xl border border-brand-dark10 bg-white !p-7">
+		<Card className="rounded-3xl border border-brand-dark10 bg-white !p-4">
 			<CardHeader className="mb-4 p-0">
 				<CardTitle className="mb-4 flex items-center justify-between text-xl font-semibold">
 					{tPmanagement.rolesAndPermission}

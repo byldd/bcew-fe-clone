@@ -26,7 +26,7 @@ export default function ReceiveProcessing({ isComplete }: ReceiveProcessingProps
 	}, [completedCount, isComplete]);
 
 	return (
-		<div className="flex min-h-screen flex-col items-center justify-center bg-white px-6">
+		<div className="flex min-h-screen flex-col items-center justify-center bg-brand-bgLightgrey px-6">
 			<p className="text-sm font-semibold text-gray-900">Logging crate receipt...</p>
 			<p className="mt-1 text-xs text-gray-400">Syncing with servers</p>
 
@@ -35,7 +35,7 @@ export default function ReceiveProcessing({ isComplete }: ReceiveProcessingProps
 					const isDone = index < completedCount;
 					const isCurrent = index === completedCount;
 					return (
-						<div key={step} className="flex items-center gap-3">
+						<div key={step} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-3 py-2">
 							<div
 								className={cn(
 									"flex h-5 w-5 items-center justify-center rounded-full",

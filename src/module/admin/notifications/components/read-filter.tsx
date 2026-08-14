@@ -31,7 +31,7 @@ const ReadFilter = () => {
 					readFilter: value as NOTIFICATION_READ_FILTER,
 				});
 			}}
-			className="h-10 gap-2 rounded-[8px] border border-brand-dark10 bg-white px-4 font-inter text-sm font-medium text-brand-dark shadow-md"
+			className="h-10 gap-2 rounded-[8px] border border-brand-dark10 bg-white px-4 font-inter text-sm font-medium text-brand-dark shadow-sm"
 		/>
 	);
 };

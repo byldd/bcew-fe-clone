@@ -12,7 +12,7 @@ const TimeVarianceAttendanceRecords = ({ attendanceRecords }: { attendanceRecord
 				<div key={record.id} className="space-y-1 p-3 text-xs">
 					<div className="flex items-center justify-between">
 						<span className="font-medium text-brand-dark">
-							{record.source === ATTENDANCE_SOURCE.BYLDD ? "Byldd" : "Test"}
+							{record.source === ATTENDANCE_SOURCE.BYLDD ? "Byldd" : "BCEW"}
 						</span>
 						<span className="text-brand-grey">{record.approved ? "Approved" : "Not Approved"}</span>
 					</div>

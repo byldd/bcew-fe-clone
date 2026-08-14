@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ALLOWED_IMAGE_FILE_TYPES } from "@/utils/constants";
+import { ALLOWED_IMAGE_FILE_TYPES_WITH_HEIC } from "@/utils/constants";
 import { Plus, X } from "lucide-react";
 import Image from "next/image";
 import React, { useRef } from "react";
@@ -132,7 +132,7 @@ const ImageUpload = ({
 						<input
 							ref={fileInputRef}
 							type="file"
-							accept={ALLOWED_IMAGE_FILE_TYPES.join(",")}
+							accept={ALLOWED_IMAGE_FILE_TYPES_WITH_HEIC.join(",")}
 							className="hidden"
 							onChange={handleImageAdd}
 							multiple

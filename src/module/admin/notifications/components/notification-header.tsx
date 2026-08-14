@@ -23,7 +23,7 @@ const NotificationHeader = ({ activeGroup }: { activeGroup: string | null; onBac
 	const tschedule = useTypedTranslations(NAMESPACE.SCHEDULE);
 
 	return (
-		<div className="flex flex-col gap-2 space-y-1 bg-brand-bgLightgrey50 pb-2">
+		<div className="flex flex-col gap-2 space-y-1 bg-brand-bgLightgrey50 pb-4">
 			<div className="flex items-center justify-between gap-4">
 				<div className="flex items-center gap-3 py-1">
 					{activeGroup && <BackButton />}

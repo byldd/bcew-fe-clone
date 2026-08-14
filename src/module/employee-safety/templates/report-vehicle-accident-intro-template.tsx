@@ -55,7 +55,7 @@ const ReportVehicleAccidentIntroTemplate = () => {
 				<form onSubmit={handleSearch} className="flex items-start gap-2">
 					<InputField
 						name="truckNumber"
-						placeholder="Type Here"
+						placeholder="Type here"
 						value={truckNumber}
 						onChange={(event) => {
 							setTruckNumber(event.target.value);
@@ -94,7 +94,7 @@ const ReportVehicleAccidentIntroTemplate = () => {
 			</section>
 
 			<section className="space-y-3 rounded-[10px] border bg-white p-4">
-				<p className="text-sm font-medium text-brand-dark">Step 2 — Contact </p>
+				<p className="text-sm font-medium text-brand-dark">Step 2 — Contact BCEW</p>
 				<EmergencyCallList contacts={ACCIDENT_EMERGENCY_CONTACTS} directions={EMERGENCY_CALL_DIRECTIONS} />
 			</section>
 

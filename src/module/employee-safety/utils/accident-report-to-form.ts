@@ -1,4 +1,4 @@
-import { VEHICLE_ACCIDENT_PHOTO_CATEGORY, YES_NO } from "../enums";
+import { OTHER_VEHICLE_IMAGE_CATEGORY, VEHICLE_ACCIDENT_PHOTO_CATEGORY, YES_NO } from "../enums";
 import { IAccidentImagePayload, IAccidentReportDetail } from "../types";
 import { IAccidentReportSchema } from "./accident-report-schema";
 
@@ -12,10 +12,17 @@ const stripImages = (images?: IAccidentImagePayload[]) => (images ?? []).map(({ 
 const photosByCategory = (photos: IAccidentReportDetail["photos"], category: VEHICLE_ACCIDENT_PHOTO_CATEGORY) =>
 	stripImages(photos.filter((photo) => photo.category === category));
 
+const imagesByCategory = (
+	images: IAccidentReportDetail["otherVehicles"][number]["images"],
+	category: OTHER_VEHICLE_IMAGE_CATEGORY
+) => stripImages(images.filter((image) => image.category === category));
+
 // Reverse of buildAccidentPayload — hydrates the form from a saved (draft) report.
 export const mapReportToForm = (report: IAccidentReportDetail): IAccidentReportSchema => ({
 	onJobSite: toYesNo(report.onJobSite),
+	jobSiteType: report.jobSiteType ?? "",
 	anotherVehicleInvolved: toYesNo(report.anotherVehicleInvolved),
+	numberOfVehicles: report.otherVehicleCount ? String(report.otherVehicleCount) : "",
 	personStruck: toYesNo(report.personStruck),
 
 	truckNumber: report.truckNumber ?? "",
@@ -30,7 +37,6 @@ export const mapReportToForm = (report: IAccidentReportDetail): IAccidentReportS
 
 	describeAccident: report.describeAccident ?? "",
 	damageToBcewVehicle: report.damageToBcewVehicle ?? "",
-	damageToOtherProperty: report.damageToOtherProperty ?? "",
 
 	bcewVehiclePhotos: photosByCategory(report.photos, VEHICLE_ACCIDENT_PHOTO_CATEGORY.BCEW_VEHICLE),
 	otherVehiclePropertyPhotos: photosByCategory(report.photos, VEHICLE_ACCIDENT_PHOTO_CATEGORY.OTHER_VEHICLE_PROPERTY),
@@ -40,12 +46,12 @@ export const mapReportToForm = (report: IAccidentReportDetail): IAccidentReportS
 	policeDepartment: report.policeDepartment ?? "",
 	policeReportNumber: report.policeReportNumber ?? "",
 
-	bcewVehicleTowed: report.bcewVehicleTowed,
+	bcewVehicleTowed: toYesNo(report.bcewVehicleTowed),
 	towProviderName: report.towProviderName ?? "",
 	towCostOnSpot: toNumber(report.towCostOnSpot),
-	otherVehicleTowed: report.otherVehicleTowed,
+	otherVehicleTowed: toYesNo(report.otherVehicleTowed),
 	otherVehicleTowCost: toNumber(report.otherVehicleTowCost),
-	vehicleImpounded: report.vehicleImpounded,
+	vehicleImpounded: toYesNo(report.vehicleImpounded),
 	impoundLotCost: toNumber(report.impoundLotCost),
 	impoundReleaseCharges: toNumber(report.impoundReleaseCharges),
 
@@ -56,18 +62,41 @@ export const mapReportToForm = (report: IAccidentReportDetail): IAccidentReportS
 
 	isConfirmedAccurate: report.isConfirmedAccurate,
 
-	otherVehicle: report.otherVehicle
+	otherVehicles: report.otherVehicles.map((vehicle) => ({
+		make: vehicle.make ?? "",
+		model: vehicle.model ?? "",
+		whatWasStruck: vehicle.whatWasStruck ?? "",
+		vin: vehicle.vin ?? "",
+		driverFullName: vehicle.driverFullName ?? "",
+		driverLicenseNumber: vehicle.driverLicenseNumber ?? "",
+		refusedDriverLicense: vehicle.refusedDriverLicense,
+		refusedInsuranceCard: vehicle.refusedInsuranceCard,
+		refusedDriverLicensePhoto: vehicle.refusedDriverLicensePhoto,
+		insuranceCardImages: imagesByCategory(vehicle.images, OTHER_VEHICLE_IMAGE_CATEGORY.INSURANCE_CARD),
+		driverLicenseImages: imagesByCategory(vehicle.images, OTHER_VEHICLE_IMAGE_CATEGORY.DRIVERS_LICENSE),
+		vehicleDamageImages: imagesByCategory(vehicle.images, OTHER_VEHICLE_IMAGE_CATEGORY.VEHICLE_DAMAGE),
+	})),
+
+	personInvolved: report.personInvolved
 		? {
-				make: report.otherVehicle.make ?? "",
-				model: report.otherVehicle.model ?? "",
-				whatWasStruck: report.otherVehicle.whatWasStruck ?? "",
-				vin: report.otherVehicle.vin ?? "",
-				driverFullName: report.otherVehicle.driverFullName ?? "",
-				driverLicenseNumber: report.otherVehicle.driverLicenseNumber ?? "",
-				driverPhoneNumber: report.otherVehicle.driverPhoneNumber ?? "",
-				insuranceCompany: report.otherVehicle.insuranceCompany ?? "",
-				policyNumber: report.otherVehicle.policyNumber ?? "",
-				images: stripImages(report.otherVehicle.images),
+				whoWasStruck: report.personInvolved.whoWasStruck ?? "",
+				employeeId: report.personInvolved.employeeId ?? "",
+				employeeInjured: toYesNo(report.personInvolved.employeeInjured),
+				fullName: report.personInvolved.fullName ?? "",
+				phoneNumber: report.personInvolved.phoneNumber ?? "",
+				injuryDescription: report.personInvolved.injuryDescription ?? "",
+			}
+		: undefined,
+
+	propertyDamage: report.propertyDamage
+		? {
+				anotherCompanyProperty: toYesNo(report.propertyDamage.anotherCompanyProperty),
+				builderProperty: toYesNo(report.propertyDamage.builderProperty),
+				homeownerProperty: toYesNo(report.propertyDamage.homeownerProperty),
+				companyName: report.propertyDamage.companyName ?? "",
+				contactPersonName: report.propertyDamage.contactPersonName ?? "",
+				contactPhoneNumber: report.propertyDamage.contactPhoneNumber ?? "",
+				otherInformation: report.propertyDamage.otherInformation ?? "",
 			}
 		: undefined,
 

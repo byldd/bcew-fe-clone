@@ -75,3 +75,15 @@ export type IQCInspectionCardFormProps = (IQCInspectionCardCreateFormProps | IQC
 		date: Date;
 		setIsEditing: (isEditing: boolean) => void;
 	};
+
+export type IQcInspectionTime = {
+	id: string;
+	empNum: number;
+	startTime: Date;
+	endTime: string;
+	date: string;
+	bcewSchlinExtendedId: number;
+	stopNumber: number | null;
+	timeValidationNote: string | null;
+	isJobCreated: boolean;
+};

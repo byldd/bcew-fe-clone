@@ -10,6 +10,7 @@ import type {
 	BuilderCommsQcJob,
 	BuilderCommsWorkOrder,
 } from "@/module/builder-communication/types";
+import type { IAdminCrateActivityItem } from "@/module/admin-crate-activity/types";
 import { ReactNode } from "react";
 
 export type JobLevelCommsImage = BuilderCommsImage;
@@ -259,6 +260,17 @@ export type MaterialStatusRow = {
 	statusClassName: string;
 	meta: string;
 	photos: string[];
+};
+
+export type JobLevelCrateActivityItem = Pick<
+	IAdminCrateActivityItem,
+	"id" | "scanned_crate" | "scan_action" | "scanned_date" | "user"
+>;
+
+export type CrateActivityRow = {
+	id: string;
+	title: string;
+	meta: string;
 };
 
 export type JobLevelCollapsibleSectionProps = {

@@ -8,11 +8,23 @@ import { toFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
+import { useModal } from "@/hooks/useModal";
+import ImageModal from "@/components/shared/image-upload/image-modal";
 
 export function JobUpdatesCard({ jobData }: IJobUpdatesCardProps) {
 	const tEmployee = useTypedTranslations(NAMESPACE.EMPLOYEE);
 	const tAdmin = useTypedTranslations(NAMESPACE.ADMIN);
 	const jobUpdateReasons = jobData?.jobUpdateReasons || [];
+	const { Modal, closeModal, openModal } = useModal();
+
+	const handleImageClick = (imageUrl: string) => {
+		openModal({
+			modalTitle: tAdmin.previewImage,
+			modalView: <ImageModal imageUrl={imageUrl} onClose={closeModal} />,
+			variant: "big",
+		});
+	};
+
 	return (
 		<div className="w-full space-y-[10px]">
 			<div className="space-y-3 text-sm">
@@ -84,7 +96,8 @@ export function JobUpdatesCard({ jobData }: IJobUpdatesCardProps) {
 										height={40}
 										src={image.url}
 										alt={`Job image ${i}`}
-										className="h-12 w-12 rounded-lg object-cover"
+										className="h-12 w-12 cursor-pointer rounded-lg object-cover"
+										onClick={() => handleImageClick(image.url)}
 									/>
 								))
 							) : (
@@ -93,6 +106,7 @@ export function JobUpdatesCard({ jobData }: IJobUpdatesCardProps) {
 						</div>
 					</div>
 				}
+				<Modal />
 			</div>
 		</div>
 	);

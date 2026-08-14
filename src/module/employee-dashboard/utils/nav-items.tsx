@@ -80,39 +80,35 @@ export const getNavItems = ({
 		],
 	},
 
-	...(isProductionEnv()
-		? []
-		: [
-				{
-					label: "Safety",
-					icon: <MdOutlineHealthAndSafety size={18} />,
-					iconBg: "bg-orange-50",
-					iconColor: "text-orange-500",
-					onClick: () => {},
-					children: [
-						{
-							label: "Report Vehicle Accident",
-							onClick: () => navigate(routes.employee.reportVehicleAccident),
-						},
-						{
-							label: "Report Vehicle Breakdown",
-							onClick: () => navigate(routes.employee.reportVehicleBreakdown),
-						},
-						{
-							label: "Report Job Site Injury",
-							onClick: () => navigate(routes.employee.reportJobSiteInjury),
-						},
-						{
-							label: "My Records",
-							onClick: () => navigate(routes.employee.safetyMyRecords),
-						},
-						{
-							label: "Safety Policies",
-							onClick: () => navigate(routes.employee.safetyPolicies),
-						},
-					],
-				},
-			]),
+	{
+		label: "Safety",
+		icon: <MdOutlineHealthAndSafety size={18} />,
+		iconBg: "bg-orange-50",
+		iconColor: "text-orange-500",
+		onClick: () => {},
+		children: [
+			{
+				label: "Report Vehicle Accident",
+				onClick: () => navigate(routes.employee.reportVehicleAccident),
+			},
+			{
+				label: "Report Vehicle Breakdown",
+				onClick: () => navigate(routes.employee.reportVehicleBreakdown),
+			},
+			{
+				label: "Report Job Site Injury",
+				onClick: () => navigate(routes.employee.reportJobSiteInjury),
+			},
+			{
+				label: "My Records",
+				onClick: () => navigate(routes.employee.safetyMyRecords),
+			},
+			{
+				label: "Safety Policies",
+				onClick: () => navigate(routes.employee.safetyPolicies),
+			},
+		],
+	},
 	{
 		label: "My History",
 		icon: <MdOutlineHistory size={18} />,

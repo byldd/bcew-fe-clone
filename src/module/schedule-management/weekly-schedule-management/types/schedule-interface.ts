@@ -596,6 +596,34 @@ export interface INotes {
 	jobDailyRecordId: string;
 }
 
+export interface IProjectGpsData {
+	project: string;
+	projectId?: number;
+	gpsCoordinates?: string;
+	gpsAddress?: string;
+	city?: string;
+	state?: string;
+	zip?: string;
+	crossStreet?: string;
+	status?: number;
+	gpsNote?: string;
+	stdLeaveTime?: string;
+	shpcntInfo?: string;
+	amDefaultRoute?: number;
+	amDeliveryZone?: number;
+	defaultRoutePkg?: string;
+	defaultStopPkg?: string;
+	unit?: string;
+	gtecde?: string;
+	matreqStop?: number;
+	defaultRoute?: number;
+	defaultStop?: number;
+	standStart?: Date;
+	standEnd?: Date;
+	lockCombo?: string;
+	strgUnit?: number;
+	url: string;
+}
 export interface IDailyJob {
 	id: string;
 	bcewSchlinIdNum?: string;
@@ -630,6 +658,7 @@ export interface IDailyJob {
 	forecastCrews?: IForecastCrew[];
 	forecastDate?: string | null;
 	zone?: IBylddZone;
+	projectGpsData?: IProjectGpsData;
 }
 
 export interface IJobUpdateReasons {
@@ -732,6 +761,7 @@ export type IUpdateQcRepairJobPayload = Omit<ICreateQcJobPayload, "jobEmployeeAs
 
 export interface IJobOverviewCardProps {
 	jobData: IDailyJob;
+	projectGpsData?: IDailyJob["projectGpsData"];
 }
 
 export interface IEmployeeTimeLogCardProps {

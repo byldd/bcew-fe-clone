@@ -154,7 +154,7 @@ const LatenessDetection = () => {
 								value={search}
 								onChange={(e) => setSearch(e.target.value)}
 								placeholder={tSchedule.searchByEmployeeName}
-								className="h-9 w-[240px] rounded-[8px] border border-brand-dark10 bg-white pl-9 pr-3 text-sm outline-none"
+								className="h-10 w-[240px] rounded-[8px] border border-brand-dark10 bg-white pl-9 pr-3 text-sm outline-none"
 							/>
 						</div>
 						<DatePickModal
@@ -194,7 +194,7 @@ const LatenessDetection = () => {
 								value={search}
 								onChange={(e) => setSearch(e.target.value)}
 								placeholder={tSchedule.searchByEmployeeName}
-								className="h-9 w-[240px] rounded-[8px] border border-brand-dark10 bg-white pl-9 pr-3 text-sm outline-none"
+								className="h-10 w-[240px] rounded-[8px] border border-brand-dark10 bg-white pl-9 pr-3 text-sm outline-none"
 							/>
 						</div>
 						<DatePickModal

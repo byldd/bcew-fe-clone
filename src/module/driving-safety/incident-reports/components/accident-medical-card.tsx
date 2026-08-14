@@ -11,14 +11,14 @@ const AccidentMedicalCard = ({ report }: { report: IAccidentReviewDetail }) => {
 	return (
 		<ReviewCard title="Medical &amp; Drug Screen">
 			<ReviewRowGrid>
-				<div>
+				<div className="border-b">
 					<ReviewRow label="Medical action" value={MEDICAL_DRUG_SCREEN_LABEL[report.medicalDrugScreen]} />
 					<ReviewRow
 						label="Drug screen"
 						value={drugScreenRequired ? orDash(report.drugScreenLocation) : "Not required"}
 					/>
 				</div>
-				<div>
+				<div className="border-b">
 					<ReviewRow label="Treatment location" value={orDash(report.medicalTreatmentLocation)} />
 					<ReviewRow
 						label="Injury report"
@@ -28,7 +28,7 @@ const AccidentMedicalCard = ({ report }: { report: IAccidentReviewDetail }) => {
 			</ReviewRowGrid>
 
 			{!report.injury && (
-				<p className="mt-3 text-xs italic text-brand-dark50">
+				<p className="mt-4 text-xs text-brand-dark50">
 					If a person had been struck, a drug screen would be required and a linked injury report would appear here.
 				</p>
 			)}

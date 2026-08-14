@@ -65,7 +65,7 @@ export function RenderFormInput<TData extends FieldValues>({
 					<SelectTrigger id={field.name} className={cn(baseClassName, fieldConfig.className, className)}>
 						<SelectValue placeholder={fieldConfig.placeholder} />
 					</SelectTrigger>
-					<SelectContent>
+					<SelectContent onCloseAutoFocus={(event) => event.preventDefault()}>
 						<SelectGroup>
 							{fieldConfig.options.map((option) => (
 								<SelectItem key={option.value} value={option.value} disabled={option.disabled}>

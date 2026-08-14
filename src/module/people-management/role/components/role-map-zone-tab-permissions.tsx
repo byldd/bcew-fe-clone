@@ -7,11 +7,11 @@ const RoleMapZoneTabPermissions = ({ disabled }: { disabled?: boolean }) => {
 	const { roleMapZoneTabPermissions } = formContext.watch();
 
 	return (
-		<div className="space-y-2 pt-4">
-			<p className="text-sm font-semibold text-brand-dark">Map Tabs Access</p>
-			<div className="flex flex-wrap gap-2">
+		<div className="space-y-2 rounded-[8px] bg-white">
+			<p className="text-sm font-medium text-brand-dark">Map Tabs Access</p>
+			<div className="flex flex-wrap gap-3">
 				{(roleMapZoneTabPermissions ?? []).map((tab, index) => (
-					<div key={tab.mapZoneTabId} className="flex items-center gap-2 rounded-lg py-1.5 pl-3 pr-2">
+					<div key={tab.mapZoneTabId} className="flex items-center gap-2 py-1.5 pl-3 pr-2">
 						<span className="text-sm font-medium text-brand-dark">{tab.mapZoneTabName}</span>
 						<Switch
 							disabled={disabled}

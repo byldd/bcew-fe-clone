@@ -51,7 +51,7 @@ const FALLBACK_TRANSFER_GROUPS: ITransferGroup[] = [
 			{
 				id: "material-request-002491",
 				title: "Material Request #002491 — final sign-off",
-				subtitle: " Main Warehouse - Awaiting QC review",
+				subtitle: "BCEW Main Warehouse - Awaiting QC review",
 				category: TRANSFER_ITEM_CATEGORY.PENDING_APPROVALS,
 			},
 			{

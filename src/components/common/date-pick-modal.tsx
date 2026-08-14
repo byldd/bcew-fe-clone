@@ -26,14 +26,14 @@ const DatePickModal = ({
 	};
 
 	return (
-		<div className="flex h-10 items-center gap-1 rounded-[8px] bg-white px-0 text-sm shadow-md">
+		<div className="flex h-10 items-center gap-1 rounded-[8px] border-none bg-white px-0 text-sm shadow-sm">
 			<Button onClick={goToPreviousDay} variant={"ghost"} size={"icon"} className="h-6 w-6 hover:bg-transparent">
 				<ChevronLeft className="!h-6 !w-6 font-medium" />
 			</Button>
 
 			<div className="flex items-center gap-1">
 				<DatePicker
-					className="border-none bg-white px-0 hover:bg-white"
+					className="h-8 border-none bg-white px-0 hover:bg-white"
 					value={selectedDate}
 					onChange={(date) => onChange?.(dateToUTCString(date))}
 				/>

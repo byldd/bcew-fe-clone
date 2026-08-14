@@ -11,7 +11,7 @@ export default function OrderProgress({ deliveryNum, orderProgress }: OrderProgr
 	const pendingCrates = Math.max(totalCrates - receivedCrates, 0);
 
 	return (
-		<div className="rounded-xl border border-gray-100 p-3">
+		<div className="rounded-xl border border-gray-100 bg-white p-3">
 			<div className="flex items-center justify-between">
 				<p className="text-xs font-medium text-gray-500">Order Progress</p>
 				<p className="text-xs text-gray-400">

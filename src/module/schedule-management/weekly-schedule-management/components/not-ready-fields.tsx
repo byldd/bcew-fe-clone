@@ -20,10 +20,10 @@ const NotReadyFields = () => {
 
 	return (
 		<div className="space-y-4">
-			<div className="space-y-2">
+			<div className="space-y-3">
 				<p className="text-base font-medium text-brand-dark">{tjobCards.title}</p>
 
-				<div className="flex justify-between gap-4">
+				<div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
 					<FormField
 						control={formContext.control}
 						name="notReadyUpdate.isReady"

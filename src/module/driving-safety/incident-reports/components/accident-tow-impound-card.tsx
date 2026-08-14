@@ -5,7 +5,7 @@ import { ReviewCard, ReviewRow, ReviewRowGrid } from "./review-card";
 const AccidentTowImpoundCard = ({ report }: { report: IAccidentReviewDetail }) => (
 	<ReviewCard title="Tow &amp; Impound">
 		<ReviewRowGrid>
-			<div>
+			<div className="border-b">
 				<ReviewRow label="BCEW towed" value={yesNo(report.bcewVehicleTowed)} />
 				{report.bcewVehicleTowed && (
 					<>
@@ -18,7 +18,7 @@ const AccidentTowImpoundCard = ({ report }: { report: IAccidentReviewDetail }) =
 					<ReviewRow label="Other vehicle tow cost" value={money(report.otherVehicleTowCost)} />
 				)}
 			</div>
-			<div>
+			<div className="border-b">
 				<ReviewRow label="Impounded" value={yesNo(report.vehicleImpounded)} />
 				{report.vehicleImpounded && (
 					<>

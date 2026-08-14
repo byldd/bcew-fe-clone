@@ -8,6 +8,13 @@ export const isPasswordValid = (password: string): boolean => {
 	return passwordRegex.test(password);
 };
 
+// Only allow same-origin relative paths under the expected portal, so a crafted
+// `redirect` query param can't bounce the user to an external site or another portal.
+export function getSafeRedirect(rawRedirect: string | null, allowedPrefix: string): string | null {
+	if (!rawRedirect || !rawRedirect.startsWith(allowedPrefix)) return null;
+	return rawRedirect;
+}
+
 export function redirectUser(userType: ROLES | string) {
 	switch (userType) {
 		case ROLES.SUPER_ADMIN:

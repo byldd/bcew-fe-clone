@@ -119,6 +119,7 @@ export type IEmployeePermissionsResponse = {
 			isSelfSchedulingAllowed: boolean;
 			isFingerprintEnabled: boolean;
 			isMaterialRequestAllowed: boolean;
+			isCrateHandlerAllowed: boolean;
 			materialRole: string | null;
 			isQcEnabled: boolean;
 			isAsanaEnabled: boolean;
@@ -310,6 +311,7 @@ export type EmployeeRolePermissionCardProps = {
 	handleSelfScheduling: (value: boolean) => void;
 	handleFingerprintPermission: (value: boolean) => void;
 	handleMaterialRequestPermission: (value: boolean) => void;
+	handleCrateHandlerPermission: (value: boolean) => void;
 	handleMaterialRole: (value: string | null) => void;
 	handleQcPermission: (value: boolean) => void;
 	handleAsanaPermission: (value: boolean) => void;
@@ -335,6 +337,7 @@ export type IUserPagesPermissionPayload = {
 	isWeekendSelfSchedulingAllowed: boolean;
 	isSelfSchedulingAllowed: boolean;
 	isMaterialRequestAllowed: boolean;
+	isCrateHandlerAllowed: boolean;
 	releaseNotePermission: string;
 	isQcEnabled: boolean;
 	isAsanaEnabled: boolean;
@@ -357,11 +360,30 @@ export interface IRoleChangeHistoryItem {
 
 export interface IPermissionChangeHistoryItem {
 	id: string;
-	module: MODULE;
+	pageName: string;
 	fromAccessLevel: ACCESS_LEVEL;
 	toAccessLevel: ACCESS_LEVEL;
 	changedBy: string;
 	changedAt: string;
+}
+
+export interface IPermissionHistoryConfigChangeItem {
+	id: string;
+	field: string;
+	previousValue: string | null;
+	newValue: string | null;
+	changedBy: string;
+	changedAt: string;
+}
+
+export interface IUserPermissionHistoryListItem {
+	id: string;
+	createdAt: string;
+	updatedBy: Pick<IUser, "id" | "name"> | null;
+	permissionChanges: (IPagePermissionChange & {
+		page: Pick<IPage, "id" | "name" | "key"> | null;
+	})[];
+	configurationChanges: IConfigurationChange[];
 }
 
 export interface IPagePermissionChange {
@@ -421,6 +443,7 @@ export type StagingConfiguration = {
 	isWeekendSelfSchedulingAllowed: boolean;
 	isSelfSchedulingAllowed: boolean;
 	isMaterialRequestAllowed: boolean;
+	isCrateHandlerAllowed: boolean;
 	releaseNotePermission: ACCESS_LEVEL;
 	isQcEnabled: boolean;
 	isAsanaEnabled: boolean;

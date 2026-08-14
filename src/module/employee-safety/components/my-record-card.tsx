@@ -16,15 +16,20 @@ const STATUS_COLOR: Record<TECHNICIAN_REPORT_STATUS, string> = {
 	[TECHNICIAN_REPORT_STATUS.PENDING]: "text-amber-600",
 	[TECHNICIAN_REPORT_STATUS.APPROVED]: "text-green-600",
 	[TECHNICIAN_REPORT_STATUS.REJECTED]: "text-brand-red",
+	[TECHNICIAN_REPORT_STATUS.ADDITIONAL_INFO_REQUESTED]: "text-purple-600",
 };
 
 const MyRecordCard = ({ record, onClick }: MyRecordCardProps) => {
 	const isDraft = record.status === TECHNICIAN_REPORT_STATUS.DRAFT;
+	const isAdditionalInfoRequested = record.status === TECHNICIAN_REPORT_STATUS.ADDITIONAL_INFO_REQUESTED;
 	const isJobSiteInjury = record.type === SAFETY_REPORT_TYPE.JOB_SITE_INJURY;
 
+	const submittedDate = toFormattedDate(record.submittedAt ?? record.createdAt, DATE_FORMAT.MM_SLASH_DD_YYYY);
 	const subtitle = isDraft
 		? `Last Edited ${toFormattedDate(record.createdAt, DATE_FORMAT.MMM_D)}${record.truckNumber ? ` • Truck ${record.truckNumber}` : ""}`
-		: `Submitted ${toFormattedDate(record.submittedAt ?? record.createdAt, DATE_FORMAT.MM_SLASH_DD_YYYY)}`;
+		: isAdditionalInfoRequested
+			? `Requested ${submittedDate}`
+			: `Submitted ${submittedDate}`;
 
 	return (
 		<button type="button" onClick={onClick} className="w-full rounded-[8px] border bg-white p-4 text-left shadow-sm">
@@ -38,7 +43,9 @@ const MyRecordCard = ({ record, onClick }: MyRecordCardProps) => {
 			<div className="mt-1 flex items-end justify-between gap-3">
 				<div>
 					<p className="text-xs text-brand-grey">{subtitle}</p>
-					{!isJobSiteInjury && !isDraft && <p className="mt-1 text-xs text-brand-grey">Points: pending review</p>}
+					{!isJobSiteInjury && record.status === TECHNICIAN_REPORT_STATUS.PENDING && (
+						<p className="mt-1 text-xs text-brand-grey">Points: pending review</p>
+					)}
 				</div>
 				<span className="whitespace-nowrap text-xs text-brand-grey">
 					{isDraft ? "Tap to continue" : record.reportNumber}

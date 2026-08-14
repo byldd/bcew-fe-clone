@@ -7,6 +7,7 @@ import type {
 	PullListItem,
 } from "@/module/material-management/material-requests/utils/types";
 import type { JobPullListTakeoffItem } from "@/module/job-level-details/utils/types";
+import type { MISSING_ITEM_REQUEST_STATUS } from "@/module/material-management/missing-item-requests-admin/utils/types";
 
 export type SelectedIdOption = { label: string; value: string };
 
@@ -160,6 +161,7 @@ export type MissingItemRequestList = {
 	quantity: number | null;
 	isApproved: boolean | null;
 	foremanNote: string | null;
+	status: MISSING_ITEM_REQUEST_STATUS;
 	date?: string | null;
 	createdAt: string;
 	updatedAt: string;

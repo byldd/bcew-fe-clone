@@ -216,7 +216,7 @@ export const CreateQcRepairModal = ({ closeModal, ...props }: IQcRepairModalProp
 			<Modal />
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<div className="mb-4 flex justify-between gap-4">
+					<div className="mb-4 flex flex-col gap-4 sm:flex-row sm:justify-between">
 						<FormField
 							control={form.control}
 							name="jobName"
@@ -240,7 +240,7 @@ export const CreateQcRepairModal = ({ closeModal, ...props }: IQcRepairModalProp
 						</div>
 					</div>
 
-					<div className="flex justify-between gap-4">
+					<div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
 						<FormField
 							control={form.control}
 							name="date"

@@ -4,6 +4,7 @@ import * as React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
 import { cn } from "@/lib/utils/utils";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
@@ -43,7 +44,7 @@ interface AppTooltipProps extends Pick<
 export function AppTooltip({
 	text,
 	label,
-	trigger,
+	trigger = <IoIosInformationCircleOutline />,
 	labelClassName,
 	contentClassName,
 	align = "center",
@@ -52,10 +53,10 @@ export function AppTooltip({
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
-				{trigger ? (
-					trigger
-				) : (
+				{label ? (
 					<p className={cn("w-full text-left text-[10px] font-semibold text-brand-dark50", labelClassName)}>{label}</p>
+				) : (
+					trigger
 				)}
 			</TooltipTrigger>
 			<TooltipContent

@@ -101,9 +101,9 @@ const JobMembersField = ({
 	};
 
 	return (
-		<div className="space-y-1">
+		<div className="space-y-2">
 			<Label>{tjobCards.crewMember}</Label>
-			<div className="rounded-[10px] bg-brand-bgLightgrey px-4">
+			<div className="rounded-[8px] bg-brand-bgLightgrey px-2">
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -122,7 +122,7 @@ const JobMembersField = ({
 							taskLeaderId,
 						}).map((assignment, index) => (
 							<TableRow key={`${index}-${assignment.employeeId}`} className="text-sm">
-								<TableCell className="text-sm">
+								<TableCell className="text-center text-sm">
 									<MemberCell
 										selectMember={{
 											id: assignment.employeeId,
@@ -135,15 +135,15 @@ const JobMembersField = ({
 										readOnly={readOnly}
 									/>
 								</TableCell>
-								<TableCell>
+								<TableCell className="text-center">
 									<StopNumberCell readOnly={readOnly} index={index} />
 								</TableCell>
-								<TableCell>
+								<TableCell className="text-center">
 									<TimeCell assignment={assignment} />
 								</TableCell>
 
 								{mode === FORM_MODE.EDIT && (
-									<TableCell>
+									<TableCell className="text-center">
 										<OverrideTimeCell
 											assignment={assignment}
 											index={index}
@@ -154,12 +154,11 @@ const JobMembersField = ({
 									</TableCell>
 								)}
 
-								<TableCell>
+								<TableCell className="text-center">
 									<Button
 										disabled={readOnly}
 										size={"sm"}
 										type="button"
-										className="ml-3"
 										variant={"ghost"}
 										onClick={() => removeMember(index)}
 									>
@@ -252,14 +251,14 @@ const MemberCell = ({
 	return (
 		<div>
 			{!isEditing ? (
-				<div className="flex items-center gap-2">
+				<div className="flex items-center justify-center gap-2">
 					<p>{selectMember.name || "_"}</p>
 					{!isCrewLeader && !readOnly && (
 						<PencilLine size={16} className="cursor-pointer text-brand-dark50" onClick={startEdit} />
 					)}
 				</div>
 			) : (
-				<div className="flex items-center gap-2">
+				<div className="flex items-center justify-center gap-2">
 					<SelectField
 						options={employeeOptions}
 						value={draftMemberId}
@@ -288,7 +287,7 @@ const MemberCell = ({
 
 const TimeCell = ({ assignment }: { assignment: ICreateDailyJobFormSchema["jobEmployeeAssignments"][number] }) => {
 	return (
-		<div className="ml-3 flex items-center gap-1">
+		<div className="flex items-center justify-center gap-1">
 			<p>
 				{assignment.startTime ? `${toFormattedDate(assignment.startTime, DATE_FORMAT.HH_MM_AA_PM)}` : "__"} -
 				{assignment.endTime ? `${toFormattedDate(assignment.endTime, DATE_FORMAT.HH_MM_AA_PM)}` : "__"}
@@ -314,7 +313,7 @@ const OverrideTimeCell = ({
 	const [isEditing, setIsEditing] = useState(false);
 
 	return (
-		<div className="ml-3 flex items-center gap-1">
+		<div className="flex items-center justify-center gap-1">
 			{isEditing ? (
 				<div className="flex min-w-full space-x-4">
 					<FormField
@@ -381,7 +380,7 @@ const StopNumberCell = ({ readOnly, index }: { readOnly?: boolean; index: number
 	const tjobCards = useTypedTranslations(NAMESPACE.JOB_CARDS);
 
 	return (
-		<div className="relative ml-3 flex items-center gap-2">
+		<div className="relative flex items-center gap-2 text-center">
 			<FormField
 				control={formContext.control}
 				name={`jobEmployeeAssignments.${index}.stopNumber`}
@@ -394,6 +393,7 @@ const StopNumberCell = ({ readOnly, index }: { readOnly?: boolean; index: number
 									value={field.value ?? undefined}
 									onChange={(stopNumber) => field.onChange(stopNumber)}
 									placeholder={tjobCards.placeholders.stopNumber}
+									className="mx-auto"
 								/>
 							</FormControl>
 							<FormMessage />

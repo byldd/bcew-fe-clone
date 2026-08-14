@@ -11,7 +11,7 @@ const PoliceSection = ({ form, disabled }: { form: UseFormReturn<IAccidentReport
 	const contacted = useWatch({ control: form.control, name: "policeContacted" }) === YES_NO.YES;
 
 	return (
-		<ReportSection title="Was Police Contacted?">
+		<ReportSection title="Were Police Contacted?">
 			<FormInputWrapper form={form} fieldConfig={policeContactedField} disabled={disabled} />
 			{contacted &&
 				policeFields.map((fieldConfig) => (

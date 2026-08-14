@@ -24,11 +24,14 @@ export default function RecentScansList({ scans }: RecentScansListProps) {
 	}
 
 	return (
-		<div className="divide-y divide-gray-100">
+		<div className="space-y-3">
 			{scans.map((scan) => {
 				const scanAction = scan.scan_action as CRATE_SCAN_ACTION;
 				return (
-					<div key={scan.id} className="flex items-center justify-between py-3">
+					<div
+						key={scan.id}
+						className="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-3 shadow-sm hover:bg-gray-50"
+					>
 						<div>
 							<p className="text-sm font-medium text-gray-900">CRATE-{scan.scanned_crate}</p>
 							<p className="mt-0.5 text-xs text-gray-400">{scan.jobName ?? "—"}</p>

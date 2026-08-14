@@ -23,7 +23,7 @@ const UserPageUpdateHistoryDetails = ({ historyId, closeModal }: { historyId: st
 	}
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-4 pt-3">
 			<div className="space-y-1">
 				<h3 className="text-sm font-medium">{data?.user?.name}</h3>
 
@@ -41,7 +41,7 @@ const UserPageUpdateHistoryDetails = ({ historyId, closeModal }: { historyId: st
 
 				return (
 					<div key={change.field} className="space-y-1">
-						<div className="font-sm font-medium">{displayName}</div>
+						<h4 className="text-sm font-medium">{displayName}</h4>
 
 						<div className="text-xs font-medium text-muted-foreground">
 							{formatValue(change.previousValue)}
@@ -54,7 +54,7 @@ const UserPageUpdateHistoryDetails = ({ historyId, closeModal }: { historyId: st
 
 			{data.permissionChanges && data.permissionChanges.length > 0 && (
 				<div className="space-y-2">
-					<h4 className="text-sm font-medium">Permission Changes</h4>
+					<h4 className="text-base font-medium">Permission Changes</h4>
 
 					<div className="space-y-2">
 						{data.permissionChanges.map((permission) => (

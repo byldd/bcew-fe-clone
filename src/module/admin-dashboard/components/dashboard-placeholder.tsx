@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 
 const styles: Record<string, CSSProperties> = {
 	wrap: {
-		minHeight: "100%",
+		minHeight: "90vh",
 		width: "100%",
 		display: "flex",
 		flexDirection: "column",
@@ -61,7 +61,7 @@ const styles: Record<string, CSSProperties> = {
 const DashboardPlaceholder = () => {
 	return (
 		<div>
-			<SectionHeader title={""} />
+			<SectionHeader title={""} hideSidebarToggle />
 
 			<div style={styles.wrap}>
 				{/* Crane illustration */}

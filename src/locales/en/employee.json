@@ -264,7 +264,7 @@
 	"reason": "Reason",
 	"addedOn": "Added On",
 	"manualTimeLogInfo": "You are allowed to manually log time for today.",
-	"gpsIssueResolved": "GPS Issue Resolved. Truck",
+	"gpsIssueResolved": "GPS Issue Resolved. ",
 	"vehicleBackOnline": "is back online. Data will reflect within 30 minutes.",
 	"crewLeader": "Crew Leader",
 	"service": "Service",

@@ -43,6 +43,7 @@ export const buildJobSiteInjuryPayload = (data: IJobSiteInjurySchema): ISaveJobS
 		// A single-day treatment only sets treatmentStartDate; mirror it as the end date.
 		treatmentEndDate: toISODate(data.treatmentEndDate ?? data.treatmentStartDate),
 		doctorsMedics: data.doctorsMedics ?? null,
+		drugScreenLocation: data.drugScreenLocation ?? null,
 
 		immediateAction: data.immediateAction ?? null,
 		permanentSolution: data.permanentSolution ?? null,

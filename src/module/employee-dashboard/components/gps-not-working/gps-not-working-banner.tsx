@@ -7,7 +7,7 @@ import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
 
 export default function GpsNotWorkingBanner({ gpsWorkingData }: { gpsWorkingData: IEmployeeGPSWorking | undefined }) {
-	const { licenseNumber, isMarkedOfflineByEmployee, isGPSWorking } = gpsWorkingData || {};
+	const { truckNumber, isMarkedOfflineByEmployee, isGPSWorking, licenseNumber } = gpsWorkingData || {};
 	const { openModal, closeModal, Modal } = useModal();
 	const tEmployee = useTypedTranslations(NAMESPACE.EMPLOYEE);
 
@@ -36,7 +36,7 @@ export default function GpsNotWorkingBanner({ gpsWorkingData }: { gpsWorkingData
 						"w-full rounded bg-brand-green800/10 py-2 text-center font-inter text-xs font-medium text-brand-green800"
 					)}
 				>
-					{tEmployee.gpsIssueResolved} {licenseNumber} {tEmployee.vehicleBackOnline}
+					{tEmployee.gpsIssueResolved} {truckNumber} {tEmployee.vehicleBackOnline}
 				</p>
 			) : (
 				<p
@@ -44,8 +44,7 @@ export default function GpsNotWorkingBanner({ gpsWorkingData }: { gpsWorkingData
 						"w-full rounded bg-brand-red800/10 py-2 text-center font-inter text-xs font-medium text-brand-red800"
 					)}
 				>
-					{tEmployee.truck}
-					<span className="font-bold">{licenseNumber}:</span> {tEmployee.gpsNotWorking}{" "}
+					<span className="font-bold">{truckNumber}:</span> {tEmployee.gpsNotWorking}{" "}
 					<span onClick={handleBannerClick} className="cursor-pointer underline">
 						{tEmployee.clickHere}
 					</span>{" "}

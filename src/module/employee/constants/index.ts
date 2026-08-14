@@ -2,7 +2,7 @@ import { MODULE } from "@/utils/enums";
 import { ACCESS_LEVEL, MODULE_HEADING } from "@/module/employee/enums";
 import { getTodayDate, setTime, dateToUTCString } from "@/lib/utils/date";
 import { JOB_PHASE_LABEL_NUM } from "@/module/schedule-management/weekly-schedule-management/constants/week-schedule";
-import { IPermissionChangeHistoryItem, IRoleChangeHistoryItem } from "@/module/employee/types";
+import { IRoleChangeHistoryItem } from "@/module/employee/types";
 
 export const MODULE_DISPLAY_ORDER = [
 	MODULE.DASHBOARD,
@@ -96,6 +96,7 @@ export const userPermissions = {
 	WEEKEND_SELF_SCHEDULING: "Weekend Self-Scheduling",
 	WEEKDAY_SELF_SCHEDULING: "Weekday Self-Scheduling",
 	MATERIAL_REQUEST: "Material Request",
+	CRATE_HANDLER: "Crate Handler",
 	MODIFY_TECHNICIAN_NOTES: "Modify Technician Notes",
 	QC_ENABLED: "QC Enabled",
 	ASANA_TASK_CREATION: "Asana Task Creation",
@@ -148,32 +149,5 @@ export const MOCK_ROLE_CHANGE_HISTORY: IRoleChangeHistoryItem[] = [
 		toRole: "Foreman",
 		changedBy: "Alex Martin",
 		changedAt: "2024-04-18T15:30:00Z",
-	},
-];
-
-export const MOCK_PERMISSION_CHANGE_HISTORY: IPermissionChangeHistoryItem[] = [
-	{
-		id: "1",
-		module: MODULE.CREW_LIST,
-		fromAccessLevel: ACCESS_LEVEL.NONE,
-		toAccessLevel: ACCESS_LEVEL.WRITE,
-		changedBy: "Alex Martin",
-		changedAt: "2024-06-25T20:10:00Z",
-	},
-	{
-		id: "2",
-		module: MODULE.DASHBOARD,
-		fromAccessLevel: ACCESS_LEVEL.NONE,
-		toAccessLevel: ACCESS_LEVEL.WRITE,
-		changedBy: "Alex Martin",
-		changedAt: "2024-06-08T18:05:00Z",
-	},
-	{
-		id: "3",
-		module: MODULE.EMPLOYEES_LIST,
-		fromAccessLevel: ACCESS_LEVEL.NONE,
-		toAccessLevel: ACCESS_LEVEL.WRITE,
-		changedBy: "Alex Martin",
-		changedAt: "2024-05-02T13:45:00Z",
 	},
 ];

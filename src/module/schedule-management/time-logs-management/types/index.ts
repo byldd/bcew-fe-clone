@@ -4,6 +4,7 @@ import { ISpecialJob } from "../../weekly-schedule-management/types/schedule-con
 import { IEmployeeDayTime, QC_JOB_TYPE } from "../../weekly-schedule-management/types/schedule-interface";
 import { IMiddayStopRequest } from "../../time-requests/utils/types";
 import { IRoster } from "../../roster-time-configuration/types";
+import { IQcInspectionTime } from "../../weekly-schedule-management/types/qc-job";
 
 export interface IOverrideSuccessModalProps {
 	name: string | undefined;
@@ -54,7 +55,7 @@ export type IStopDetail = {
 	isQcJob?: boolean;
 	ordnum?: string;
 	qcType?: string;
-	didNotWorked?: string;
+	didNotWorked?: boolean;
 };
 
 export type ITruck = {
@@ -95,7 +96,7 @@ export interface ITimeLogResponse {
 	date: Date;
 	note: string;
 	employeeName: string;
-	jobs: IStopDetail[];
+	jobs: (IStopDetail & { qcInspectionTime?: IQcInspectionTime })[];
 	trucks: ITruck[];
 	employeeDayTimes: IEmployeeDayTime;
 	employeeExtendedRequests: IExtendedRequest;
@@ -171,7 +172,7 @@ export interface IViewJobNotes {
 }
 
 export interface EmployeeStopDetailsProps {
-	jobs: IStopDetail[];
+	jobs: ITimeLogResponse["jobs"];
 	isTimeLogsEditAccess?: boolean;
 	employeeName?: string;
 	openModal: (params: {

@@ -7,18 +7,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthAPI } from "@/module/auth/hooks/useAuth";
 import { loginFormSchema, type UserLoginType } from "@/module/auth/types";
 import { ROLES } from "@/types";
-import { clearCookies, redirectUser, setLoginCookies } from "@/module/auth/utils/helpers";
+import { clearCookies, getSafeRedirect, redirectUser, setLoginCookies } from "@/module/auth/utils/helpers";
+import { routes } from "@/config/routes";
+import { AUTH_QUERY_PARAM } from "@/module/auth/utils/constants";
 import Image from "next/image";
 import { openErrorToast, openSuccessToast } from "@/components/toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function EmployeeSignInForm() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [rememberMe, setRememberMe] = useState(false);
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const queryClient = useQueryClient();
 	const formSchema = loginFormSchema();
 	const form = useForm<UserLoginType>({
 		resolver: zodResolver(formSchema),
@@ -36,8 +41,10 @@ export default function EmployeeSignInForm() {
 				onSuccess: (res) => {
 					const { token } = res;
 					setLoginCookies({ token, userType: ROLES.TECHNICIAN_EMPLOYEE });
+					queryClient.clear();
 					openSuccessToast("Logged in successfully");
-					const redirectRoute = redirectUser(ROLES.TECHNICIAN_EMPLOYEE);
+					const safeRedirect = getSafeRedirect(searchParams.get(AUTH_QUERY_PARAM.REDIRECT), routes.employee.root);
+					const redirectRoute = safeRedirect ?? redirectUser(ROLES.TECHNICIAN_EMPLOYEE);
 					router.replace(redirectRoute);
 				},
 				onError: (error) => {
@@ -53,7 +60,9 @@ export default function EmployeeSignInForm() {
 		>
 			<div className="absolute inset-0 bg-black/70 bg-opacity-70"></div>
 			{/* Logo  */}
-			<div className="relative z-10 my-12"></div>
+			<div className="relative z-10 my-12">
+				<Image src="/assets/png/logo.png" alt="Company Logo" width={170} height={170} />
+			</div>
 			{/* Middle content */}
 			<div className="relative z-10 flex w-full max-w-md flex-col px-6 py-6">
 				<div className="my-6 text-center">

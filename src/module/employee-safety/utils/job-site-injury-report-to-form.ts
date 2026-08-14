@@ -20,6 +20,7 @@ export const mapJobSiteInjuryReportToForm = (report: IJobSiteInjuryReportDetail)
 	treatmentStartDate: report.treatmentStartDate ? new Date(report.treatmentStartDate) : undefined,
 	treatmentEndDate: report.treatmentEndDate ? new Date(report.treatmentEndDate) : undefined,
 	doctorsMedics: report.doctorsMedics ?? "",
+	drugScreenLocation: report.drugScreenLocation ?? "",
 
 	immediateAction: report.immediateAction ?? "",
 	permanentSolution: report.permanentSolution ?? "",

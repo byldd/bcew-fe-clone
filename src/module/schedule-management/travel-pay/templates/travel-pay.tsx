@@ -78,7 +78,7 @@ const TravelPay = () => {
 								<input
 									type="text"
 									placeholder={tSchedule.searchByEmployeeName}
-									className="h-10 w-[240px] rounded-[10px] border-none bg-white pl-9 pr-3 text-sm outline-none"
+									className="h-10 w-[240px] rounded-[10px] border bg-white pl-9 pr-3 text-sm outline-none"
 									value={search}
 									onChange={(e) => setSearch(e.target.value)}
 								/>

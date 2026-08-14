@@ -31,7 +31,6 @@ const FormExamplePage = () => {
 
 	const onSubmit = (data: IFormExampleSchema) => {
 		openSuccessToast("Form submitted successfully.");
-		console.log("form-example submission", data);
 	};
 
 	return (

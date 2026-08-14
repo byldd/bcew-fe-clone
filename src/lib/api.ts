@@ -10,12 +10,16 @@ const apiUrl = env.NEXT_PUBLIC_API_URL;
 const HEADERS = {
 	"Content-Type": "application/json",
 };
+const REQUEST_TIMEOUT_MS = 30000;
 const apiClient = axios.create({
 	baseURL: apiUrl,
 	headers: {
 		...HEADERS,
 	},
 	withCredentials: true,
+	// Fail hung requests instead of holding a browser connection open indefinitely
+	// under load — a timed-out request rejects and can be retried by React Query.
+	timeout: REQUEST_TIMEOUT_MS,
 });
 apiClient.interceptors.request.use((request) => {
 	if (isClient) {
@@ -57,8 +61,13 @@ apiClient.interceptors.response.use(
 	(error: AxiosError<ErrorResponseType>) => {
 		const status = error?.response?.status;
 		const errorMessage = error?.response?.data?.message?.toLowerCase() || "";
-		// Check for 401 status and token-related errors
-		if (status === 401 && errorMessage.includes("invalid token")) {
+
+		// Only a genuine auth failure ends the session. A transient error — a request
+		// timeout or network drop (no response at all), or a 5xx from an overloaded
+		// server — must NOT clear cookies, otherwise high traffic logs everyone out.
+		const isAuthFailure = status === 401 && errorMessage.includes("invalid token");
+
+		if (isAuthFailure) {
 			clearCookies();
 			// Redirect to signin page
 			if (isClient) {

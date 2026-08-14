@@ -21,7 +21,7 @@ interface QuickToolsDrawerProps {
 const QuickToolsDrawer = ({ open, onClose, isTimeLogPending, setSelfScheduleOpen }: QuickToolsDrawerProps) => {
 	const router = useRouter();
 	const { user } = useAuthStore((state) => state);
-	const [expandedItem, setExpandedItem] = useState<string | null>("Materials");
+	const [expandedItem, setExpandedItem] = useState<string | null>("");
 
 	const navigate = (path: string) => {
 		onClose();
@@ -120,7 +120,7 @@ const QuickToolsDrawer = ({ open, onClose, isTimeLogPending, setSelfScheduleOpen
 
 				{/* Footer */}
 				<div className="border-2 border-t py-4 text-center">
-					<p className="text-xs font-medium text-[#6A7282]">BYLDD</p>
+					<p className="text-xs font-medium text-[#6A7282]">Bucks County Electric Works</p>
 					<p className="mt-0.5 text-xs text-[#99A1AF]">Version 2.4.1</p>
 				</div>
 			</SheetContent>

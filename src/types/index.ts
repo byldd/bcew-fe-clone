@@ -110,6 +110,15 @@ export type SidebarGroup = {
 
 export type SidebarItem = SidebarSubItem | SidebarGroup;
 
+export type NestedSidebarGroup = {
+	key?: string;
+	title: string;
+	icon: IconType;
+	items: NestedSidebarItem[];
+};
+
+export type NestedSidebarItem = SidebarSubItem | NestedSidebarGroup;
+
 export type IApiResponse<T> = {
 	data: T;
 	message: string;
@@ -131,6 +140,7 @@ export interface IOpenModal {
 	variant?: keyof typeof modalBodyVariants;
 	showDefaultClose?: boolean;
 	closeOnOutsideClick?: boolean;
+	headerClassName?: string;
 }
 
 export interface IUseModalResult {

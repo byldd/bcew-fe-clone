@@ -37,7 +37,7 @@ export function JobDetailPage({ assignmentId }: { assignmentId: string }) {
 	const { data: jobData, refetch, isLoading, isRefetching } = useEmployeeDailyJob(assignmentId);
 
 	const { data: userData } = useGetEmployeeData(dateToUTCString(jobData?.date || startDate));
-	const { employee, isMaterialRequestAllowed, isFingerprintEnabled } = userData || {};
+	const { employee, isMaterialRequestAllowed, isCrateHandlerAllowed, isFingerprintEnabled } = userData || {};
 	const employeeDayTime = employee?.employeeDayTimes?.[0];
 
 	const { schedule, jobEmployeeAssignments, notes, jobLabelAssignments, notReadyUpdate, specialJob } = jobData || {};
@@ -300,11 +300,13 @@ export function JobDetailPage({ assignmentId }: { assignmentId: string }) {
 					specialJob={specialJob}
 				/>
 
-				{isMaterialRequestAllowed && !jobData?.specialJob && (
+				{(isMaterialRequestAllowed || isCrateHandlerAllowed) && !jobData?.specialJob && (
 					<JobQuickActions
 						assignmentId={assignmentId}
 						recnum={jobData?.schedule?.recnum ?? null}
 						tsknum={jobData?.schedule?.tsknum ?? null}
+						isMaterialRequestAllowed={isMaterialRequestAllowed}
+						isCrateHandlerAllowed={isCrateHandlerAllowed}
 					/>
 				)}
 
@@ -317,6 +319,7 @@ export function JobDetailPage({ assignmentId }: { assignmentId: string }) {
 					jobEmployeeAssignments={jobEmployeeAssignments}
 					handleYouTag={handleYouTag}
 					handleTaskLeader={handleTaskLeader}
+					projectGpsData={jobData?.projectGpsData}
 				/>
 
 				<JobNotesSection

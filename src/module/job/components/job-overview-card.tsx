@@ -7,7 +7,7 @@ import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
 import TaskLeaderList from "@/module/schedule-management/weekly-schedule-management/components/calendar/task-leader-list";
 
-export function JobOverviewCard({ jobData }: IJobOverviewCardProps) {
+export function JobOverviewCard({ jobData, projectGpsData }: IJobOverviewCardProps) {
 	const tSchedule = useTypedTranslations(NAMESPACE.SCHEDULE);
 	const tEmployee = useTypedTranslations(NAMESPACE.EMPLOYEE);
 	const tSub = useTypedTranslations(NAMESPACE.SUBCONTRACTOR);
@@ -77,6 +77,21 @@ export function JobOverviewCard({ jobData }: IJobOverviewCardProps) {
 						</div>
 					</div>
 				)}
+
+				<div className="space-y-[2px]">
+					<p>Material Pickup Location</p>
+					<p className="text-sm font-medium text-brand-dark">{projectGpsData?.shpcntInfo || "--"}</p>
+				</div>
+
+				<div className="space-y-[2px]">
+					<p>Unit</p>
+					<p className="text-sm font-medium text-brand-dark">{projectGpsData?.unit || "--"}</p>
+				</div>
+
+				<div className="space-y-[2px]">
+					<p>Gate Code</p>
+					<p className="text-sm font-medium text-brand-dark">{projectGpsData?.gtecde || "--"}</p>
+				</div>
 			</div>
 			<Accordion type="single" className="w-full" collapsible defaultValue="item-1">
 				<AccordionItem value="item-1">

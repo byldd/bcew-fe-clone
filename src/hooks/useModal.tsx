@@ -26,6 +26,7 @@ export const useModal = (onDefaultClose?: () => void): IUseModalResult => {
 		variant: keyof typeof modalBodyVariants;
 		showDefaultClose?: boolean;
 		closeOnOutsideClick?: boolean;
+		headerClassName?: string;
 	}>({
 		isOpen: false,
 		title: undefined as string | undefined | null,
@@ -35,6 +36,7 @@ export const useModal = (onDefaultClose?: () => void): IUseModalResult => {
 		variant: "medium",
 		showDefaultClose: true,
 		closeOnOutsideClick: false,
+		headerClassName: undefined,
 	});
 
 	const openModal = useCallback(
@@ -46,6 +48,7 @@ export const useModal = (onDefaultClose?: () => void): IUseModalResult => {
 			variant = "default",
 			showDefaultClose = true,
 			closeOnOutsideClick = false,
+			headerClassName,
 		}: IOpenModal) => {
 			setState({
 				isOpen: true,
@@ -56,6 +59,7 @@ export const useModal = (onDefaultClose?: () => void): IUseModalResult => {
 				footer,
 				showDefaultClose,
 				closeOnOutsideClick,
+				headerClassName,
 			});
 		},
 		[]
@@ -71,6 +75,7 @@ export const useModal = (onDefaultClose?: () => void): IUseModalResult => {
 			footer: undefined,
 			variant: "default",
 			showDefaultClose: true,
+			headerClassName: undefined,
 		});
 	}, [onDefaultClose]);
 
@@ -102,7 +107,7 @@ export const useModal = (onDefaultClose?: () => void): IUseModalResult => {
 						style={{ overflow: "visible" }}
 					>
 						<div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-							<DialogHeader className="flex items-start justify-between">
+							<DialogHeader className={cn("flex items-start justify-between", state.headerClassName)}>
 								{state.title ? (
 									<DialogTitle className="font-inter text-xl font-normal text-brand-dark">{state.title}</DialogTitle>
 								) : (

@@ -1,11 +1,14 @@
 import { toFormattedDate, toLocalFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
+import { CRATE_SCAN_ACTION } from "@/module/crate-management/enums";
 import {
+	CrateActivityRow,
 	JobLevelCommsDailyRecord,
 	JobLevelCommsJob,
 	JobLevelCommsJobNote,
 	JobLevelCommsNote,
 	JobLevelCommsPhase,
+	JobLevelCrateActivityItem,
 	JobLevelDetailsProject,
 	JobMaterialStatusResponse,
 	JobScheduleHistoryEntry,
@@ -16,7 +19,13 @@ import {
 } from "./types";
 import { FALLBACK } from "../constants";
 import { routes } from "@/config/routes";
-import { STATUS_DONE, STATUS_IN_PROGRESS, STATUS_PENDING } from "./constants";
+import {
+	CRATE_ACTIVITY_ACTION_LABEL,
+	DELIVERY_STATUS_ROW_TITLE,
+	STATUS_DONE,
+	STATUS_IN_PROGRESS,
+	STATUS_PENDING,
+} from "./constants";
 
 export type FlattenedNote = JobLevelCommsNote & {
 	recordDate: string;
@@ -304,7 +313,7 @@ export const getStockStatus = (value: number | null | undefined) => {
 	return { label: "Out-of-Stock", className: "bg-amber-100 text-amber-700" };
 };
 
-const formatMeta = (date: string | null, userLabel?: string, user?: string | null) => {
+export const formatMeta = (date: string | null, userLabel?: string, user?: string | null) => {
 	const parts: string[] = [];
 	if (date) {
 		parts.push(toLocalFormattedDate(date, DATE_FORMAT.DATE_AND_TIME));
@@ -315,7 +324,7 @@ const formatMeta = (date: string | null, userLabel?: string, user?: string | nul
 	return parts.join(" | ");
 };
 
-export const buildRows = (data: JobMaterialStatusResponse): MaterialStatusRow[] => [
+export const buildRows = (data: JobMaterialStatusResponse, hasCrateReceived: boolean): MaterialStatusRow[] => [
 	{
 		title: "Pull List",
 		status: "Created",
@@ -345,10 +354,17 @@ export const buildRows = (data: JobMaterialStatusResponse): MaterialStatusRow[] 
 		photos: [],
 	},
 	{
-		title: "Delivery Status",
-		status: data.delivered.done ? "Delivered" : "Pending",
-		statusClassName: data.delivered.done ? STATUS_DONE : STATUS_PENDING,
+		title: DELIVERY_STATUS_ROW_TITLE,
+		status: hasCrateReceived ? "Delivered" : "Pending",
+		statusClassName: hasCrateReceived ? STATUS_DONE : STATUS_PENDING,
 		meta: formatMeta(data.delivered.date),
 		photos: data.delivered.picpath ? [routes.bcew.warehousePhoto(data.delivered.picpath)] : [],
 	},
 ];
+
+export const buildCrateActivityRows = (items: JobLevelCrateActivityItem[]): CrateActivityRow[] =>
+	items.map((item) => ({
+		id: item.id,
+		title: `CRATE-${item.scanned_crate} ${CRATE_ACTIVITY_ACTION_LABEL[item.scan_action as CRATE_SCAN_ACTION]}`,
+		meta: formatMeta(item.scanned_date, "Employee Name", item.user?.name),
+	}));

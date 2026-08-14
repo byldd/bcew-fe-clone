@@ -12,6 +12,8 @@ import { QC_JOB_TYPE } from "../../weekly-schedule-management/types/schedule-int
 import { calculateStopHours } from "../utils/calculate-hours";
 import { JobWorkType } from "@/module/job/utils/enums";
 import { formatPascalCase } from "@/lib/utils/value-formatter";
+import { getStopTime } from "@/utils/time-logs";
+import { AppTooltip } from "@/components/ui/tooltip";
 
 export default function EmployeeStopDetails({
 	jobs,
@@ -66,6 +68,7 @@ export default function EmployeeStopDetails({
 										ordnum,
 										qcType,
 										didNotWorked,
+										qcInspectionTime,
 									} = stop;
 
 									const qcJobType = qcType
@@ -79,6 +82,9 @@ export default function EmployeeStopDetails({
 
 									const jobName = specialJob?.name ?? jobnme;
 
+									const { stopStartTime, stopEndTime } = getStopTime(stop);
+									const isTimeLogCompleted = stopStartTime && stopEndTime;
+
 									return (
 										<TableRow key={si}>
 											<TableCell className="border-r px-4 py-2 text-center"> {stopNumber ? stopNumber : "-"}</TableCell>
@@ -89,6 +95,9 @@ export default function EmployeeStopDetails({
 											</TableCell>
 											<TableCell className="border-r px-4 py-2 text-center">
 												<div>
+													{!isTimeLogCompleted && qcInspectionTime?.timeValidationNote ? (
+														<AppTooltip text={qcInspectionTime?.timeValidationNote} />
+													) : null}
 													<span className="block">
 														{didNotWorked
 															? JobWorkType.DID_NOT_WORKED

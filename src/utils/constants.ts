@@ -9,14 +9,16 @@ const modalBodyVariants = {
 
 const ALLOWED_IMAGE_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
 
+const HEIC_IMAGE_FILE_TYPES = ["image/heic", "image/heif"];
+
+const ALLOWED_IMAGE_FILE_TYPES_WITH_HEIC = [...ALLOWED_IMAGE_FILE_TYPES, ...HEIC_IMAGE_FILE_TYPES];
+
 // Images plus PDF/DOC — for uploaders that accept general supporting documents,
 // not just photos (e.g. job site injury report attachments).
 const PDF_MIME_TYPE = "application/pdf";
 
 const ALLOWED_DOCUMENT_FILE_TYPES = [
-	...ALLOWED_IMAGE_FILE_TYPES,
-	"image/heic",
-	"image/heif",
+	...ALLOWED_IMAGE_FILE_TYPES_WITH_HEIC,
 	PDF_MIME_TYPE,
 	"application/msword",
 	"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -25,7 +27,6 @@ const ALLOWED_DOCUMENT_FILE_TYPES = [
 const LUNCH_TIME_MINUTES = 12 * 60 + 15; // 12:15 in minutes
 const LUNCH_BREAK_MINUTES = 30; // 30 minutes
 
-const loginParamKey = "login";
 const EOD_GPS_BUFFER_MINUTES = 15;
 const leastLateConsiderMinutes = 1;
 
@@ -48,11 +49,11 @@ const SlabRoughReferencePhoto = [
 export {
 	modalBodyVariants,
 	ALLOWED_IMAGE_FILE_TYPES,
+	ALLOWED_IMAGE_FILE_TYPES_WITH_HEIC,
 	ALLOWED_DOCUMENT_FILE_TYPES,
 	PDF_MIME_TYPE,
 	LUNCH_TIME_MINUTES,
 	LUNCH_BREAK_MINUTES,
-	loginParamKey,
 	EOD_GPS_BUFFER_MINUTES,
 	leastLateConsiderMinutes,
 	MaterialRoleLabel,

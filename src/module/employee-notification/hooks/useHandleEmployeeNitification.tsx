@@ -49,6 +49,17 @@ export const useHandleEmployeeNotification = ({
 			return;
 		}
 
+		// Opens the technician's own injury report, prefilled. Violations have no
+		// technician-side form, so those notifications stay non-clickable.
+		if (
+			(mappedTitle === NOTIFICATION_KEY.JOB_SITE_SAFETY_REPORT_CREATED_BY_ADMIN ||
+				mappedTitle === NOTIFICATION_KEY.JOB_SITE_SAFETY_CLOSED_FOR_TECHNICIAN) &&
+			parsedData?.jobSiteInjuryReportId
+		) {
+			router.push(`${routes.employee.newJobSiteInjuryReport}?draftId=${parsedData.jobSiteInjuryReportId}`);
+			return;
+		}
+
 		if (mappedTitle === NOTIFICATION_KEY.ADMIN_JOB_ALERT && parsedData?.dailyJobId) {
 			router.push(routes.employee.job(parsedData?.dailyJobId));
 			return;
@@ -150,7 +161,11 @@ export const useHandleEmployeeNotification = ({
 		}
 
 		if (mappedTitle === NOTIFICATION_KEY.MISSING_ITEM_REQUEST) {
-			if (hasMissingItemRequestAccess) router.push(routes.employee.foremanMissingItemRequests);
+			if (hasMissingItemRequestAccess)
+				router.push(
+					routes.employee.missingItemRequests +
+						`${parsedData?.missingItemRequestId ? `?id=${parsedData.missingItemRequestId}` : ""}`
+				);
 			return;
 		}
 
@@ -160,6 +175,27 @@ export const useHandleEmployeeNotification = ({
 					routes.employee.missingItemRequests +
 						`${parsedData?.missingItemRequestId ? `?id=${parsedData.missingItemRequestId}` : ""}`
 				);
+			return;
+		}
+
+		if (
+			mappedTitle === NOTIFICATION_KEY.MISSING_ITEM_REQUEST_REJECTED ||
+			mappedTitle === NOTIFICATION_KEY.MISSING_ITEM_CONVERTED_TO_MATERIAL_REQUEST
+		) {
+			if (hasMissingItemRequestAccess)
+				router.push(
+					routes.employee.missingItemRequests +
+						`${parsedData?.missingItemRequestId ? `?id=${parsedData.missingItemRequestId}` : ""}`
+				);
+			return;
+		}
+
+		if (
+			(mappedTitle === NOTIFICATION_KEY.VEHICLE_ACCIDENT_INFO_REQUESTED ||
+				mappedTitle === NOTIFICATION_KEY.DRUG_SCREEN_REQUIRED_TECHNICIAN) &&
+			parsedData?.vehicleAccidentReportId
+		) {
+			router.push(routes.employee.newVehicleAccidentReport + `?draftId=${parsedData.vehicleAccidentReportId}`);
 			return;
 		}
 

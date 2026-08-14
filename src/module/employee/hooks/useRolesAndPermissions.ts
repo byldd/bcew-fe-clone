@@ -1,16 +1,18 @@
 import {
 	IModulesResponse,
 	IPermissionChangeHistoryItem,
+	IPermissionHistoryConfigChangeItem,
 	IRoleChangeHistoryItem,
 	IRolePermissionHistoryDetailsResponse,
 	IRolesWithPermissionsResponse,
 	IRoleWithPermissionsResponse,
 	IUserPermissionHistoryDetailsResponse,
+	IUserPermissionHistoryListItem,
 } from "@/module/employee/types";
 import { apiClient } from "@/lib/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ACCESS_LEVEL } from "@/module/employee/enums";
-import { MOCK_PERMISSION_CHANGE_HISTORY, MOCK_ROLE_CHANGE_HISTORY } from "@/module/employee/constants";
+import { MOCK_ROLE_CHANGE_HISTORY } from "@/module/employee/constants";
 
 export const useRoles = () => {
 	return useQuery({
@@ -140,6 +142,39 @@ export const useEmployeePermissionChangeHistory = (userId: string) => {
 	return useQuery({
 		queryKey: ["employeePermissionChangeHistory", userId],
 		enabled: !!userId,
-		queryFn: async (): Promise<IPermissionChangeHistoryItem[]> => MOCK_PERMISSION_CHANGE_HISTORY,
+		queryFn: async (): Promise<{
+			permissionChanges: IPermissionChangeHistoryItem[];
+			configurationChanges: IPermissionHistoryConfigChangeItem[];
+		}> => {
+			const { data } = await apiClient.get<{
+				data: { items: IUserPermissionHistoryListItem[] };
+			}>(`/admin/user/${userId}/permission-history`);
+
+			const items = data.data.items;
+
+			const permissionChanges = items.flatMap((history) =>
+				history.permissionChanges.map((change) => ({
+					id: change.id,
+					pageName: change.page?.name ?? "Unknown",
+					fromAccessLevel: change.previousAccessLevel as ACCESS_LEVEL,
+					toAccessLevel: change.newAccessLevel as ACCESS_LEVEL,
+					changedBy: history.updatedBy?.name ?? "Unknown",
+					changedAt: history.createdAt,
+				}))
+			);
+
+			const configurationChanges = items.flatMap((history) =>
+				history.configurationChanges.map((change, index) => ({
+					id: `${history.id}-${index}`,
+					field: change.field,
+					previousValue: change.previousValue,
+					newValue: change.newValue,
+					changedBy: history.updatedBy?.name ?? "Unknown",
+					changedAt: history.createdAt,
+				}))
+			);
+
+			return { permissionChanges, configurationChanges };
+		},
 	});
 };

@@ -2,7 +2,7 @@
 "use client";
 
 import { routes } from "@/config/routes";
-import type { SidebarItem } from "@/types";
+import type { NestedSidebarItem } from "@/types";
 import {
 	HiCalendar,
 	HiOutlineCalendarDays,
@@ -20,6 +20,8 @@ import {
 	HiOutlineCog,
 	HiOutlineChartBar,
 	HiOutlineDocumentReport,
+	HiOutlineDocumentAdd,
+	HiOutlineFolder,
 } from "react-icons/hi";
 import { BellIcon } from "lucide-react";
 
@@ -44,7 +46,7 @@ import { TbDeviceDesktopCode } from "react-icons/tb";
 export const useAdminMenuProd = () => {
 	const tCommon = useTypedTranslations(NAMESPACE.COMMON);
 
-	const AdminMenus: SidebarItem[] = [
+	const AdminMenus: NestedSidebarItem[] = [
 		{
 			title: tCommon.notifications,
 			icon: BellIcon,
@@ -211,16 +213,51 @@ export const useAdminMenuProd = () => {
 			moduleKey: MODULE.SAFETY_MANAGEMENT,
 			items: [
 				{
-					title: tCommon.safetyPolicy,
-					icon: MdOutlinePolicy,
-					url: routes.bcew.safetyPolicy,
-					newTab: true,
+					title: "Driving Safety",
+					icon: HiOutlineFolder,
+					items: [
+						{
+							title: "Dashboard",
+							icon: HiOutlineChartBar,
+							url: routes.admin.drivingSafetyDashboard,
+						},
+						{
+							title: "Add New Record",
+							icon: HiOutlineDocumentAdd,
+							url: routes.admin.drivingSafetyAddNewRecord,
+						},
+						{
+							title: "Incident Reports",
+							icon: HiOutlineDocumentReport,
+							url: routes.admin.drivingSafetyIncidentReports,
+						},
+						{
+							title: "Policies",
+							icon: MdOutlinePolicy,
+							url: routes.admin.drivingSafetyPolicies,
+						},
+					],
 				},
 				{
-					title: tCommon.incidentReports,
-					icon: HiOutlineDocumentReport,
-					url: routes.bcew.safetyIncidents,
-					newTab: true,
+					title: "Job Site Safety",
+					icon: HiOutlineFolder,
+					items: [
+						{
+							title: "Dashboard",
+							icon: HiOutlineChartBar,
+							url: routes.admin.jobSiteSafetyDashboard,
+						},
+						{
+							title: "Add New Record",
+							icon: HiOutlineDocumentAdd,
+							url: routes.admin.jobSiteSafetyAddNewRecord,
+						},
+						{
+							title: "Incident Reports",
+							icon: HiOutlineDocumentReport,
+							url: routes.admin.jobSiteSafetyIncidentReports,
+						},
+					],
 				},
 			],
 		},

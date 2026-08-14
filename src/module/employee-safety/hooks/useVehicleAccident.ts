@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { IApiResponse } from "@/types";
+import { dateToUTCString } from "@/lib/utils/date";
 import {
 	IAccidentReportDetail,
 	IAssignedVehicle,
@@ -23,11 +24,20 @@ export const useAccidentReport = (id: string | null) =>
 		},
 	});
 
-export const useMyRecords = () =>
+export const useMyRecords = (startDate: Date | null, endDate: Date | null) =>
 	useQuery({
-		queryKey: ["safety-my-records"],
+		queryKey: [
+			"safety-my-records",
+			startDate ? dateToUTCString(startDate) : null,
+			endDate ? dateToUTCString(endDate) : null,
+		],
 		queryFn: async () => {
-			const { data } = await apiClient.get<IApiResponse<IMyRecord[]>>("/employee/safety/my-records");
+			const { data } = await apiClient.get<IApiResponse<IMyRecord[]>>("/employee/safety/my-records", {
+				params: {
+					startDate: startDate ? dateToUTCString(startDate) : undefined,
+					endDate: endDate ? dateToUTCString(endDate) : undefined,
+				},
+			});
 			return data.data;
 		},
 	});

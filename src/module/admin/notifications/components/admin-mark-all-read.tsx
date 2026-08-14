@@ -65,7 +65,7 @@ const AdminMarkAllRead = () => {
 			onClick={handleMarkAllRead}
 			disabled={data?.count === 0 || markAllRead.isPending}
 			size="sm"
-			className="h-10 rounded-[8px] border-none bg-white px-4 text-sm text-brand-dark shadow-md"
+			className="h-10 rounded-[8px] border-none bg-white px-4 text-sm text-brand-dark shadow-sm"
 		>
 			Mark All as Read
 		</Button>

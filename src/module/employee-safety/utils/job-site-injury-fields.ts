@@ -18,7 +18,7 @@ export const medicalActionOptions: IOptions[] = [
 export const buildJobSiteField = (options: IOptions[], hasInjuryDate: boolean): JobSiteInjuryField => ({
 	name: "jobDailyRecordId",
 	fieldVariant: FIELD_VARIANT.SELECT,
-	label: "Where did the Injury Occur*",
+	label: "Where did the Injury Occur?*",
 	placeholder: "Select job Site",
 	disabled: !hasInjuryDate,
 	options,
@@ -28,13 +28,13 @@ export const incidentDetailFields: JobSiteInjuryField[] = [
 	{
 		name: "howInjuryOccurred",
 		fieldVariant: FIELD_VARIANT.TEXTAREA,
-		label: "How did the Injury Occur*",
+		label: "How did the Injury Occur?*",
 		placeholder: "Describe how it happened",
 	},
 	{
 		name: "bodyPartInjured",
 		fieldVariant: FIELD_VARIANT.INPUT,
-		label: "What body part is injured*",
+		label: "What body part is Injured?*",
 		placeholder: "Name the parts",
 	},
 ];
@@ -42,7 +42,7 @@ export const incidentDetailFields: JobSiteInjuryField[] = [
 export const equipmentMalfunctionField: JobSiteInjuryField = {
 	name: "equipmentMalfunction",
 	fieldVariant: FIELD_VARIANT.RADIO_GROUP,
-	label: "Did Equipment Malfunction",
+	label: "Did Equipment Malfunction?",
 	options: equipmentMalfunctionOptions,
 };
 

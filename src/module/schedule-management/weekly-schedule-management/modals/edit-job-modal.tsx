@@ -197,9 +197,11 @@ export const EditJobModal = ({ closeModal, dailyJobId }: { closeModal: () => voi
 	useEffect(() => {
 		if (!dailyJob || !bcewJob || isLoadingDailyJob || isLoadingCrews) return;
 
+		const recNum = bcewJob?.schlin?.recnum || bcewJob?.srvinv?.recnum;
+
 		form.reset({
 			jobName: bcewJob?.schlin?.actrec.jobnme || bcewJob?.srvinv?.actrec.jobnme,
-			jobRecNum: `#${bcewJob?.schlin?.recnum.toString() || bcewJob?.srvinv?.recnum.toString()}`,
+			jobRecNum: recNum ? `#${recNum}` : undefined,
 			date: dailyJob?.date ? toDate(dailyJob?.date) : undefined,
 			crewLeaderId: dailyJob?.crewLeaderId,
 			taskLeaderId: dailyJob?.taskLeaderId,
@@ -271,14 +273,14 @@ export const EditJobModal = ({ closeModal, dailyJobId }: { closeModal: () => voi
 			<Modal />
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<div className="mb-4 flex justify-between gap-4">
+					<div className="my-4 flex flex-col gap-4 sm:flex-row sm:justify-between">
 						<FormField
 							control={form.control}
 							name="jobRecNum"
 							render={({ field }) => (
 								<FormItem className="w-full">
 									<FormControl>
-										<InputField label={tcommon.jobId} disabled {...field} />
+										<InputField label={tcommon.jobId} placeholder="--" disabled {...field} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -289,12 +291,13 @@ export const EditJobModal = ({ closeModal, dailyJobId }: { closeModal: () => voi
 							<InputField
 								label={tcommon.phase}
 								value={bcewJob?.schlin?.tsknme || bcewJob?.srvinv?.ordnum?.toString()}
+								placeholder="--"
 								disabled
 							/>
 						</div>
 					</div>
 
-					<div className="flex justify-between gap-4">
+					<div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
 						<FormField
 							control={form.control}
 							name="date"
@@ -337,7 +340,7 @@ export const EditJobModal = ({ closeModal, dailyJobId }: { closeModal: () => voi
 						</div>
 					</div>
 					{!isSubcontractorJob && (
-						<div className="my-4 flex items-center justify-between gap-4">
+						<div className="my-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 							<FormField
 								control={form.control}
 								name="crewLeaderId"

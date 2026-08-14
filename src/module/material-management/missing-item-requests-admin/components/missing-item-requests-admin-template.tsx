@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { DataTable } from "@/components/shared/datatable/datatable";
 import { useModal } from "@/hooks/useModal";
 import { openErrorToast, openSuccessToast } from "@/components/toast";
+import { DEFAULT_PAGE_SIZE } from "@/module/job/material-selection/utils/consttants";
 import { useAdminMissingItemRequests, useUpdateMissingItemForemanNote } from "../hooks/useAdminMissingItemRequests";
 import ForemanNoteModal from "./foreman-note-modal";
 import type { AdminMissingItemRequest } from "../utils/types";
@@ -18,7 +19,9 @@ export default function MissingItemRequestsAdminTemplate({
 	showBackButton?: boolean;
 	hideHeader?: boolean;
 }) {
-	const { data, isLoading } = useAdminMissingItemRequests(true);
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+	const { data, isLoading } = useAdminMissingItemRequests({ page, pageSize });
 	const { mutate: updateNote, isPending } = useUpdateMissingItemForemanNote();
 	const { openModal, closeModal, Modal } = useModal();
 
@@ -65,11 +68,21 @@ export default function MissingItemRequestsAdminTemplate({
 			<DataTable
 				useSectionHeader={false}
 				columns={columns}
-				data={data ?? []}
+				data={data?.items ?? []}
 				isLoading={isLoading}
 				showGridLines
 				stickyHeaderMode
 				mobileCompact
+				paginatorOptions={{
+					pageSize,
+					total: data?.total ?? 0,
+					currentPage: page,
+					setPageSize: (size: number) => {
+						setPageSize(size);
+						setPage(1);
+					},
+					setPage,
+				}}
 			/>
 		</div>
 	);

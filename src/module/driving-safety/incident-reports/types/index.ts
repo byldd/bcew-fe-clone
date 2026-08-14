@@ -1,11 +1,29 @@
 import {
+	JOB_SITE_TYPE,
 	MEDICAL_DRUG_SCREEN,
+	OTHER_VEHICLE_IMAGE_CATEGORY,
+	PERSON_STRUCK_TYPE,
 	VEHICLE_ACCIDENT_PHOTO_CATEGORY,
 	WEATHER_CONDITION,
 } from "@/module/employee-safety/enums";
 import { IDrivingSafetyViolationType } from "@/module/driving-safety/policies/types";
 
-import { INCIDENT_REPORT_STATUS, INCIDENT_SEVERITY, INCIDENT_SOURCE, INCIDENT_TYPE } from "../utils/enums";
+import {
+	INCIDENT_ACTOR_ROLE,
+	INCIDENT_AUDIT_ACTION,
+	INCIDENT_REPORT_STATUS,
+	INCIDENT_SEVERITY,
+	INCIDENT_SOURCE,
+	INCIDENT_TYPE,
+	SECOND_REVIEW_ACTION,
+	THIRD_REVIEW_ACTION,
+} from "../utils/enums";
+
+export interface IUpdateIncidentSeverityPayload {
+	id: string;
+	type: INCIDENT_TYPE;
+	severity: INCIDENT_SEVERITY;
+}
 
 export interface IIncidentReportRow {
 	id: string;
@@ -18,7 +36,10 @@ export interface IIncidentReportRow {
 	severity: INCIDENT_SEVERITY | null;
 	dateTime: string | null;
 	location: string | null;
-	status: INCIDENT_REPORT_STATUS;
+	// Violations have no review workflow, so they carry no status.
+	status: INCIDENT_REPORT_STATUS | null;
+	// Only GeoTab safety-violation rows carry this — drives the record-number deep link.
+	geotabId?: string | null;
 	createdAt: string;
 }
 
@@ -53,9 +74,38 @@ export interface IRawBreakdownReport {
 	issueType: IIncidentReportNameRelation | null;
 }
 
+export interface IRawViolationReport {
+	id: string;
+	reportId: number;
+	severity: INCIDENT_SEVERITY | null;
+	truckNumber: string | null;
+	description: string | null;
+	violationDate: string | null;
+	createdAt: string;
+	user: IIncidentReportNameRelation | null;
+	violationType: IIncidentReportNameRelation | null;
+}
+
+// GeoTab safety-violation feed (legacy bcew view). No review workflow — its Decision
+// column stands in for status (unresolved → Pending, otherwise Resolved).
+export interface IRawSafetyViolationReport {
+	id: string;
+	geotabId: string;
+	employeeName: string | null;
+	truck: string | null;
+	description: string | null;
+	activeFrom: string | null;
+	latitude: number | null;
+	longitude: number | null;
+	decision: string | null;
+	recordLastChangedUtc: string;
+}
+
 export interface IIncidentReportsResponse {
 	accidentReports: IRawAccidentReport[];
 	breakdownReports: IRawBreakdownReport[];
+	violationReports: IRawViolationReport[];
+	safetyViolationReports: IRawSafetyViolationReport[];
 }
 
 interface IAccidentReviewDocument {
@@ -66,17 +116,35 @@ interface IAccidentReviewDocument {
 }
 
 interface IAccidentReviewOtherVehicle {
-	refusedToProvideInfo: boolean;
 	make: string | null;
 	model: string | null;
 	whatWasStruck: string | null;
 	vin: string | null;
 	driverFullName: string | null;
 	driverLicenseNumber: string | null;
-	driverPhoneNumber: string | null;
-	insuranceCompany: string | null;
-	policyNumber: string | null;
-	images: { id: string; url: string; keyFile: string }[];
+	refusedDriverLicense: boolean;
+	refusedInsuranceCard: boolean;
+	refusedDriverLicensePhoto: boolean;
+	images: { id: string; url: string; keyFile: string; category: OTHER_VEHICLE_IMAGE_CATEGORY | null }[];
+}
+
+interface IAccidentReviewPropertyDamage {
+	anotherCompanyProperty: boolean | null;
+	companyName: string | null;
+	contactPersonName: string | null;
+	contactPhoneNumber: string | null;
+	otherInformation: string | null;
+	builderProperty: boolean | null;
+	homeownerProperty: boolean | null;
+}
+
+interface IAccidentReviewPersonInvolved {
+	whoWasStruck: PERSON_STRUCK_TYPE | null;
+	employeeId: string | null;
+	employeeInjured: boolean | null;
+	fullName: string | null;
+	phoneNumber: string | null;
+	injuryDescription: string | null;
 }
 
 interface IAccidentReviewInjury {
@@ -99,12 +167,15 @@ export interface IAccidentReviewDetail {
 	source: INCIDENT_SOURCE | null;
 
 	onJobSite: boolean | null;
+	jobSiteType: JOB_SITE_TYPE | null;
 	anotherVehicleInvolved: boolean;
+	otherVehicleCount: number | null;
 	personStruck: boolean;
 
 	truckNumber: string | null;
 	vin: string | null;
 	licensePlate: string | null;
+	driverLicenseNumber: string | null;
 
 	accidentDate: string | null;
 	location: string | null;
@@ -119,19 +190,23 @@ export interface IAccidentReviewDetail {
 	policeDepartment: string | null;
 	policeReportNumber: string | null;
 
-	bcewVehicleTowed: boolean;
+	// null = the admin has not answered yet (distinct from an explicit "No" / false).
+	bcewVehicleTowed: boolean | null;
 	towProviderName: string | null;
 	// Prisma Decimal columns — serialized as strings over the wire.
 	towCostOnSpot: string | number | null;
-	otherVehicleTowed: boolean;
+	otherVehicleTowed: boolean | null;
 	otherVehicleTowCost: string | number | null;
-	vehicleImpounded: boolean;
+	vehicleImpounded: boolean | null;
 	impoundLotCost: string | number | null;
 	impoundReleaseCharges: string | number | null;
 
 	medicalDrugScreen: MEDICAL_DRUG_SCREEN;
+	drugScreenNeeded: boolean | null;
+	medicalCareNeeded: boolean | null;
 	drugScreenLocation: string | null;
 	medicalTreatmentLocation: string | null;
+	isMedicalTreatmentLocationOther: boolean | null;
 
 	violationTypeId: string | null;
 	pointsApplied: number | null;
@@ -141,10 +216,12 @@ export interface IAccidentReviewDetail {
 	reviewedAt: string | null;
 	createdAt: string;
 
-	user?: IIncidentReportNameRelation & { id: string };
+	user?: IIncidentReportNameRelation & { id: string; cellPhone: string | null };
 	reviewedByUser?: IIncidentReportNameRelation & { id: string };
 	violationType?: Pick<IDrivingSafetyViolationType, "id" | "name" | "points">;
-	otherVehicle?: IAccidentReviewOtherVehicle | null;
+	otherVehicles: IAccidentReviewOtherVehicle[];
+	propertyDamage?: IAccidentReviewPropertyDamage | null;
+	personInvolved?: IAccidentReviewPersonInvolved | null;
 	injury?: IAccidentReviewInjury | null;
 	photos: IAccidentReviewDocument[];
 }
@@ -153,6 +230,20 @@ export interface IApproveAccidentReportPayload {
 	violationTypeId: string;
 	overrideReason: string | null;
 	documents: { category: VEHICLE_ACCIDENT_PHOTO_CATEGORY; keyFile: string }[];
+}
+
+export interface IViolationReportDetail {
+	id: string;
+	reportId: number;
+	truckNumber: string | null;
+	severity: INCIDENT_SEVERITY | null;
+	points: number | null;
+	violationDate: string | null;
+	description: string | null;
+	createdAt: string;
+	user: IIncidentReportNameRelation | null;
+	violationType: IIncidentReportNameRelation | null;
+	documents: { id: string; url: string; keyFile: string }[];
 }
 
 export interface IBreakdownReportDetail {
@@ -171,4 +262,72 @@ export interface IBreakdownReportDetail {
 export interface IUpdateBreakdownCostPayload {
 	costOnSpot: number | null;
 	bcewVehicleTowed: boolean;
+}
+
+// Tow/impound & medical inputs the admin fills in before the first review.
+// The Yes/No questions are nullable: null = unanswered, true = Yes, false = No.
+export interface IAccidentAdminInputs {
+	bcewVehicleTowed: boolean | null;
+	towProviderName: string | null;
+	towCostOnSpot: number | null;
+	otherVehicleTowed: boolean | null;
+	otherVehicleTowCost: number | null;
+	vehicleImpounded: boolean | null;
+	impoundLotCost: number | null;
+	impoundReleaseCharges: number | null;
+	drugScreenNeeded: boolean | null;
+	medicalCareNeeded: boolean | null;
+	medicalTreatmentLocation: string | null;
+	isMedicalTreatmentLocationOther: boolean;
+}
+
+export interface IAssignSecondReviewPayload extends Omit<IApproveAccidentReportPayload, "violationTypeId"> {
+	violationTypeId: string | null;
+	adminInputs?: IAccidentAdminInputs;
+}
+
+export interface IRequestTechnicianInfoPayload extends IAssignSecondReviewPayload {
+	requestedSections: string[];
+}
+
+export interface ISecondReviewActionPayload extends Partial<IAssignSecondReviewPayload> {
+	action: SECOND_REVIEW_ACTION;
+}
+
+export interface IInsuranceEmailContent {
+	intro: string;
+	closing: string;
+}
+
+export interface IThirdReviewActionPayload extends Partial<IAssignSecondReviewPayload> {
+	action: THIRD_REVIEW_ACTION;
+	emailContent?: IInsuranceEmailContent;
+}
+
+export interface IInsuranceEmailDraft {
+	from: string;
+	to: string;
+	cc: string;
+	subject: string;
+	intro: string;
+	closing: string;
+	bodyHtml: string;
+}
+
+export interface IAuditFieldChange {
+	fieldName: string;
+	fromValue: string;
+	toValue: string;
+}
+
+export interface IAccidentAuditEntry {
+	id: string;
+	action: INCIDENT_AUDIT_ACTION;
+	role: INCIDENT_ACTOR_ROLE;
+	actorName: string | null;
+	fieldName: string | null;
+	fromValue: string | null;
+	toValue: string | null;
+	changes: IAuditFieldChange[] | null;
+	createdAt: string;
 }

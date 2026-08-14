@@ -73,7 +73,7 @@ export default function DashboardTemplate() {
 				openModal({
 					modalTitle: tEmployee.actionRequiredLogYourTime,
 					modalView: (
-						<div>
+						<div className="py-3">
 							We noticed you have pending job{isToday ? "/day" : ""} time logs from{" "}
 							{date ? (isToday ? "today" : toFormattedDate(date)) : ""}. Please log your time to continue.
 						</div>

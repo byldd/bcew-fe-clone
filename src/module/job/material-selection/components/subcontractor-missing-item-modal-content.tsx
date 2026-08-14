@@ -10,6 +10,7 @@ import { useCreateSubContractorMissingItemRequest } from "../hooks/useSubContrac
 import { missingItemFormSchema, MissingItemFormValues } from "../hooks/missing-item-form";
 import { buildMissingItemRequestFields } from "../utils/missing-item-payload";
 import { MissingItemFields } from "./missing-item-fields";
+import useAuthStore from "@/store/auth-store";
 
 export function SubContractorMissingItemModalContent({
 	jobDailyRecordId,
@@ -18,7 +19,10 @@ export function SubContractorMissingItemModalContent({
 	jobDailyRecordId: string;
 	onClose: () => void;
 }) {
-	const { mutateAsync: createRequest, isPending } = useCreateSubContractorMissingItemRequest();
+	const { user } = useAuthStore((state) => state);
+	const { mutateAsync: createRequest, isPending } = useCreateSubContractorMissingItemRequest({
+		isSubContractorAdmin: !!user?.id,
+	});
 	const { getFilesToUpload, getSignedUrls, handleFileUpload } = useHandleFileUpload();
 
 	const {

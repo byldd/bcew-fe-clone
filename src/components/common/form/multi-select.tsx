@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown, X } from "lucide-react";
 import { cn } from "@/lib/utils/utils";
 
@@ -21,6 +22,15 @@ interface MultiSelectProps {
 	loading?: boolean;
 	disabled?: boolean;
 	className?: string;
+	// Opt-in checklist style: real checkboxes instead of a "✓" mark, and the picked
+	// option's own label in the trigger instead of "1 selected". Existing callers are
+	// unaffected unless they turn it on.
+	showCheckbox?: boolean;
+	// When set, adds a "<label>" row that selects/clears every option at once.
+	allOptionLabel?: string;
+	// Hide the in-dropdown filter input — useful for short, fixed option lists where
+	// the trigger already shows what's picked and a search box is just noise.
+	showSearch?: boolean;
 }
 
 export function MultiSelect({
@@ -34,6 +44,9 @@ export function MultiSelect({
 	loading = false,
 	disabled = false,
 	className,
+	showCheckbox = false,
+	allOptionLabel,
+	showSearch = true,
 }: MultiSelectProps) {
 	const [open, setOpen] = React.useState(false);
 	const [inputValue, setInputValue] = React.useState("");
@@ -47,6 +60,16 @@ export function MultiSelect({
 			onChange([...selected, item]);
 		}
 	}
+
+	const isAllSelected = options.length > 0 && selected.length === options.length;
+	const toggleAll = () => onChange(isAllSelected ? [] : options);
+
+	const triggerLabel =
+		selected.length === 0
+			? placeholder
+			: showCheckbox && selected.length === 1
+				? selected[0]?.label
+				: `${selected.length} selected`;
 
 	const handleSearch = (value: string) => {
 		setInputValue(value);
@@ -82,19 +105,21 @@ export function MultiSelect({
 								selected.length === 0 ? "text-gray-500" : "text-black"
 							)}
 						>
-							{selected.length > 0 ? `${selected.length} selected` : placeholder}
+							{triggerLabel}
 
 							<ChevronDown className="h-4 w-4 text-gray-400" />
 						</Button>
 					</PopoverTrigger>
 					<PopoverContent className="w-full p-0" align="start">
 						<div>
-							<Input
-								className="!border-none"
-								placeholder={"filter"}
-								value={inputValue}
-								onChange={(e) => handleSearch(e.target.value)}
-							/>
+							{showSearch && (
+								<Input
+									className="!border-none"
+									placeholder={"filter"}
+									value={inputValue}
+									onChange={(e) => handleSearch(e.target.value)}
+								/>
+							)}
 
 							{loading ? (
 								<div className="flex items-center justify-center py-2">
@@ -105,21 +130,34 @@ export function MultiSelect({
 									{filtered.length === 0 && <p className="p-2 text-center text-sm text-gray-500">{fallbackText}</p>}
 
 									<div className="max-h-[300px] cursor-pointer overflow-y-auto">
+										{allOptionLabel && !inputValue && (
+											<div
+												onClick={toggleAll}
+												className="flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-brand-bgLightgrey"
+											>
+												<Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
+												<span>{allOptionLabel}</span>
+											</div>
+										)}
 										{filtered.map((option) => {
+											const isSelected = !!selected.find((i) => i.value === option.value);
 											return (
 												<div
 													key={option.value}
 													onClick={() => toggleItem(option)}
-													className="flex items-center justify-between px-3"
+													className={cn("flex items-center px-3", showCheckbox ? "gap-2 py-1.5" : "justify-between")}
 												>
+													{showCheckbox && <Checkbox checked={isSelected} onCheckedChange={() => toggleItem(option)} />}
 													{option?.labelJsx ? (
 														option?.labelJsx
+													) : showCheckbox ? (
+														<span className="text-sm">{option.label}</span>
 													) : (
 														<div className="py-1 text-sm hover:bg-brand-bgLightgrey">
 															<span>{option.label}</span>
 														</div>
 													)}
-													{selected.find((i) => i.value === option.value) && <span className="ml-auto">✓</span>}
+													{!showCheckbox && isSelected && <span className="ml-auto">✓</span>}
 												</div>
 											);
 										})}

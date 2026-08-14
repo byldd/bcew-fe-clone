@@ -11,6 +11,9 @@ import RolePermissionEditModal from "./role-permission-edit-modal";
 import EditPermissions from "./edit-permissions";
 import { UseFormReturn } from "react-hook-form";
 import { RoleFormValues } from "../utils/role-form-schema";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
+import { NAMESPACE } from "@/i18n/type";
 
 type IRolePermissionsSectionProps = {
 	data: IRoleWithPermissions;
@@ -19,6 +22,7 @@ type IRolePermissionsSectionProps = {
 };
 
 const RolePermissionSection = ({ data, adminAllPages, adminAllTabs }: IRolePermissionsSectionProps) => {
+	const tPmanagement = useTypedTranslations(NAMESPACE.PEOPLE_MANAGEMENT);
 	const [isEditing, setIsEditing] = useState(false);
 	const formRef = useRef<UseFormReturn<RoleFormValues> | null>(null);
 	const submitRef = useRef<(() => void) | null>(null);
@@ -45,28 +49,33 @@ const RolePermissionSection = ({ data, adminAllPages, adminAllTabs }: IRolePermi
 	}
 
 	return (
-		<div className="space-y-4">
-			<div className="flex justify-end">
-				<EditPermissions
-					isEditing={isEditing}
-					isSaving={formRef.current?.formState.isSubmitting}
-					onEdit={handleEdit}
-					onDiscard={handleDiscard}
-					onSave={handleSave}
-				/>
-			</div>
+		<Card className="rounded-3xl border border-brand-dark10 bg-white !p-7">
+			<CardHeader className="mb-4 p-0">
+				<CardTitle className="flex items-center justify-between text-xl font-semibold">
+					{tPmanagement.rolesAndPermission}
+					<EditPermissions
+						isEditing={isEditing}
+						isSaving={formRef.current?.formState.isSubmitting}
+						onEdit={handleEdit}
+						onDiscard={handleDiscard}
+						onSave={handleSave}
+					/>
+				</CardTitle>
+			</CardHeader>
 
-			<RolePermissionEditModal
-				adminAllPages={adminAllPages}
-				adminAllTabs={adminAllTabs}
-				data={data}
-				showFooterActions={false}
-				disabled={!isEditing}
-				formRef={formRef}
-				submitRef={submitRef}
-				onSuccess={() => setIsEditing(false)}
-			/>
-		</div>
+			<CardContent className="p-0">
+				<RolePermissionEditModal
+					adminAllPages={adminAllPages}
+					adminAllTabs={adminAllTabs}
+					data={data}
+					showFooterActions={false}
+					disabled={!isEditing}
+					formRef={formRef}
+					submitRef={submitRef}
+					onSuccess={() => setIsEditing(false)}
+				/>
+			</CardContent>
+		</Card>
 	);
 };
 

@@ -328,6 +328,7 @@ export interface IJobSummarySectionProps extends IJobEmployeeTableProps {
 	jobAddress?: string | null;
 	jobData: IDailyJob;
 	employeeAssignment: IJobEmployeeAssignment | undefined;
+	projectGpsData?: IDailyJob["projectGpsData"];
 }
 
 export interface IJobNotesSectionProps {

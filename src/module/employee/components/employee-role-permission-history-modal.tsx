@@ -3,15 +3,12 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HISTORY_TAB } from "@/module/employee/enums";
-import { IPermissions } from "@/module/employee/types";
 import RoleChangeHistoryList from "./role-change-history-list";
 import PermissionChangeHistoryList from "./permission-change-history-list";
-import CurrentPermissionTable from "./current-permission-table";
 
 interface EmployeeRolePermissionHistoryModalProps {
 	userId: string;
 	currentRole?: string;
-	permissions?: IPermissions[];
 }
 
 const TAB_TRIGGER_CLASS =
@@ -20,7 +17,6 @@ const TAB_TRIGGER_CLASS =
 export default function EmployeeRolePermissionHistoryModal({
 	userId,
 	currentRole,
-	permissions,
 }: EmployeeRolePermissionHistoryModalProps) {
 	const [activeTab, setActiveTab] = useState<HISTORY_TAB>(HISTORY_TAB.ROLE_CHANGE);
 
@@ -41,7 +37,6 @@ export default function EmployeeRolePermissionHistoryModal({
 				</TabsContent>
 
 				<TabsContent value={HISTORY_TAB.PERMISSION_CHANGE}>
-					<CurrentPermissionTable permissions={permissions} />
 					<PermissionChangeHistoryList userId={userId} />
 				</TabsContent>
 			</Tabs>

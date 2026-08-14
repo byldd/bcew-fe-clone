@@ -28,6 +28,7 @@ export default function EmployeeRolePermissionCard({
 	handleSelfScheduling,
 	handleFingerprintPermission,
 	handleMaterialRequestPermission,
+	handleCrateHandlerPermission,
 	handleMaterialRole,
 	handleQcPermission,
 	handleAsanaPermission,
@@ -73,7 +74,7 @@ export default function EmployeeRolePermissionCard({
 				<CardTitle className="mb-4 flex items-center justify-between text-xl font-semibold">
 					{tPeople.rolesAndPermission}
 					<span className="flex items-center gap-2">
-						<EmployeeRolePermissionHistoryTrigger userId={userId} currentRole={user?.role} permissions={permissions} />
+						<EmployeeRolePermissionHistoryTrigger userId={userId} currentRole={user?.role} />
 						{trigger}
 					</span>
 				</CardTitle>
@@ -121,6 +122,15 @@ export default function EmployeeRolePermissionCard({
 									<span className={user?.isMaterialRequestAllowed ? "text-gray-400" : "text-black"}>{tPeople.off}</span>
 									<Switch checked={user?.isMaterialRequestAllowed} onCheckedChange={handleMaterialRequestPermission} />
 									<span className={user?.isMaterialRequestAllowed ? "text-black" : "text-gray-400"}>{tPeople.on}</span>
+								</div>
+							</div>
+
+							<div className="font-medium text-brand-dark50">
+								<p className="mb-2">Crate Handler</p>
+								<div className="flex items-center gap-2">
+									<span className={user?.isCrateHandlerAllowed ? "text-gray-400" : "text-black"}>{tPeople.off}</span>
+									<Switch checked={user?.isCrateHandlerAllowed} onCheckedChange={handleCrateHandlerPermission} />
+									<span className={user?.isCrateHandlerAllowed ? "text-black" : "text-gray-400"}>{tPeople.on}</span>
 								</div>
 							</div>
 
@@ -253,6 +263,24 @@ export default function EmployeeRolePermissionCard({
 										}}
 									/>
 									<span className={user?.isMaterialRequestAllowed ? "text-black" : "text-gray-400"}>{tPeople.on}</span>
+								</div>
+							</div>
+
+							<div className="font-medium text-brand-dark50">
+								<p className="mb-2">Crate Handler</p>
+								<div className="flex items-center gap-2">
+									<span className={user?.isCrateHandlerAllowed ? "text-gray-400" : "text-black"}>{tPeople.off}</span>
+									<Switch
+										disabled={!isEditing}
+										checked={stagingConfiguration?.isCrateHandlerAllowed}
+										onCheckedChange={(value) => {
+											setStagingConfiguration((prev) => ({
+												...prev,
+												isCrateHandlerAllowed: value,
+											}));
+										}}
+									/>
+									<span className={user?.isCrateHandlerAllowed ? "text-black" : "text-gray-400"}>{tPeople.on}</span>
 								</div>
 							</div>
 

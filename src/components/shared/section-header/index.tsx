@@ -9,6 +9,7 @@ import BackButton from "@/components/common/back-button";
 interface HeaderProps {
 	title: string;
 	className?: string;
+	titleClassName?: string;
 	hideSidebarToggle?: boolean;
 	showBackButton?: boolean;
 	hamburgerClassName?: string;
@@ -19,6 +20,7 @@ interface HeaderProps {
 export default function SectionHeader({
 	title,
 	className,
+	titleClassName,
 	hideSidebarToggle = false,
 	hamburgerClassName = "",
 	showBackButton = false,
@@ -45,15 +47,19 @@ export default function SectionHeader({
 				)}
 
 				<h1
-					className={cn(
-						"font-bold text-brand-dark",
-						// base: 21px
-						"text-[21px] leading-[28px]",
-						// ≥1536px (2xl): 30px
-						"2xl:text-[30px] 2xl:leading-[38px]",
-						// ≥1920px (3xl): 52px
-						"[@media(min-width:1920px)]:text-[52px] [@media(min-width:1920px)]:leading-[62px]"
-					)}
+					className={
+						titleClassName
+							? cn("text-brand-dark", titleClassName)
+							: cn(
+									"font-bold text-brand-dark",
+									// base: 21px
+									"text-[21px] leading-[28px]",
+									// ≥1536px (2xl): 30px
+									"2xl:text-[30px] 2xl:leading-[38px]",
+									// ≥1920px (3xl): 52px
+									"[@media(min-width:1920px)]:text-[52px] [@media(min-width:1920px)]:leading-[62px]"
+								)
+					}
 				>
 					{title}
 				</h1>

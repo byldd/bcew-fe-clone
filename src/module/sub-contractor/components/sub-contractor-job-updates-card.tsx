@@ -10,6 +10,8 @@ import { formatDateToMMDDYYYY } from "@/module/schedule-management/time-logs-man
 import { extractUTCDayAndTime } from "@/module/job/utils";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
+import ImageModal from "@/components/shared/image-upload/image-modal";
+import { useModal } from "@/hooks/useModal";
 
 export interface ISubContractorJobUpdatesCardProps {
 	jobData: ISubContractorDailyJobDetailsResponse;
@@ -24,8 +26,18 @@ export function SubContractorJobUpdatesCard({
 }: ISubContractorJobUpdatesCardProps) {
 	const tEmployee = useTypedTranslations(NAMESPACE.EMPLOYEE);
 	const tAdmin = useTypedTranslations(NAMESPACE.ADMIN);
+	const { Modal, closeModal, openModal } = useModal();
+
+	const handleImageClick = (imageUrl: string) => {
+		openModal({
+			modalTitle: tAdmin.previewImage,
+			modalView: <ImageModal imageUrl={imageUrl} onClose={closeModal} />,
+			variant: "big",
+		});
+	};
 	return (
 		<div className="my-4 w-full space-y-[10px] rounded-[10px] border border-brand-dark10 bg-white py-3">
+			<Modal />
 			<div className="flex items-center justify-between">
 				<h3 className="pl-4 text-base font-medium">{tEmployee.jobUpdates}</h3>
 				<Button disabled={!isEditAllowed} onClick={handleEditButtonClick}>
@@ -59,6 +71,7 @@ export function SubContractorJobUpdatesCard({
 													src={image.url}
 													alt={`Job image ${i}`}
 													className="h-12 w-12 rounded-lg object-cover"
+													onClick={() => handleImageClick(image.url)}
 												/>
 											))
 										) : (

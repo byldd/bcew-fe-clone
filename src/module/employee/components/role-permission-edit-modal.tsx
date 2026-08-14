@@ -197,10 +197,11 @@ const RolePermissionEditModal = ({
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
+			<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
 				{/* Role Name */}
 				<div className="px-0.5">
 					<InputField
+						disabled={disabled}
 						label={tPmanagement.roleName}
 						value={form.watch("roleName")}
 						onChange={(e) => form.setValue("roleName", e.target.value)}

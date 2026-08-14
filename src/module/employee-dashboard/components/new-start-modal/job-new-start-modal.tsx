@@ -139,8 +139,8 @@ const JobNewStartModal: React.FC<IJobNewStartModalProps> = ({
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)}>
-				<div className="space-y-4 p-1">
-					<div className="flex flex-wrap gap-4 md:flex-1">
+				<div className="space-y-4 pt-4">
+					<div className="space-y-4">
 						{!isWarrantyJob && (
 							<FormField
 								control={form.control}

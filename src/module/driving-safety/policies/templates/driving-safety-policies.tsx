@@ -66,10 +66,9 @@ const DrivingSafetyPolicies = () => {
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-			<SectionHeader
-				title="Policies"
-				actions={
-					tab === POLICY_TAB.VIOLATIONS &&
+			<div className="flex flex-wrap items-center justify-between gap-3">
+				<SectionHeader title="Policies" />
+				{tab === POLICY_TAB.VIOLATIONS &&
 					data &&
 					(isEditing ? (
 						<div className="flex items-center gap-2">
@@ -77,26 +76,27 @@ const DrivingSafetyPolicies = () => {
 								Cancel
 							</Button>
 							<Button type="submit" variant="filled" loading={isSaving}>
-								<Check size={16} /> Save changes
+								<Check size={16} /> Save Changes
 							</Button>
 						</div>
 					) : (
 						<Button type="button" variant="filled" onClick={startEditing}>
 							Edit Policies
 						</Button>
-					))
-				}
-			/>
+					))}
+			</div>
 
 			<Tabs value={tab} onValueChange={(value) => setParams({ tab: value as POLICY_TAB })}>
-				<TabsList className="inline-flex h-10 w-full items-center justify-start gap-2 rounded-md bg-transparent p-0">
-					<TabsTrigger className={TAB_TRIGGER_CLASS} value={POLICY_TAB.VIOLATIONS}>
-						Driving Safety Violations
-					</TabsTrigger>
-					<TabsTrigger className={TAB_TRIGGER_CLASS} value={POLICY_TAB.HANDBOOK}>
-						Policy Handbook
-					</TabsTrigger>
-				</TabsList>
+				<div className="no-scrollbar overflow-x-auto pb-1">
+					<TabsList className="inline-flex h-10 min-w-max items-center justify-start gap-2 rounded-md bg-transparent p-0">
+						<TabsTrigger className={TAB_TRIGGER_CLASS} value={POLICY_TAB.VIOLATIONS}>
+							Driving Safety Violations
+						</TabsTrigger>
+						<TabsTrigger className={TAB_TRIGGER_CLASS} value={POLICY_TAB.HANDBOOK}>
+							Policy Handbook
+						</TabsTrigger>
+					</TabsList>
+				</div>
 
 				<TabsContent value={POLICY_TAB.VIOLATIONS} className="space-y-4">
 					{isPending && <p className="text-sm text-brand-grey">Loading policies...</p>}
@@ -106,11 +106,11 @@ const DrivingSafetyPolicies = () => {
 					)}
 
 					{data && (
-						<>
+						<div className="mt-4 space-y-4">
 							<ViolationTypesSection violationTypes={data.violationTypes} form={form} isEditing={isEditing} />
 							<PointThresholdsSection pointThresholds={data.pointThresholds} form={form} isEditing={isEditing} />
 							<PointReductionRewardsSection config={data.config} form={form} isEditing={isEditing} />
-						</>
+						</div>
 					)}
 				</TabsContent>
 

@@ -1,30 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { ALLOWED_DOCUMENT_FILE_TYPES, PDF_MIME_TYPE } from "@/utils/constants";
+import { ALLOWED_DOCUMENT_FILE_TYPES } from "@/utils/constants";
 import { FileText, Plus, X } from "lucide-react";
 import Image from "next/image";
 import React, { useRef } from "react";
-import ImageModal from "@/components/shared/image-upload/image-modal";
-import PdfModal from "@/components/shared/document-upload/pdf-modal";
-import { useModal } from "@/hooks/useModal";
+import { fileNameFromKeyFile, isImageFile, PreviewFile, useFilePreview } from "@/hooks/useFilePreview";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
 
-type UploadedFile = { keyFile: string; file?: File; url: string };
+type UploadedFile = PreviewFile;
 
 const SUPPORTED_EXTENSIONS_LABEL = "JPG, JPEG, PNG, HEIC, PDF, DOC";
-
-const fileNameFromKeyFile = (keyFile: string): string => keyFile.replace(/-\d+$/, "");
-
-const isImageFile = (image: UploadedFile): boolean => {
-	if (image.file) return image.file.type.startsWith("image/");
-	return /\.(jpe?g|png|heic|heif)$/i.test(fileNameFromKeyFile(image.keyFile));
-};
-
-const isPdfFile = (image: UploadedFile): boolean => {
-	if (image.file) return image.file.type === PDF_MIME_TYPE;
-	return /\.pdf$/i.test(fileNameFromKeyFile(image.keyFile));
-};
 
 // Same upload/delete/preview behavior as ImageUpload, but accepts PDFs/DOCs
 // alongside images (with a file-icon preview for non-image files) — kept as a
@@ -41,9 +27,8 @@ const DocumentUpload = ({
 	canDelete?: boolean;
 }) => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const { Modal, closeModal, openModal } = useModal();
+	const { Modal, openPreview } = useFilePreview();
 	const tEmployee = useTypedTranslations(NAMESPACE.EMPLOYEE);
-	const tAdmin = useTypedTranslations(NAMESPACE.ADMIN);
 
 	const handleFileAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const files = e.target.files;
@@ -59,29 +44,6 @@ const DocumentUpload = ({
 			];
 			onChange(updatedFiles);
 		}
-	};
-
-	const handleFileClick = (image: UploadedFile) => {
-		if (isImageFile(image)) {
-			openModal({
-				modalTitle: tAdmin.previewImage,
-				modalView: <ImageModal imageUrl={image.url} onClose={closeModal} />,
-				variant: "big",
-			});
-			return;
-		}
-
-		if (isPdfFile(image)) {
-			const fileName = fileNameFromKeyFile(image.keyFile);
-			openModal({
-				modalTitle: fileName,
-				modalView: <PdfModal fileUrl={image.url} fileName={fileName} />,
-				variant: "big",
-			});
-			return;
-		}
-
-		window.open(image.url, "_blank", "noopener,noreferrer");
 	};
 
 	const handleDeleteFile = (keyFile: string) => {
@@ -113,12 +75,12 @@ const DocumentUpload = ({
 									className="h-full w-full cursor-pointer object-cover"
 									width={94}
 									height={94}
-									onClick={() => handleFileClick(image)}
+									onClick={() => openPreview(image)}
 								/>
 							) : (
 								<button
 									type="button"
-									onClick={() => handleFileClick(image)}
+									onClick={() => openPreview(image)}
 									className="flex h-full w-full flex-col items-center justify-center gap-1 p-1"
 								>
 									<FileText className="h-6 w-6 text-brand-grey" />

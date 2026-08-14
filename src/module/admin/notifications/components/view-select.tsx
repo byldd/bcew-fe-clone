@@ -31,7 +31,7 @@ const ViewSelect = () => {
 					view: value as NOTIFICATION_VIEW,
 				});
 			}}
-			className="h-10 gap-2 rounded-[8px] border border-brand-dark10 bg-white px-4 font-inter text-sm font-medium text-brand-dark shadow-md"
+			className="h-10 gap-2 rounded-[8px] border border-brand-dark10 bg-white px-4 font-inter text-sm font-medium text-brand-dark shadow-sm"
 		/>
 	);
 };

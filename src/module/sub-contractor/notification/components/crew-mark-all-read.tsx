@@ -31,7 +31,7 @@ const CrewMarkAllRead = () => {
 		<Button
 			onClick={handleMarkAllRead}
 			disabled={data === 0 || markAllRead.isPending}
-			className="h-10 rounded-[8px] border-none bg-white text-brand-dark shadow-md"
+			className="h-10 rounded-[8px] border-none bg-white text-brand-dark shadow-sm"
 			size="sm"
 		>
 			Mark All as Read

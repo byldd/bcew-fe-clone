@@ -2,17 +2,34 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { INCIDENT_TYPE_TAB } from "../utils/enums";
+import { dateToUTCString, toDate } from "@/lib/utils/date";
+
+import { INCIDENT_REPORT_STATUS, INCIDENT_SEVERITY, INCIDENT_TYPE, INCIDENT_TYPE_TAB } from "../utils/enums";
 
 type IncidentReportsParams = {
 	tab: INCIDENT_TYPE_TAB;
 	search: string;
+	startDate: Date | null;
+	endDate: Date | null;
+	showResolvedClosed: boolean;
+	typeFilter: INCIDENT_TYPE[];
+	severityFilter: INCIDENT_SEVERITY[];
+	statusFilter: INCIDENT_REPORT_STATUS[];
 };
 
 const paramsKey: Record<keyof IncidentReportsParams, string> = {
 	tab: "tab",
 	search: "search",
+	startDate: "startDate",
+	endDate: "endDate",
+	showResolvedClosed: "showResolvedClosed",
+	typeFilter: "type",
+	severityFilter: "severity",
+	statusFilter: "status",
 };
+
+const asEnumList = <T extends string>(value: string | null, allowed: T[]): T[] =>
+	value ? value.split(",").filter((item): item is T => allowed.includes(item as T)) : [];
 
 export const useIncidentReportsParams = () => {
 	const searchParams = useSearchParams();
@@ -20,24 +37,48 @@ export const useIncidentReportsParams = () => {
 
 	const getParams = (): IncidentReportsParams => {
 		const paramTab = searchParams.get(paramsKey.tab) as INCIDENT_TYPE_TAB;
+		const paramStartDate = searchParams.get(paramsKey.startDate);
+		const paramEndDate = searchParams.get(paramsKey.endDate);
 
 		return {
 			tab: Object.values(INCIDENT_TYPE_TAB).includes(paramTab) ? paramTab : INCIDENT_TYPE_TAB.ALL,
 			search: searchParams.get(paramsKey.search) ?? "",
+			startDate: paramStartDate ? toDate(paramStartDate) : null,
+			endDate: paramEndDate ? toDate(paramEndDate) : null,
+			showResolvedClosed: searchParams.get(paramsKey.showResolvedClosed) === "true",
+			typeFilter: asEnumList(searchParams.get(paramsKey.typeFilter), Object.values(INCIDENT_TYPE)),
+			severityFilter: asEnumList(searchParams.get(paramsKey.severityFilter), Object.values(INCIDENT_SEVERITY)),
+			statusFilter: asEnumList(searchParams.get(paramsKey.statusFilter), Object.values(INCIDENT_REPORT_STATUS)),
 		};
 	};
 
 	const setParams = (params: Partial<IncidentReportsParams>) => {
-		const previous = getParams();
+		const merged = { ...getParams(), ...params };
 		const newParams = new URLSearchParams();
-
-		const merged = { ...previous, ...params };
 
 		if (merged.tab && merged.tab !== INCIDENT_TYPE_TAB.ALL) {
 			newParams.set(paramsKey.tab, merged.tab);
 		}
 		if (merged.search) {
 			newParams.set(paramsKey.search, merged.search);
+		}
+		if (merged.startDate) {
+			newParams.set(paramsKey.startDate, dateToUTCString(merged.startDate));
+		}
+		if (merged.endDate) {
+			newParams.set(paramsKey.endDate, dateToUTCString(merged.endDate));
+		}
+		if (merged.showResolvedClosed) {
+			newParams.set(paramsKey.showResolvedClosed, "true");
+		}
+		if (merged.typeFilter.length) {
+			newParams.set(paramsKey.typeFilter, merged.typeFilter.join(","));
+		}
+		if (merged.severityFilter.length) {
+			newParams.set(paramsKey.severityFilter, merged.severityFilter.join(","));
+		}
+		if (merged.statusFilter.length) {
+			newParams.set(paramsKey.statusFilter, merged.statusFilter.join(","));
 		}
 
 		router.replace(`?${newParams.toString()}`, { scroll: false });

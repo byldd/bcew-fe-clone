@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { FilePlus2 } from "lucide-react";
+import { FilePlus2, QrCode, Undo2 } from "lucide-react";
 import { routes } from "@/config/routes";
 import {
 	JobDetailsIconImage,
@@ -22,18 +22,37 @@ const quickActions = [
 	{ key: QUICK_ACTIONS.SUBMIT_PLAN_CHANGE, label: "Submit Plan Change", Icon: JobDetailsIconImage },
 ];
 
+const crateQuickActions = [
+	{
+		key: "scan-crate-received",
+		label: "Scan Crate Received",
+		Icon: QrCode,
+		href: routes.employee.crateManagementScanReceive,
+	},
+	{
+		key: "scan-crate-return",
+		label: "Scan Crate Return",
+		Icon: Undo2,
+		href: routes.employee.crateManagementScanReturn,
+	},
+];
+
 export function JobQuickActions({
 	assignmentId,
 	recnum,
 	tsknum,
+	isMaterialRequestAllowed,
+	isCrateHandlerAllowed,
 }: {
 	assignmentId: string;
 	recnum?: string | null;
 	tsknum?: string | null;
+	isMaterialRequestAllowed?: boolean;
+	isCrateHandlerAllowed?: boolean;
 }) {
 	const router = useRouter();
 	const { user } = useAuthStore();
-	const basePath = `/employee/job/${assignmentId}`;
+	const basePath = routes.employee.job(assignmentId);
 	const hasMaterialParams = typeof recnum === "string" && typeof tsknum === "string";
 
 	const isForeman = user?.role?.name?.toLowerCase() === E_ROLES.FOREMAN.toLowerCase();
@@ -43,12 +62,18 @@ export function JobQuickActions({
 		userType: user?.userType,
 	});
 
-	const visibleQuickActions = canSelectAddendum
-		? [
-				...quickActions,
-				{ key: QUICK_ACTIONS.SUBMIT_ADDENDUM, label: "Addendum Being Submitted to Office", Icon: FilePlus2 },
-			]
-		: quickActions;
+	const visibleMaterialActions = isMaterialRequestAllowed
+		? canSelectAddendum
+			? [
+					...quickActions,
+					{ key: QUICK_ACTIONS.SUBMIT_ADDENDUM, label: "Addendum Being Submitted to Office", Icon: FilePlus2 },
+				]
+			: quickActions
+		: [];
+
+	const visibleCrateActions = isCrateHandlerAllowed ? crateQuickActions : [];
+
+	const visibleQuickActions = [...visibleMaterialActions, ...visibleCrateActions];
 
 	return (
 		<div className="rounded-[10px] border border-brand-dark10 bg-white px-4 py-3">
@@ -59,17 +84,25 @@ export function JobQuickActions({
 						key={action.key}
 						variant="outline"
 						size="sm"
-						onClick={() =>
-							action.key === QUICK_ACTIONS.REQUEST_MATERIAL
-								? router.push(
-										routes.employee.materialSelection(
-											assignmentId,
-											hasMaterialParams ? recnum : undefined,
-											hasMaterialParams ? tsknum : undefined
-										)
+						onClick={() => {
+							if ("href" in action && action.href) {
+								router.push(action.href);
+								return;
+							}
+
+							if (action.key === QUICK_ACTIONS.REQUEST_MATERIAL) {
+								router.push(
+									routes.employee.materialSelection(
+										assignmentId,
+										hasMaterialParams ? recnum : undefined,
+										hasMaterialParams ? tsknum : undefined
 									)
-								: router.push(`${basePath}/${action.key}`)
-						}
+								);
+								return;
+							}
+
+							router.push(`${basePath}/${action.key}`);
+						}}
 						className="h-auto min-h-[64px] flex-col gap-1 whitespace-normal px-2 py-2 text-[10px] font-medium text-brand-dark"
 					>
 						<action.Icon className="h-4 w-4 shrink-0" />

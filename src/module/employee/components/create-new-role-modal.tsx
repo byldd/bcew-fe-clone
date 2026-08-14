@@ -159,7 +159,7 @@ export const CreateNewRoleModal = ({ onClose, handleSuccessfulRoleCreation }: IC
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(handleCreateRole)} className="space-y-5">
 				{/* Role Name */}
-				<div className="px-0.5">
+				<div className="">
 					<InputField
 						label={tPmanagement.roleName}
 						value={form.watch("roleName")}
@@ -228,7 +228,7 @@ export const CreateNewRoleModal = ({ onClose, handleSuccessfulRoleCreation }: IC
 
 				{/* Working Hours */}
 				<div className="space-y-3 border-t pt-4">
-					<p className="text-sm font-semibold text-brand-dark">{tPmanagement.roleStandardWorkingHours}</p>
+					<p className="text-lg font-medium text-brand-dark">{tPmanagement.roleStandardWorkingHours}</p>
 					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<div>
 							<p className="mb-1 text-sm text-brand-dark60">{tPmanagement.dayStartTime}</p>
@@ -264,7 +264,7 @@ export const CreateNewRoleModal = ({ onClose, handleSuccessfulRoleCreation }: IC
 						<RolePagePermissions />
 					</>
 				) : (
-					<div className="space-y-2 border-t pt-4">
+					<div className="space-y-2 border-t">
 						<p className="text-sm font-semibold text-brand-dark">{tPmanagement.module}</p>
 						<div className="overflow-x-auto">
 							<Table>

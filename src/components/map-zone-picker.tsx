@@ -73,7 +73,6 @@ export default function MapZonePicker() {
 	};
 
 	const handleCircle = (circle: google.maps.Circle) => {
-		console.log("circle", circle);
 		const center = circle.getCenter();
 		const radius = circle.getRadius();
 
@@ -93,7 +92,6 @@ export default function MapZonePicker() {
 		// alert("Zone created!");
 	};
 
-	console.log("zonePoints", zonePoints);
 	return (
 		<LoadScript googleMapsApiKey={"AIzaSyB5E433wd4ga9hI_X59nZq88OwhOwKG5-M"} libraries={libraries}>
 			<div style={{ height: "90vh", width: "100%" }}>

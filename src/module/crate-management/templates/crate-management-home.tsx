@@ -45,7 +45,7 @@ export default function CrateManagementHome() {
 	}, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
 	return (
-		<div className="min-h-screen bg-white px-4 py-4">
+		<div className="min-h-screen bg-brand-bgLightgrey px-4 py-4">
 			<div className="mb-4 flex items-center gap-2">
 				<BackButton />
 				<h1 className="text-base font-semibold text-gray-900">Crate Management</h1>
@@ -63,7 +63,7 @@ export default function CrateManagementHome() {
 									variant="ghost"
 									onClick={() => action.href && router.push(action.href)}
 									disabled={!action.href}
-									className="h-auto w-full flex-col items-start gap-3 whitespace-normal rounded-xl p-4 text-left"
+									className="h-auto w-full flex-col items-center gap-3 whitespace-normal rounded-xl p-4 text-center"
 								>
 									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
 										<Icon className="h-5 w-5 text-gray-700" />

@@ -2,13 +2,13 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, RotateCcw, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { extractCrateId } from "../utils/extract-crate-id";
 import { scanFileWithTimeout, ScanLine } from "../utils";
 
-const MIN_SCANNING_DISPLAY_MS = 3000;
+const MIN_SCANNING_DISPLAY_MS = 6000;
 
 interface QRScannerProps {
 	isActive: boolean;
@@ -21,6 +21,7 @@ export default function QRScanner({ isActive, onScan }: QRScannerProps) {
 	const startPromiseRef = useRef<Promise<unknown> | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const hasScannedRef = useRef(false);
+	const cameraTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const [cameraError, setCameraError] = useState<string | null>(null);
 	const [detectedCrateId, setDetectedCrateId] = useState<string | null>(null);
@@ -28,15 +29,47 @@ export default function QRScanner({ isActive, onScan }: QRScannerProps) {
 	const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
 	const [isScanningFile, setIsScanningFile] = useState(false);
 
+	const clearCameraTimeout = () => {
+		if (cameraTimeoutRef.current) {
+			clearTimeout(cameraTimeoutRef.current);
+			cameraTimeoutRef.current = null;
+		}
+	};
+
 	const startCamera = useCallback((scanner: Html5Qrcode) => {
+		// html5-qrcode samples its decode canvas from the video element's clientWidth/clientHeight
+		// vs. its actual videoWidth/videoHeight. Our CSS forces the video into a fixed-height,
+		// object-cover box, so without requesting a matching aspectRatio here the camera's native
+		// stream ratio never lines up with the rendered box — every frame samples the wrong region
+		// and decoding silently fails forever on real devices (frame misses are intentionally ignored below).
+		const container = document.getElementById(containerId);
+		const aspectRatio =
+			container && container.clientHeight ? container.clientWidth / container.clientHeight : undefined;
+
+		clearCameraTimeout();
+		cameraTimeoutRef.current = setTimeout(() => {
+			if (hasScannedRef.current) return;
+			hasScannedRef.current = true;
+			scanner.stop().catch(() => {});
+			setFileScanError("Please scan a QR image.");
+		}, MIN_SCANNING_DISPLAY_MS);
+
 		const startPromise = scanner
 			.start(
 				{ facingMode: "environment" },
-				{ fps: 10, qrbox: { width: 220, height: 220 } },
+				{ fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio },
 				(decodedText) => {
 					if (hasScannedRef.current) return;
-					hasScannedRef.current = true;
 					const crateId = extractCrateId(decodedText);
+					if (!crateId) {
+						hasScannedRef.current = true;
+						clearCameraTimeout();
+						setFileScanError("Please scan the correct QR code.");
+						scanner.stop().catch(() => {});
+						return;
+					}
+					hasScannedRef.current = true;
+					clearCameraTimeout();
 					setDetectedCrateId(crateId);
 					scanner.stop().catch(() => {});
 					onScan(crateId);
@@ -46,6 +79,7 @@ export default function QRScanner({ isActive, onScan }: QRScannerProps) {
 				}
 			)
 			.catch(() => {
+				clearCameraTimeout();
 				setCameraError("Camera access denied. Please allow camera access or use manual entry.");
 			});
 
@@ -67,12 +101,22 @@ export default function QRScanner({ isActive, onScan }: QRScannerProps) {
 		startCamera(scanner);
 
 		return () => {
+			clearCameraTimeout();
 			if (scanner.isScanning) {
 				scanner.stop().catch(() => {});
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isActive, containerId]);
+
+	const handleRetryCamera = () => {
+		const scanner = scannerRef.current;
+		if (!scanner) return;
+
+		setFileScanError(null);
+		hasScannedRef.current = false;
+		startCamera(scanner);
+	};
 
 	const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -82,6 +126,7 @@ export default function QRScanner({ isActive, onScan }: QRScannerProps) {
 		const scanner = scannerRef.current;
 		if (!scanner) return;
 
+		clearCameraTimeout();
 		setCameraError(null);
 		setFileScanError(null);
 		setDetectedCrateId(null);
@@ -112,6 +157,13 @@ export default function QRScanner({ isActive, onScan }: QRScannerProps) {
 			const crateId = extractCrateId(decodedText);
 
 			await waitForMinDisplayTime();
+
+			if (!crateId) {
+				setFileScanError("Please upload the correct QR code.");
+				if (isActive) startCamera(scanner);
+				return;
+			}
+
 			setDetectedCrateId(crateId);
 			onScan(crateId);
 		} catch {
@@ -140,7 +192,7 @@ export default function QRScanner({ isActive, onScan }: QRScannerProps) {
 				{!cameraError && isScanningFile && filePreviewUrl && (
 					<div className="absolute inset-0">
 						{/* eslint-disable-next-line @next/next/no-img-element */}
-						<img src={filePreviewUrl} alt="Uploaded QR" className="h-64 w-full object-contain" />
+						<img src={filePreviewUrl} alt="Uploaded QR" className="h-64 w-full rounded-xl object-contain" />
 						<ScanLine />
 						<div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
 							<div className="flex items-center gap-1.5 rounded-full bg-black/60 px-4 py-1">
@@ -166,11 +218,25 @@ export default function QRScanner({ isActive, onScan }: QRScannerProps) {
 				{!cameraError && !isScanningFile && !detectedCrateId && fileScanError && filePreviewUrl && (
 					<div className="absolute inset-0">
 						{/* eslint-disable-next-line @next/next/no-img-element */}
-						<img src={filePreviewUrl} alt="Uploaded QR" className="h-64 w-full object-contain opacity-60" />
+						<img src={filePreviewUrl} alt="Uploaded QR" className="h-64 w-full rounded-xl object-contain opacity-60" />
 					</div>
 				)}
 
-				{!cameraError && !isScanningFile && !detectedCrateId && !(fileScanError && filePreviewUrl) && (
+				{!cameraError && !isScanningFile && !detectedCrateId && fileScanError && !filePreviewUrl && (
+					<div className="absolute inset-0 flex items-center justify-center bg-black/40">
+						<Button
+							type="button"
+							variant="outline"
+							onClick={handleRetryCamera}
+							className="h-auto gap-1.5 rounded-full border-white/40 bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/20"
+						>
+							<RotateCcw className="h-4 w-4" />
+							Retry
+						</Button>
+					</div>
+				)}
+
+				{!cameraError && !isScanningFile && !detectedCrateId && !fileScanError && (
 					<>
 						<ScanLine />
 						<div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
@@ -186,7 +252,7 @@ export default function QRScanner({ isActive, onScan }: QRScannerProps) {
 				type="button"
 				variant="outline"
 				onClick={() => fileInputRef.current?.click()}
-				className="mt-3 h-auto w-full gap-1.5 rounded-xl border-dashed border-gray-300 py-2.5 text-xs font-medium text-gray-500"
+				className="mt-3 h-auto w-full gap-1.5 rounded-xl border-dashed border-gray-300 bg-white py-2.5 text-xs font-medium text-gray-500"
 			>
 				<Upload className="h-3.5 w-3.5" />
 				Upload QR Code Image

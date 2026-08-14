@@ -9,7 +9,7 @@ import { FormLabelRequired } from "@/components/ui/formLabelrequired";
 import { IDrivingSafetyViolationType } from "@/module/driving-safety/policies/types";
 
 import { IAccidentReviewSchema } from "../utils/accident-review-schema";
-import { buildViolationTypeField, overrideReasonField } from "../utils/accident-review-fields";
+import { buildViolationTypeField } from "../utils/accident-review-fields";
 import { DASH } from "../utils/accident-review-display";
 import { ReviewCard } from "./review-card";
 
@@ -21,12 +21,14 @@ const AccidentViolationAssessment = ({
 	savedType,
 	savedPoints,
 	disabled,
+	className,
 }: {
 	form: UseFormReturn<IAccidentReviewSchema>;
 	violationTypes: IDrivingSafetyViolationType[];
 	savedType: SavedViolationType | null;
 	savedPoints: number | null;
 	disabled: boolean;
+	className?: string;
 }) => {
 	const selectedId = useWatch({ control: form.control, name: "violationTypeId" });
 
@@ -45,16 +47,25 @@ const AccidentViolationAssessment = ({
 	}));
 
 	return (
-		<ReviewCard title="Violation Assessment">
-			<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-				<FormInputWrapper form={form} fieldConfig={buildViolationTypeField(options)} disabled={disabled} />
+		<ReviewCard title="Violation Assessment" className={className}>
+			<div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+				{disabled ? (
+					<div className="space-y-1.5">
+						<FormLabelRequired
+							label="Violation type"
+							required
+							className="font-inter text-sm font-normal text-brand-grey"
+						/>
+						<Input value={selected?.name ?? DASH} readOnly disabled />
+					</div>
+				) : (
+					<FormInputWrapper form={form} fieldConfig={buildViolationTypeField(options)} />
+				)}
 
 				<div className="space-y-1.5">
-					<FormLabelRequired label="Point weight" className="pb-1 font-inter text-sm font-normal text-brand-grey" />
-					<Input value={pointWeight} readOnly disabled />
+					<FormLabelRequired label="Point Weight" className="font-inter text-sm font-normal text-brand-grey" />
+					<Input value={pointWeight} readOnly disabled className="h-10 rounded-[8px]" />
 				</div>
-
-				<FormInputWrapper form={form} fieldConfig={overrideReasonField} disabled={disabled} />
 			</div>
 		</ReviewCard>
 	);

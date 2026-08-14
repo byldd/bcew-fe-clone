@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils/utils";
 import { ACCESS_LEVEL } from "@/module/employee/enums";
 import { useScheduleParams } from "@/module/schedule-management/weekly-schedule-management/hooks/useScheduleParams";
 import useAuthStore from "@/store/auth-store";
-import { ROLES, SidebarItem } from "@/types";
+import { NestedSidebarItem, ROLES } from "@/types";
 import { MODULE } from "@/utils/enums";
 
-const filterSidebarItems = (items: SidebarItem[], modules: Record<MODULE, ACCESS_LEVEL>) => {
+const filterSidebarItems = (items: NestedSidebarItem[], modules: Record<MODULE, ACCESS_LEVEL>): NestedSidebarItem[] => {
 	return items
 		.map((item) => {
 			if (!("items" in item)) {
@@ -17,17 +17,18 @@ const filterSidebarItems = (items: SidebarItem[], modules: Record<MODULE, ACCESS
 				return null;
 			}
 
-			const filteredChildren = item.items.filter((sub) => !sub.moduleKey || modules[sub.moduleKey]);
+			// Recurse so nested sub-groups are filtered too, and an empty group drops out.
+			const filteredChildren = filterSidebarItems(item.items, modules);
 
 			if (filteredChildren.length === 0) return null;
 
 			return { ...item, items: filteredChildren };
 		})
-		.filter(Boolean) as SidebarItem[];
+		.filter(Boolean) as NestedSidebarItem[];
 };
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-	items: SidebarItem[];
+	items: NestedSidebarItem[];
 };
 
 const AppSidebar = ({ items, ...props }: AppSidebarProps) => {

@@ -14,6 +14,7 @@ export function JobSummarySection({
 	jobEmployeeAssignments,
 	handleYouTag,
 	handleTaskLeader,
+	projectGpsData,
 }: IJobSummarySectionProps) {
 	return (
 		<div className="rounded-[10px] border border-brand-dark10 bg-white px-4 py-3">
@@ -39,7 +40,7 @@ export function JobSummarySection({
 					</>
 				)}
 
-				<JobOverviewCard jobData={jobData} />
+				<JobOverviewCard jobData={jobData} projectGpsData={projectGpsData} />
 
 				<Separator className="bg-brand-dark10" />
 

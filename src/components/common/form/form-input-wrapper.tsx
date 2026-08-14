@@ -29,7 +29,7 @@ export function FormInputWrapper<TData extends FieldValues>({
 					data-invalid={fieldState.invalid}
 					data-error-anchor={fieldConfig.name}
 					className={cn(
-						"gap-1.5",
+						"gap-2",
 						"data-[invalid=true]:[&_input]:!border data-[invalid=true]:[&_input]:!border-brand-red",
 						"data-[invalid=true]:[&_textarea]:!border data-[invalid=true]:[&_textarea]:!border-brand-red",
 						wrapperClassName
@@ -37,19 +37,20 @@ export function FormInputWrapper<TData extends FieldValues>({
 				>
 					<div
 						className={cn(
+							"space-y-1",
 							isHorizontal && "flex items-center justify-between gap-4",
 							labelPosition === LABEL_POSITION.RIGHT && "flex-row-reverse"
 						)}
 					>
-						<div>
+						<div className="space-y-1.5">
 							<FormLabelRequired
 								htmlFor={field.name}
 								label={displayLabel}
 								required={isRequired}
-								className="pb-1 font-inter text-sm font-normal text-brand-grey"
+								className="font-inter text-sm font-normal text-brand-grey"
 							/>
 							{fieldConfig.description && (
-								<FormDescription className="rounded-[10px] text-xs text-brand-grey">
+								<FormDescription className="h-10 rounded-[8px] text-xs text-brand-grey">
 									{fieldConfig.description}
 								</FormDescription>
 							)}

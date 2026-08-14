@@ -18,12 +18,8 @@ export const buildSidebarPageTree = (pages: IGetAdminSidebarPages["data"]): ISid
 	const nodeById = new Map<string, ISidebarPageNode>(pages.map((page) => [page.id, { ...page, children: [] }]));
 	const roots: ISidebarPageNode[] = [];
 
-	console.log("nodeById", nodeById);
-
 	nodeById.forEach((node) => {
 		const parent = node.parentPageId ? nodeById.get(node.parentPageId) : undefined;
-
-		// console.log("paren", node.parentPageId);
 
 		if (parent) {
 			parent.children.push(node);
@@ -31,8 +27,6 @@ export const buildSidebarPageTree = (pages: IGetAdminSidebarPages["data"]): ISid
 			roots.push(node);
 		}
 	});
-
-	console.log("root", roots);
 
 	return filterAccessiblePages(roots);
 };

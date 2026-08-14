@@ -15,7 +15,7 @@ import ProfileModal from "@/components/common/profile-modal";
 import Image from "next/image";
 import useAuthStore from "@/store/auth-store";
 import { LOGIN_MODE } from "@/utils/enums";
-import { loginParamKey } from "@/utils/constants";
+import { AUTH_QUERY_PARAM } from "@/module/auth/utils/constants";
 import { ROLES } from "@/types";
 import ReportTechnicalIssue from "@/module/employee-technical-issue/report-technical-bug/components/report-technical-issue";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
@@ -78,7 +78,7 @@ export function SubContractorDashboardHeader() {
 
 		if (subcontractorCrew) {
 			const url = new URL(routes.signIn, window.location.origin);
-			url.searchParams.set(loginParamKey, LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER);
+			url.searchParams.set(AUTH_QUERY_PARAM.LOGIN, LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER);
 			router.replace(url.toString());
 			return;
 		}
@@ -110,7 +110,9 @@ export function SubContractorDashboardHeader() {
 		<div className="fixed z-[2] w-full bg-brand-bgLightgrey px-4 py-2">
 			<div className="flex items-center justify-between">
 				{/* Left - Logo */}
-				<div className="relative z-10 my-4"></div>
+				<div className="relative z-10 my-4">
+					<Image src="/assets/png/logo1.png" alt="Company Logo" width={160} height={120} />
+				</div>
 
 				{/* Right - Icons and Avatar */}
 

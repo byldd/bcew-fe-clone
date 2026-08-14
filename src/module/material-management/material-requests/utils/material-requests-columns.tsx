@@ -46,7 +46,6 @@ export const useMaterialRequestColumns = (props: MaterialRequestColumnsProps) =>
 		isForeman = false,
 		currentUserId = null,
 		userAssignRole = null,
-		onMissingItemRespond,
 	} = props;
 
 	const isAssignedToCurrentUser = (row: MaterialRequestRow) =>
@@ -629,23 +628,6 @@ export const useMaterialRequestColumns = (props: MaterialRequestColumnsProps) =>
 			filterFn: booleanFilterFn,
 			cell: ({ row }) => {
 				const rowId = row.original.id;
-				const isMissingItem = row.original.typeOfRequest === MATERIAL_REQUEST_TYPE.MISSING_ITEM;
-
-				if (isMissingItem) {
-					return (
-						<div className="flex items-center justify-center">
-							<Button
-								type="button"
-								variant="link"
-								className="h-auto p-0 text-xs font-normal text-brand-dark underline hover:text-brand-dark/80"
-								onClick={() => onMissingItemRespond?.(row.original.missingItemOriginalId ?? rowId)}
-							>
-								Respond
-							</Button>
-						</div>
-					);
-				}
-
 				const checked = getRejectedValue(row.original) === true;
 				return (
 					<div className="flex items-center justify-center gap-1">

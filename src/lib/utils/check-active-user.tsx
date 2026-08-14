@@ -2,9 +2,9 @@
 
 import { routes } from "@/config/routes";
 import { clearCookies } from "@/module/auth/utils/helpers";
+import { AUTH_QUERY_PARAM } from "@/module/auth/utils/constants";
 import { useGetUserData } from "@/module/profile/hooks/useProfile";
 import useAuthStore from "@/store/auth-store";
-import { loginParamKey } from "@/utils/constants";
 import { LOGIN_MODE } from "@/utils/enums";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useCallback } from "react";
@@ -24,7 +24,7 @@ export default function CheckActiveStatus() {
 
 		// Sub-contractor Crew Leader login
 		if (pathname?.startsWith(routes.subContractor.crewLeaderRoot)) {
-			return `${routes.signIn}?${loginParamKey}=${LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER}`;
+			return `${routes.signIn}?${AUTH_QUERY_PARAM.LOGIN}=${LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER}`;
 		}
 
 		return routes.signIn;

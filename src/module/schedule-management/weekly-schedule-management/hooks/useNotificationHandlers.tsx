@@ -13,6 +13,8 @@ import { toFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
 import RoleUpdateHistoryDetails from "@/module/employee/components/role-update-history-deatils";
 import UserPageUpdateHistoryDetails from "@/module/employee/components/user-page-update-history-details";
+import VehicleBreakdownReviewModal from "@/module/driving-safety/incident-reports/components/vehicle-breakdown-review-modal";
+import ViolationReviewModal from "@/module/driving-safety/incident-reports/components/violation-review-modal";
 
 /**
  * Admin Notification Handlers
@@ -284,6 +286,58 @@ export const useAdminNotificationHandlers = ({
 				if (parsedData?.roleId) return;
 
 				router.push(routes.admin.roleDetails(parsedData.roleId));
+				return;
+
+			case NOTIFICATION_KEY.VEHICLE_ACCIDENT_REPORTED:
+			case NOTIFICATION_KEY.VEHICLE_ACCIDENT_PERSON_STRUCK:
+			case NOTIFICATION_KEY.VEHICLE_ACCIDENT_INFO_RECEIVED:
+			case NOTIFICATION_KEY.VEHICLE_ACCIDENT_MARKED_FOR_PRESIDENT_REVIEW:
+			case NOTIFICATION_KEY.VEHICLE_ACCIDENT_PENDING_PRESIDENT_REVIEW:
+			case NOTIFICATION_KEY.VEHICLE_ACCIDENT_INTERNALLY_RESOLVED:
+			case NOTIFICATION_KEY.VEHICLE_ACCIDENT_READY_FOR_INSURANCE:
+			case NOTIFICATION_KEY.VEHICLE_ACCIDENT_INSURANCE_SUBMITTED:
+			case NOTIFICATION_KEY.DRUG_SCREEN_REQUIRED_COORDINATOR:
+			case NOTIFICATION_KEY.DRUG_SCREEN_REQUIRED_ADMIN:
+				if (!parsedData?.vehicleAccidentReportId) return;
+				router.push(routes.admin.drivingSafetyAccidentReview(parsedData.vehicleAccidentReportId));
+				return;
+
+			case NOTIFICATION_KEY.VEHICLE_BREAKDOWN_REPORTED:
+				if (!parsedData?.vehicleBreakdownReportId || !openModal || !closeModal) return;
+				openModal({
+					modalTitle: "Vehicle Breakdown Report",
+					modalView: (
+						<VehicleBreakdownReviewModal breakdownId={parsedData.vehicleBreakdownReportId} onClose={closeModal} />
+					),
+				});
+				return;
+
+			// Every job site safety notification opens the record's own review page,
+			// so there is nothing to hunt for in the list.
+			case NOTIFICATION_KEY.JOB_SITE_INJURY_REPORTED:
+			case NOTIFICATION_KEY.JOB_SITE_SAFETY_REPORT_CREATED_BY_ADMIN:
+			case NOTIFICATION_KEY.JOB_SITE_SAFETY_VIOLATION_REPORTED:
+			case NOTIFICATION_KEY.JOB_SITE_SAFETY_MARKED_FOR_PRESIDENT_REVIEW:
+			case NOTIFICATION_KEY.JOB_SITE_SAFETY_PENDING_PRESIDENT_REVIEW:
+			case NOTIFICATION_KEY.JOB_SITE_SAFETY_INTERNALLY_RESOLVED:
+			case NOTIFICATION_KEY.JOB_SITE_SAFETY_RESOLVED:
+			case NOTIFICATION_KEY.JOB_SITE_SAFETY_CLOSED_FOR_TECHNICIAN:
+				if (parsedData?.jobSiteInjuryReportId) {
+					router.push(routes.admin.jobSiteSafetyInjuryReview(parsedData.jobSiteInjuryReportId));
+					return;
+				}
+				if (parsedData?.jobSiteSafetyViolationId) {
+					router.push(routes.admin.jobSiteSafetyViolationReview(parsedData.jobSiteSafetyViolationId));
+				}
+				return;
+
+			case NOTIFICATION_KEY.DRIVING_SAFETY_VIOLATION_REPORTED:
+				if (!parsedData?.drivingSafetyViolationReportId || !openModal) return;
+				openModal({
+					modalTitle: "Safety Violation Report",
+					modalView: <ViolationReviewModal violationId={parsedData.drivingSafetyViolationReportId} />,
+				});
+				return;
 
 			default:
 				return;

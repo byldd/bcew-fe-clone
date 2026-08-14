@@ -6,7 +6,7 @@ import { IoChevronBack } from "react-icons/io5";
 const BackButton = () => {
 	const router = useRouter();
 	return (
-		<Button onClick={() => router.back()} variant={"ghost"} size={"icon"} className="size-8">
+		<Button type="button" onClick={() => router.back()} variant={"ghost"} size={"icon"} className="size-8">
 			<IoChevronBack className="!size-6" />
 		</Button>
 	);

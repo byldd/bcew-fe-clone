@@ -50,6 +50,7 @@ export const useGetEmployeeData = (startDate: string) => {
 export const useEmployeeSchedules = (filters: IGetEmployeeScheduleFilter) => {
 	return useQuery({
 		queryKey: ["employee-schedule", filters],
+		enabled: !!filters.startDate,
 		queryFn: async () => {
 			const { data } = await apiClient.get<IApiResponse<IEmployeeScheduleItem[]>>("/employee/schedule", {
 				params: filters,
@@ -251,6 +252,7 @@ export const useUpdateEmployeePauseTimes = () => {
 export const useEmployeeTodayRoster = (filters: { date?: Date | string }) => {
 	return useQuery({
 		queryKey: ["employee-today-roster", filters],
+		enabled: !!filters.date,
 		queryFn: async () => {
 			const { data } = await apiClient.get<IApiResponse<IRoster>>("/employee/schedule/my/roster/day", {
 				params: filters,

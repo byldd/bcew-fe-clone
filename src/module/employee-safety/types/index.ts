@@ -85,7 +85,9 @@ export type IVehicleBreakdownPayload = {
 export type IAccidentReportDetail = {
 	id: string;
 	status: INCIDENT_REPORT_STATUS;
+	requestedSections: string | null;
 	onJobSite: boolean | null;
+	jobSiteType: string | null;
 	anotherVehicleInvolved: boolean;
 	personStruck: boolean;
 	truckNumber: string | null;
@@ -97,35 +99,54 @@ export type IAccidentReportDetail = {
 	weather: string | null;
 	describeAccident: string | null;
 	damageToBcewVehicle: string | null;
-	damageToOtherProperty: string | null;
 	policeContacted: boolean;
 	policeDepartment: string | null;
 	policeReportNumber: string | null;
-	bcewVehicleTowed: boolean;
+	bcewVehicleTowed: boolean | null;
 	towProviderName: string | null;
 	towCostOnSpot: string | number | null;
-	otherVehicleTowed: boolean;
+	otherVehicleTowed: boolean | null;
 	otherVehicleTowCost: string | number | null;
-	vehicleImpounded: boolean;
+	vehicleImpounded: boolean | null;
 	impoundLotCost: string | number | null;
 	impoundReleaseCharges: string | number | null;
 	medicalDrugScreen: string;
+	drugScreenNeeded: boolean | null;
+	medicalCareNeeded: boolean | null;
 	drugScreenLocation: string | null;
 	medicalTreatmentLocation: string | null;
 	isMedicalTreatmentLocationOther: boolean;
 	isConfirmedAccurate: boolean;
-	otherVehicle: {
-		refusedToProvideInfo: boolean;
+	otherVehicleCount: number | null;
+	otherVehicles: {
+		orderIndex: number;
 		make: string | null;
 		model: string | null;
 		whatWasStruck: string | null;
 		vin: string | null;
 		driverFullName: string | null;
 		driverLicenseNumber: string | null;
-		driverPhoneNumber: string | null;
-		insuranceCompany: string | null;
-		policyNumber: string | null;
-		images: IAccidentImagePayload[];
+		refusedDriverLicense: boolean;
+		refusedInsuranceCard: boolean;
+		refusedDriverLicensePhoto: boolean;
+		images: (IAccidentImagePayload & { category: string | null })[];
+	}[];
+	personInvolved: {
+		whoWasStruck: string | null;
+		employeeId: string | null;
+		employeeInjured: boolean | null;
+		fullName: string | null;
+		phoneNumber: string | null;
+		injuryDescription: string | null;
+	} | null;
+	propertyDamage: {
+		anotherCompanyProperty: boolean | null;
+		builderProperty: boolean | null;
+		homeownerProperty: boolean | null;
+		companyName: string | null;
+		contactPersonName: string | null;
+		contactPhoneNumber: string | null;
+		otherInformation: string | null;
 	} | null;
 	injury: {
 		bodyPartInjured: string;
@@ -173,10 +194,29 @@ export type IOtherVehiclePayload = {
 	vin?: string | null;
 	driverFullName?: string | null;
 	driverLicenseNumber?: string | null;
-	driverPhoneNumber?: string | null;
-	insuranceCompany?: string | null;
-	policyNumber?: string | null;
-	images?: IAccidentImagePayload[];
+	refusedDriverLicense?: boolean;
+	refusedInsuranceCard?: boolean;
+	refusedDriverLicensePhoto?: boolean;
+	images?: (IAccidentImagePayload & { category: string })[];
+};
+
+export type IPersonInvolvedPayload = {
+	whoWasStruck?: string | null;
+	employeeId?: string | null;
+	employeeInjured?: boolean | null;
+	fullName?: string | null;
+	phoneNumber?: string | null;
+	injuryDescription?: string | null;
+};
+
+export type IPropertyDamagePayload = {
+	anotherCompanyProperty?: boolean | null;
+	builderProperty?: boolean | null;
+	homeownerProperty?: boolean | null;
+	companyName?: string | null;
+	contactPersonName?: string | null;
+	contactPhoneNumber?: string | null;
+	otherInformation?: string | null;
 };
 
 export type IInjuryPayload = {
@@ -194,7 +234,9 @@ export type IInjuryPayload = {
 
 export type ISaveAccidentPayload = {
 	onJobSite?: boolean | null;
+	jobSiteType?: string | null;
 	anotherVehicleInvolved?: boolean;
+	otherVehicleCount?: number | null;
 	personStruck?: boolean;
 
 	truckNumber?: string | null;
@@ -208,18 +250,17 @@ export type ISaveAccidentPayload = {
 
 	describeAccident?: string | null;
 	damageToBcewVehicle?: string | null;
-	damageToOtherProperty?: string | null;
 
 	policeContacted?: boolean;
 	policeDepartment?: string | null;
 	policeReportNumber?: string | null;
 
-	bcewVehicleTowed?: boolean;
+	bcewVehicleTowed?: boolean | null;
 	towProviderName?: string | null;
 	towCostOnSpot?: number | null;
-	otherVehicleTowed?: boolean;
+	otherVehicleTowed?: boolean | null;
 	otherVehicleTowCost?: number | null;
-	vehicleImpounded?: boolean;
+	vehicleImpounded?: boolean | null;
 	impoundLotCost?: number | null;
 	impoundReleaseCharges?: number | null;
 
@@ -230,7 +271,9 @@ export type ISaveAccidentPayload = {
 
 	isConfirmedAccurate?: boolean;
 
-	otherVehicle?: IOtherVehiclePayload | null;
+	otherVehicles?: IOtherVehiclePayload[] | null;
+	personInvolved?: IPersonInvolvedPayload | null;
+	propertyDamage?: IPropertyDamagePayload | null;
 	injury?: IInjuryPayload | null;
 	photos?: (IAccidentImagePayload & { category: string })[];
 };
@@ -263,6 +306,7 @@ export type IJobSiteInjuryReportDetail = {
 	treatmentStartDate: string | null;
 	treatmentEndDate: string | null;
 	doctorsMedics: string | null;
+	drugScreenLocation: string | null;
 	immediateAction: string | null;
 	permanentSolution: string | null;
 	isConfirmedAccurate: boolean;
@@ -284,6 +328,7 @@ export type ISaveJobSiteInjuryPayload = {
 	treatmentStartDate?: string | null;
 	treatmentEndDate?: string | null;
 	doctorsMedics?: string | null;
+	drugScreenLocation?: string | null;
 
 	immediateAction?: string | null;
 	permanentSolution?: string | null;

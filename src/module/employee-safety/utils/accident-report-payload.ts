@@ -1,7 +1,16 @@
-import { VEHICLE_ACCIDENT_PHOTO_CATEGORY, YES_NO } from "../enums";
+import { OTHER_VEHICLE_IMAGE_CATEGORY, PERSON_STRUCK_TYPE, VEHICLE_ACCIDENT_PHOTO_CATEGORY, YES_NO } from "../enums";
 import { IFileUploadable } from "@/types/file-upload";
-import { IAccidentImagePayload, IInjuryPayload, IOtherVehiclePayload, ISaveAccidentPayload } from "../types";
+import { dateToUTCString } from "@/lib/utils/date";
+import {
+	IAccidentImagePayload,
+	IInjuryPayload,
+	IOtherVehiclePayload,
+	IPersonInvolvedPayload,
+	IPropertyDamagePayload,
+	ISaveAccidentPayload,
+} from "../types";
 import { IAccidentReportSchema } from "./accident-report-schema";
+import { getAccidentSectionVisibility } from "./accident-section-visibility";
 
 type FormImage = { keyFile: string; url: string };
 
@@ -16,8 +25,6 @@ const numOrNull = (value?: number | string): number | null => {
 const stripImages = (images?: FormImage[]): IAccidentImagePayload[] =>
 	(images ?? []).map(({ keyFile, url }) => ({ keyFile, url }));
 
-// `time` is the datetime emitted by TimeInput (wall-clock stored in UTC components);
-// take the day from `date` and the hour/minute from `time`.
 const combineDateTime = (date?: Date, time?: string): string | null => {
 	if (!date) return null;
 	const result = new Date(date);
@@ -27,23 +34,75 @@ const combineDateTime = (date?: Date, time?: string): string | null => {
 			result.setHours(parsed.getUTCHours(), parsed.getUTCMinutes(), 0, 0);
 		}
 	}
-	return result.toISOString();
+	return dateToUTCString(result);
 };
 
-const buildOtherVehicle = (data: IAccidentReportSchema): IOtherVehiclePayload | null => {
-	if (toBool(data.anotherVehicleInvolved) !== true || !data.otherVehicle) return null;
-	const ov = data.otherVehicle;
+type OtherVehicle = NonNullable<IAccidentReportSchema["otherVehicles"]>[number];
+
+const buildOtherVehicleImages = (vehicle: OtherVehicle): IOtherVehiclePayload["images"] => [
+	...stripImages(vehicle.insuranceCardImages).map((image) => ({
+		...image,
+		category: OTHER_VEHICLE_IMAGE_CATEGORY.INSURANCE_CARD,
+	})),
+	...stripImages(vehicle.driverLicenseImages).map((image) => ({
+		...image,
+		category: OTHER_VEHICLE_IMAGE_CATEGORY.DRIVERS_LICENSE,
+	})),
+	...stripImages(vehicle.vehicleDamageImages).map((image) => ({
+		...image,
+		category: OTHER_VEHICLE_IMAGE_CATEGORY.VEHICLE_DAMAGE,
+	})),
+];
+
+const buildOtherVehicles = (data: IAccidentReportSchema): IOtherVehiclePayload[] => {
+	if (toBool(data.anotherVehicleInvolved) !== true) return [];
+	const count = Number(data.numberOfVehicles) || 0;
+	return (data.otherVehicles ?? []).slice(0, count).map((vehicle) => ({
+		make: vehicle.make ?? null,
+		model: vehicle.model ?? null,
+		whatWasStruck: vehicle.whatWasStruck ?? null,
+		vin: vehicle.vin ?? null,
+		driverFullName: vehicle.driverFullName ?? null,
+		driverLicenseNumber: vehicle.driverLicenseNumber ?? null,
+		refusedDriverLicense: vehicle.refusedDriverLicense ?? false,
+		refusedInsuranceCard: vehicle.refusedInsuranceCard ?? false,
+		refusedDriverLicensePhoto: vehicle.refusedDriverLicensePhoto ?? false,
+		images: buildOtherVehicleImages(vehicle),
+	}));
+};
+
+const buildPersonInvolved = (data: IAccidentReportSchema): IPersonInvolvedPayload | null => {
+	if (!getAccidentSectionVisibility(data).personInvolved || !data.personInvolved) return null;
+	const person = data.personInvolved;
+	const isEmployee = person.whoWasStruck === PERSON_STRUCK_TYPE.EMPLOYEE;
+	const isOther = person.whoWasStruck === PERSON_STRUCK_TYPE.OTHER;
+	const injured = toBool(person.employeeInjured) ?? null;
+	// Both branches capture an injury description only when the person was injured.
+	const injuryDescription = injured === true ? (person.injuryDescription ?? null) : null;
 	return {
-		make: ov.make ?? null,
-		model: ov.model ?? null,
-		whatWasStruck: ov.whatWasStruck ?? null,
-		vin: ov.vin ?? null,
-		driverFullName: ov.driverFullName ?? null,
-		driverLicenseNumber: ov.driverLicenseNumber ?? null,
-		driverPhoneNumber: ov.driverPhoneNumber ?? null,
-		insuranceCompany: ov.insuranceCompany ?? null,
-		policyNumber: ov.policyNumber ?? null,
-		images: stripImages(ov.images),
+		whoWasStruck: person.whoWasStruck ?? null,
+		employeeId: isEmployee ? (person.employeeId ?? null) : null,
+		employeeInjured: injured,
+		fullName: isOther ? (person.fullName ?? null) : null,
+		phoneNumber: isOther ? (person.phoneNumber ?? null) : null,
+		injuryDescription,
+	};
+};
+
+const buildPropertyDamage = (data: IAccidentReportSchema): IPropertyDamagePayload | null => {
+	const pd = data.propertyDamage;
+	if (!pd) return null;
+	const anotherCompanyProperty = toBool(pd.anotherCompanyProperty) ?? null;
+	// Company details only carry through when another company's property was struck.
+	const collectsCompany = anotherCompanyProperty === true;
+	return {
+		anotherCompanyProperty,
+		builderProperty: toBool(pd.builderProperty) ?? null,
+		homeownerProperty: toBool(pd.homeownerProperty) ?? null,
+		companyName: collectsCompany ? (pd.companyName ?? null) : null,
+		contactPersonName: collectsCompany ? (pd.contactPersonName ?? null) : null,
+		contactPhoneNumber: collectsCompany ? (pd.contactPhoneNumber ?? null) : null,
+		otherInformation: collectsCompany ? (pd.otherInformation ?? null) : null,
 	};
 };
 
@@ -85,12 +144,18 @@ export const collectAccidentImages = (data: IAccidentReportSchema): IFileUploada
 	...(data.bcewVehiclePhotos ?? []),
 	...(data.otherVehiclePropertyPhotos ?? []),
 	...(data.insuranceCorrespondence ?? []),
-	...(data.otherVehicle?.images ?? []),
+	...(data.otherVehicles ?? []).flatMap((vehicle) => [
+		...(vehicle.insuranceCardImages ?? []),
+		...(vehicle.driverLicenseImages ?? []),
+		...(vehicle.vehicleDamageImages ?? []),
+	]),
 ];
 
 export const buildAccidentPayload = (data: IAccidentReportSchema): ISaveAccidentPayload => ({
 	onJobSite: toBool(data.onJobSite) ?? null,
+	jobSiteType: toBool(data.onJobSite) ? data.jobSiteType || null : null,
 	anotherVehicleInvolved: toBool(data.anotherVehicleInvolved),
+	otherVehicleCount: toBool(data.anotherVehicleInvolved) ? Number(data.numberOfVehicles) || null : null,
 	personStruck: toBool(data.personStruck),
 
 	truckNumber: data.truckNumber ?? null,
@@ -104,18 +169,17 @@ export const buildAccidentPayload = (data: IAccidentReportSchema): ISaveAccident
 
 	describeAccident: data.describeAccident ?? null,
 	damageToBcewVehicle: data.damageToBcewVehicle ?? null,
-	damageToOtherProperty: data.damageToOtherProperty ?? null,
 
 	policeContacted: toBool(data.policeContacted) ?? false,
 	policeDepartment: data.policeDepartment ?? null,
 	policeReportNumber: data.policeReportNumber ?? null,
 
-	bcewVehicleTowed: data.bcewVehicleTowed ?? false,
+	bcewVehicleTowed: toBool(data.bcewVehicleTowed) ?? null,
 	towProviderName: data.towProviderName ?? null,
 	towCostOnSpot: numOrNull(data.towCostOnSpot),
-	otherVehicleTowed: data.otherVehicleTowed ?? false,
+	otherVehicleTowed: toBool(data.otherVehicleTowed) ?? null,
 	otherVehicleTowCost: numOrNull(data.otherVehicleTowCost),
-	vehicleImpounded: data.vehicleImpounded ?? false,
+	vehicleImpounded: toBool(data.vehicleImpounded) ?? null,
 	impoundLotCost: numOrNull(data.impoundLotCost),
 	impoundReleaseCharges: numOrNull(data.impoundReleaseCharges),
 
@@ -126,7 +190,9 @@ export const buildAccidentPayload = (data: IAccidentReportSchema): ISaveAccident
 
 	isConfirmedAccurate: data.isConfirmedAccurate ?? false,
 
-	otherVehicle: buildOtherVehicle(data),
+	otherVehicles: buildOtherVehicles(data),
+	personInvolved: buildPersonInvolved(data),
+	propertyDamage: buildPropertyDamage(data),
 	injury: buildInjury(data),
 	photos: buildPhotos(data),
 });

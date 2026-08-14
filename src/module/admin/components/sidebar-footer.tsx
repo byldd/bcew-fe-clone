@@ -20,6 +20,7 @@ import { useModal } from "@/hooks/useModal";
 import { routes } from "@/config/routes";
 import { clearCookies } from "@/module/auth/utils/helpers";
 import SmsConsent from "@/components/shared/sms-consent";
+import EmulationMenuItem from "@/module/auth/components/emulation-menu-item";
 
 const AdminSidebarFooter = () => {
 	const { Modal, openModal, closeModal } = useModal();
@@ -28,6 +29,11 @@ const AdminSidebarFooter = () => {
 	const router = useRouter();
 
 	const { user } = useAuthStore((store) => store);
+	// While impersonating another user, `user.name`/`user.role` reflect the
+	// impersonated person — the sidebar footer should keep showing the real
+	// admin (held on `impersonatedByUser`), not whoever is being viewed as.
+	const displayName = user?.impersonatedByUser?.name ?? user?.name;
+	const displayRole = user?.impersonatedByUser?.role?.name ?? user?.role?.name;
 
 	const handleSignOut = () => {
 		clearCookies();
@@ -79,11 +85,11 @@ const AdminSidebarFooter = () => {
 								<div className="flex items-center gap-3">
 									<Avatar className="h-8 w-8">
 										<AvatarImage src="/placeholder.svg?height=32&width=32" />
-										<AvatarFallback className="bg-gray-200 text-brand-dark">{user?.name?.charAt(0)}</AvatarFallback>
+										<AvatarFallback className="bg-gray-200 text-brand-dark">{displayName?.charAt(0)}</AvatarFallback>
 									</Avatar>
 									<div className="flex flex-col items-start">
-										<span className="text-sm font-medium text-brand-dark">{user?.name}</span>
-										<span className="text-xs text-brand-dark">{user?.role?.name}</span>
+										<span className="text-sm font-medium text-brand-dark">{displayName}</span>
+										<span className="text-xs text-brand-dark">{displayRole}</span>
 									</div>
 								</div>
 								<ChevronDown className="h-4 w-4" />
@@ -93,6 +99,8 @@ const AdminSidebarFooter = () => {
 							<DropdownMenuItem onClick={handleProfileClick}>
 								<span>{tCommon.profile}</span>
 							</DropdownMenuItem>
+
+							<EmulationMenuItem />
 
 							{user?.userType !== ROLES?.SUB_CONTRACTOR && (
 								<DropdownMenuItem onClick={handleSwitchToTechnicianPortal}>

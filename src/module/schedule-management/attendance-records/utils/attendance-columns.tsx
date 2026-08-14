@@ -33,7 +33,7 @@ export const useAttendanceColumns = () => {
 			cell: ({ row }) => {
 				const source = row.original.source;
 
-				return <div className="font-medium">{source === ATTENDANCE_SOURCE.BYLDD ? "Byldd" : ""}</div>;
+				return <div className="font-medium">{source === ATTENDANCE_SOURCE.BYLDD ? "Byldd" : "BCEW"}</div>;
 			},
 		},
 

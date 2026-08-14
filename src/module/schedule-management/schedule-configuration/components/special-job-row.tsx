@@ -15,10 +15,12 @@ const SpecialJobRow = ({
 	specialJob,
 	index,
 	teams,
+	selectedZoneFromAllJobs,
 }: {
 	specialJob: ISpecialJobFormSchema["specialJobs"][number];
 	index: number;
 	teams: ITeam[];
+	selectedZoneFromAllJobs: ({ geoTabId: string; name: string; address: string; isCurrent?: boolean } | undefined)[];
 }) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const formContext = useFormContext<ISpecialJobFormSchema>();
@@ -32,12 +34,8 @@ const SpecialJobRow = ({
 	}, [teams]);
 	const tschedule = useTypedTranslations(NAMESPACE.SCHEDULE);
 
-	const { specialJobs } = formContext.watch();
-
-	const selectedZoneFromAllJobs = specialJobs.flatMap((job) => job.zones)?.flat();
-
 	return (
-		<div key={`${specialJob.name}-${index}`}>
+		<div>
 			<div className="flex w-full items-center justify-between gap-2">
 				<p className="capitalize">{specialJob.name || "--"}</p>
 				<div className="flex items-center gap-2">
@@ -70,7 +68,7 @@ const SpecialJobRow = ({
 												onChange={(e) => {
 													e.preventDefault();
 													e.stopPropagation();
-													field.onChange(e.target.value.toLowerCase().trim());
+													field.onChange(e.target.value.toLowerCase());
 												}}
 											/>
 										</FormControl>

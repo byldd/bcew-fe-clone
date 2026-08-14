@@ -1,3 +1,5 @@
+import { VIOLATION_TYPE_CATEGORY } from "@/module/driving-safety/incident-reports/utils/enums";
+
 export interface IDrivingSafetyViolationType {
 	id: string;
 	name: string;
@@ -5,6 +7,7 @@ export interface IDrivingSafetyViolationType {
 	points: number | null;
 	documentationRequired: string;
 	policyVerbiage: string;
+	categories: VIOLATION_TYPE_CATEGORY[];
 }
 
 export interface IDrivingSafetyPointThreshold {

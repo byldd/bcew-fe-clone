@@ -112,6 +112,7 @@ const SpecialJobForm = () => {
 			{
 				specialJobs: data.specialJobs?.map((specialJob, index) => ({
 					...specialJob,
+					name: specialJob.name.trim(),
 					sequence: specialJob.sequence || index + 1,
 					teamIds: specialJob.teamIds || [],
 					zones: specialJob.zones || [],
@@ -149,9 +150,10 @@ const SpecialJobForm = () => {
 							?.map((specialJob, index) => (
 								<SpecialJobRow
 									teams={teams || []}
-									key={`${specialJob.name}-${index}`}
+									key={specialJob.id ?? specialJob.sequence ?? index}
 									specialJob={specialJob}
 									index={index}
+									selectedZoneFromAllJobs={selectedZoneFromAllJobs}
 								/>
 							))}
 					</div>

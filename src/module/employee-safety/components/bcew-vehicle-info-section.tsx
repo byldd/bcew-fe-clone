@@ -1,12 +1,10 @@
-import { useEffect } from "react";
-import { UseFormReturn, useWatch } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 
 import { InputField } from "@/components/ui/inputField";
 import { Spinner } from "@/components/ui/spinner";
-import { useDebounce } from "@/hooks/useDebounce";
 
 import ReportSection from "./report-section";
-import { useVehicleDocuments } from "../hooks/useVehicleDocuments";
+import { useTruckLookup } from "../hooks/useTruckLookup";
 import { IAccidentReportSchema } from "../utils/accident-report-schema";
 
 const BcewVehicleInfoSection = ({
@@ -16,31 +14,10 @@ const BcewVehicleInfoSection = ({
 	form: UseFormReturn<IAccidentReportSchema>;
 	disabled?: boolean;
 }) => {
-	const truckNumber = useWatch({ control: form.control, name: "truckNumber" }) ?? "";
-	const vin = useWatch({ control: form.control, name: "vin" });
-	const licensePlate = useWatch({ control: form.control, name: "licensePlate" });
-
-	const debouncedTruck = useDebounce(truckNumber.trim(), 400);
-	const { data, isFetching, isError } = useVehicleDocuments(debouncedTruck || null);
-
-	useEffect(() => {
-		if (data?.vehicle) {
-			form.setValue("vin", data.vehicle.vin ?? "");
-			form.setValue("licensePlate", data.vehicle.licensePlate ?? "");
-		}
-	}, [data, form]);
-
-	useEffect(() => {
-		if (isError) {
-			form.setValue("vin", "");
-			form.setValue("licensePlate", "");
-		}
-	}, [isError, form]);
-
-	const lookupError = debouncedTruck && isError ? "No vehicle found for this truck number." : undefined;
+	const { truckNumber, vin, licensePlate, isFetching, lookupError } = useTruckLookup(form);
 
 	return (
-		<ReportSection title="Which  vehicle was involved?">
+		<ReportSection title="Which BCEW vehicle was involved?">
 			<div className="space-y-4 text-sm">
 				<InputField
 					name="truckNumber"

@@ -9,7 +9,7 @@ import {
 } from "@/module/auth/types";
 import { apiClient } from "@/lib/api";
 import type { NSignUpApiResponseType } from "@/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
 	AcceptInviteData,
 	EmailResponseType,
@@ -22,11 +22,16 @@ import { IImpersonationUsersResponse, IModulesResponse } from "@/module/employee
 const API_AUTH_URL = "/auth";
 
 export const useAuthAPI = () => {
+	const queryClient = useQueryClient();
+
+	const clearCachedSession = () => queryClient.clear();
+
 	const useLoginMutation = useMutation({
 		mutationFn: async (userData: UserLoginDataType) => {
 			const response = await apiClient.post<LoginResponseType>(`${API_AUTH_URL}/login`, userData);
 			return response.data.data;
 		},
+		onSuccess: clearCachedSession,
 	});
 
 	const useRegisterMutation = useMutation({
@@ -96,6 +101,7 @@ export const useAuthAPI = () => {
 			const response = await apiClient.post<OTPLoginResponseType>(`${API_AUTH_URL}/verify-otp`, userData);
 			return response.data?.data;
 		},
+		onSuccess: clearCachedSession,
 	});
 
 	const useRolesList = () => {

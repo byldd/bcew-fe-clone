@@ -3,10 +3,11 @@ import type { NextRequest } from "next/server";
 import { COOKIES, ROLES } from "@/types";
 import { routes } from "@/config/routes";
 import { LOGIN_MODE } from "@/utils/enums";
-import { loginParamKey } from "@/utils/constants";
+import { AUTH_QUERY_PARAM } from "@/module/auth/utils/constants";
 
 export function middleware(request: NextRequest) {
 	const path = request.nextUrl.pathname;
+	const intendedPath = `${path}${request.nextUrl.search}`;
 
 	const publicPaths = [routes.signIn, routes.root, routes.matchFingerprint];
 
@@ -41,15 +42,16 @@ export function middleware(request: NextRequest) {
 
 	// Case 2: Logged-out users accessing protected pages or root path → redirect to relevant sign-in page
 	if ((!token || !userType) && (path === "/" || !isPublicPath)) {
-		// Employee OR subcontractor admin portal → use main sign-in
-		if (path.startsWith(routes.employee.root) || path.startsWith(routes.subContractor.adminRoot)) {
-			return NextResponse.redirect(new URL(routes.signIn, request.url));
+		if (path === routes.employee.reportVehicleIssue) {
+			const url = new URL(routes.signIn, request.url);
+			url.searchParams.set(AUTH_QUERY_PARAM.REDIRECT, intendedPath);
+			return NextResponse.redirect(url);
 		}
 
 		// Sub-contractor crew leader
 		if (path.startsWith(routes.subContractor.crewLeaderRoot)) {
 			const url = new URL(routes.signIn, request.url);
-			url.searchParams.set(loginParamKey, LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER);
+			url.searchParams.set(AUTH_QUERY_PARAM.LOGIN, LOGIN_MODE.SUB_CONTRACTOR_CREW_LEADER);
 			return NextResponse.redirect(url);
 		}
 

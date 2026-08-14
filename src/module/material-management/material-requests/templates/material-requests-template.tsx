@@ -56,13 +56,9 @@ import { MATERIAL_ROLE_TO_ASSIGN } from "../utils/constants";
 export default function MaterialRequestsTemplate({
 	showBackButton = false,
 	hideHeader = false,
-	additionalRows,
-	onMissingItemRespond,
 }: {
 	showBackButton?: boolean;
 	hideHeader?: boolean;
-	additionalRows?: MaterialRequestRow[];
-	onMissingItemRespond?: (id: string) => void;
 }) {
 	const { user } = useAuthStore((state) => state);
 	const isForeman = user ? user.role?.name?.toLowerCase() === E_ROLES.FOREMAN.toLowerCase() : undefined;
@@ -83,8 +79,6 @@ export default function MaterialRequestsTemplate({
 			hiddenColumns={hiddenColumns}
 			showBackButton={showBackButton}
 			hideHeader={hideHeader}
-			additionalRows={additionalRows}
-			onMissingItemRespond={onMissingItemRespond}
 		/>
 	);
 }
@@ -95,16 +89,12 @@ function MaterialRequestsAllView({
 	hiddenColumns,
 	showBackButton,
 	hideHeader,
-	additionalRows,
-	onMissingItemRespond,
 }: {
 	isForeman: boolean | undefined;
 	isMaterialRequestAllowed: boolean;
 	hiddenColumns: Set<string>;
 	showBackButton?: boolean;
 	hideHeader?: boolean;
-	additionalRows?: MaterialRequestRow[];
-	onMissingItemRespond?: (id: string) => void;
 }) {
 	const { user } = useAuthStore((state) => state);
 	const userAssignRole = user?.materialRole ? (MATERIAL_ROLE_TO_ASSIGN[user.materialRole] ?? null) : null;
@@ -145,7 +135,8 @@ function MaterialRequestsAllView({
 	const { mutateAsync: reassignForemanAsync } = useReassignForemanMaterialRequest();
 	const { mutate: assignMaterialRequestMutation } = useAssignMaterialRequest();
 	const { mutate: updateTeamNoteMutation } = useUpdateTeamMaterialRequestNote();
-	const rows = useMemo(() => [...mapMaterialRequests(data ?? []), ...(additionalRows ?? [])], [data, additionalRows]);
+
+	const rows = useMemo(() => mapMaterialRequests(data ?? []), [data]);
 
 	const filteredRows = useMemo(() => {
 		// Only the foreman sees missing-item requests; every other role (admin
@@ -657,7 +648,6 @@ function MaterialRequestsAllView({
 		currentUserId: user?.id ?? null,
 		userAssignRole,
 		isTeamMember: isRestrictedEditor,
-		onMissingItemRespond,
 	});
 
 	const filteredBaseColumns = useMemo(() => {

@@ -360,7 +360,7 @@ export const useAdminMenu = () => {
 					url: "#",
 				},
 				{
-					title: "BCEW Portal Guide",
+					title: " Portal Guide",
 					icon: BcewIconImage,
 					url: "#",
 				},

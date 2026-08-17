@@ -40,7 +40,7 @@ export const breakdownDescriptionField: BreakdownField = {
 export const bcewVehicleTowedField: BreakdownField = {
 	name: "bcewVehicleTowed",
 	fieldVariant: FIELD_VARIANT.TOGGLE,
-	label: "BCEW Vehicle Towed",
+	label: " Vehicle Towed",
 	labelPosition: LABEL_POSITION.LEFT,
 };
 

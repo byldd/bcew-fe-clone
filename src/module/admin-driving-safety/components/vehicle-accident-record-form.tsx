@@ -343,7 +343,7 @@ const VehicleAccidentRecordForm = ({ draftId }: { draftId?: string }) => {
 						{personStruck && (
 							<InfoNote>
 								Coordinate with other company to see if they want to handle accident outside of insurance if the person
-								is not a BCEW employee.
+								is not a employee.
 							</InfoNote>
 						)}
 					</div>
@@ -417,14 +417,13 @@ const VehicleAccidentRecordForm = ({ draftId }: { draftId?: string }) => {
 
 				<AccidentRecordSection title="What happened" mandatory>
 					<p className="text-xs text-brand-grey">
-						This prompts the technician to briefly describe how the accident happened &amp; damage happened to BCEW
-						vehicle.
+						This prompts the technician to briefly describe how the accident happened &amp; damage happened to vehicle.
 					</p>
 				</AccidentRecordSection>
 
 				<AccidentRecordSection title="Required Photos" mandatory>
 					<p className="text-xs text-brand-grey">
-						This prompts the technician to upload photos of BCEW vehicle &amp; photos of damaged property.
+						This prompts the technician to upload photos of vehicle &amp; photos of damaged property.
 					</p>
 				</AccidentRecordSection>
 

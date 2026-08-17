@@ -8,7 +8,7 @@ type ReviewField = FormFieldConfig<IAccidentReviewSchema>;
 export const bcewTowedField: ReviewField = {
 	name: "bcewVehicleTowed",
 	fieldVariant: FIELD_VARIANT.RADIO_GROUP,
-	label: "Was the BCEW Vehicle Towed?",
+	label: "Was the  Vehicle Towed?",
 	options: yesNoOptions,
 };
 
@@ -43,7 +43,7 @@ export const otherVehicleTowCostField: ReviewField = {
 export const impoundedField: ReviewField = {
 	name: "vehicleImpounded",
 	fieldVariant: FIELD_VARIANT.RADIO_GROUP,
-	label: "Was the BCEW Vehicle Impounded?",
+	label: "Was the  Vehicle Impounded?",
 	options: yesNoOptions,
 };
 

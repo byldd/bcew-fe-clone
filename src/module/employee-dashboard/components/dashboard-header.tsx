@@ -141,7 +141,7 @@ export function DashboardHeader({
 					{/* Left - Logo */}
 					<div className="flex items-center gap-2">
 						<div className="relative z-10 my-4">
-							<Image src="/assets/png/logo1.png" alt="Company Logo" width={160} height={120} />
+							{/* <Image src="/assets/png/logo1.png" alt="Company Logo" width={160} height={120} /> */}
 						</div>
 					</div>
 

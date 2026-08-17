@@ -128,7 +128,7 @@ const AccidentAdminInputs = ({
 							</div>
 						)}
 						{values.vehicleImpounded === YES_NO.NO && (
-							<p className="text-xs text-brand-dark50">The BCEW vehicle was not impounded.</p>
+							<p className="text-xs text-brand-dark50">The vehicle was not impounded.</p>
 						)}
 					</fieldset>
 				</div>

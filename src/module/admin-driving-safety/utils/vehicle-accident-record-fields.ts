@@ -156,7 +156,7 @@ export const policeFields: AccidentField[] = [
 export const bcewTowedField: AccidentField = {
 	name: "bcewVehicleTowed",
 	fieldVariant: FIELD_VARIANT.RADIO_GROUP,
-	label: "Was the BCEW Vehicle Towed?",
+	label: "Was the  Vehicle Towed?",
 	options: yesNoOptions,
 };
 
@@ -192,7 +192,7 @@ export const otherVehicleTowCostField: AccidentField = {
 export const impoundedField: AccidentField = {
 	name: "vehicleImpounded",
 	fieldVariant: FIELD_VARIANT.RADIO_GROUP,
-	label: "Was the BCEW vehicle impounded?",
+	label: "Was the  vehicle impounded?",
 	options: yesNoOptions,
 };
 

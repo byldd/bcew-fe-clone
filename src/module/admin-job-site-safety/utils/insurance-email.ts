@@ -15,7 +15,7 @@ const INSURANCE_EMAIL_TO = "claims-intake@liberty-industrial.com";
 
 const INSURANCE_EMAIL_CLOSING = `Please acknowledge receipt of this report by replying to this thread.
 Regards,
-BCEW Safety & Risk Management`;
+ Safety & Risk Management`;
 
 export const EMPTY_EMAIL_DRAFT = {
 	from: "",
@@ -37,7 +37,7 @@ export const buildInjuryEmailDraft = (
 		from: INSURANCE_EMAIL_FROM,
 		to: INSURANCE_EMAIL_TO,
 		cc: "",
-		subject: `BCEW Injury Claim — ${reference} — ${employee?.name ?? "--"} — ${injuryDate}`,
+		subject: ` Injury Claim — ${reference} — ${employee?.name ?? "--"} — ${injuryDate}`,
 		intro: `To the Claims Department,
 Please find Bucks County Electric Works' report for the workplace injury referenced above. All supporting documents and photographs are attached.`,
 		closing: INSURANCE_EMAIL_CLOSING,
@@ -58,7 +58,7 @@ export const buildViolationEmailDraft = (violation: IViolationReportDetail) => {
 		from: INSURANCE_EMAIL_FROM,
 		to: INSURANCE_EMAIL_TO,
 		cc: "",
-		subject: `BCEW Safety Violation — ${reference} — ${violation.user?.name ?? "--"} — ${violationDate}`,
+		subject: ` Safety Violation — ${reference} — ${violation.user?.name ?? "--"} — ${violationDate}`,
 		intro: `To the Claims Department,
 Please find Bucks County Electric Works' report for the job site safety violation referenced above. All supporting documents and photographs are attached.`,
 		closing: INSURANCE_EMAIL_CLOSING,

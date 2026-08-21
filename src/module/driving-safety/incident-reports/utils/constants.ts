@@ -14,6 +14,7 @@ import {
 	INCIDENT_SOURCE,
 	INCIDENT_TYPE,
 	INCIDENT_TYPE_TAB,
+	LEGACY_ACCIDENT_STATUS,
 	VIOLATION_TYPE_CATEGORY,
 } from "./enums";
 import { IIncidentReportRow } from "../types";
@@ -82,26 +83,33 @@ export const buildGeotabExceptionUrl = (geotabId: string): string =>
 export const buildGoogleMapsUrl = (coordinates: string): string =>
 	`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coordinates)}`;
 
+export const isCoordinateLocation = (location: string): boolean =>
+	/^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/.test(location.trim());
+
+export const asUtcInstant = (value: string): string => (/[zZ]|[+-]\d{2}:?\d{2}$/.test(value) ? value : `${value}Z`);
+
+export const VIOLATION_SOURCE_PARAM = "source";
+
 export const formatReportNumber = (prefix: string, reportId: number, createdAt: string): string =>
 	`${prefix}-${new Date(createdAt).getUTCFullYear()}-${String(reportId).padStart(4, "0")}`;
 
 export const INCIDENT_STATUS_META: Record<INCIDENT_REPORT_STATUS, { label: string; className: string }> = {
 	[INCIDENT_REPORT_STATUS.DRAFT]: { label: "Draft", className: "bg-brand-bgLightgrey text-brand-dark50" },
-	[INCIDENT_REPORT_STATUS.PENDING]: { label: "Pending", className: "bg-[#784F041A] text-[#784F04]" },
+	[INCIDENT_REPORT_STATUS.PENDING]: { label: "Pending", className: "bg-[#F2EEE6] text-[#784F04]" },
 	[INCIDENT_REPORT_STATUS.PENDING_SECOND_REVIEW]: {
 		label: "Pending Second Review",
-		className: "bg-orange-50 text-orange-600",
+		className: "bg-[#F2EEE6] text-[#784F04]",
 	},
 	[INCIDENT_REPORT_STATUS.PENDING_THIRD_REVIEW]: {
 		label: "Pending Second Review",
-		className: "bg-orange-50 text-orange-600",
+		className: "bg-[#F2EEE6] text-[#784F04]",
 	},
 	[INCIDENT_REPORT_STATUS.COORDINATE]: { label: "Coordinate", className: "bg-[#1515151A] text-[#151515B2]" },
 	[INCIDENT_REPORT_STATUS.WITH_INSURANCE]: {
 		label: "Submitted to Insurance",
-		className: "bg-[#1D4ED81A] text-[#1D4ED8]",
+		className: "bg-[#E9EEFC] text-[#1D4ED8]",
 	},
-	[INCIDENT_REPORT_STATUS.RESOLVED]: { label: "Resolved", className: "bg-[#0CC3121A] text-[#0CC312]" },
+	[INCIDENT_REPORT_STATUS.RESOLVED]: { label: "Resolved", className: "bg-[#E7F9E8] text-[#0CC312]" },
 	[INCIDENT_REPORT_STATUS.REJECTED]: { label: "Rejected", className: "bg-red-50 text-brand-red" },
 	[INCIDENT_REPORT_STATUS.ADDITIONAL_INFO_REQUESTED]: {
 		label: "Additional Info Requested",
@@ -207,6 +215,23 @@ export const INCIDENT_SOURCE_LABEL: Record<INCIDENT_SOURCE, string> = {
 	[INCIDENT_SOURCE.ADMIN]: "Admin",
 	[INCIDENT_SOURCE.GEOTAB]: "GeoTab",
 	[INCIDENT_SOURCE.DRIVER]: "Driver",
+	[INCIDENT_SOURCE.MANUAL]: "Manual",
+};
+
+export const LEGACY_ACCIDENT_STATUS_LABEL: Record<LEGACY_ACCIDENT_STATUS, string> = {
+	[LEGACY_ACCIDENT_STATUS.ACTIVE_AND_SAVED]: "Active and Saved",
+	[LEGACY_ACCIDENT_STATUS.SUBMITTED_FOR_APPROVAL]: "Submitted for Approval",
+	[LEGACY_ACCIDENT_STATUS.SUBMITTED_TO_INSURANCE]: "Submitted to Insurance Company",
+	[LEGACY_ACCIDENT_STATUS.RESOLVED_INTERNALLY]: "Resolved Internally",
+	[LEGACY_ACCIDENT_STATUS.COMPLETE]: "Complete",
+};
+
+export const LEGACY_ACCIDENT_STATUS_INCIDENT: Record<LEGACY_ACCIDENT_STATUS, INCIDENT_REPORT_STATUS> = {
+	[LEGACY_ACCIDENT_STATUS.ACTIVE_AND_SAVED]: INCIDENT_REPORT_STATUS.PENDING,
+	[LEGACY_ACCIDENT_STATUS.SUBMITTED_FOR_APPROVAL]: INCIDENT_REPORT_STATUS.PENDING_SECOND_REVIEW,
+	[LEGACY_ACCIDENT_STATUS.SUBMITTED_TO_INSURANCE]: INCIDENT_REPORT_STATUS.WITH_INSURANCE,
+	[LEGACY_ACCIDENT_STATUS.RESOLVED_INTERNALLY]: INCIDENT_REPORT_STATUS.RESOLVED,
+	[LEGACY_ACCIDENT_STATUS.COMPLETE]: INCIDENT_REPORT_STATUS.RESOLVED,
 };
 
 export const INCIDENT_TYPE_LABEL: Record<INCIDENT_TYPE, string> = {
@@ -243,7 +268,7 @@ export interface IBreakdownKeyResource {
 export const BREAKDOWN_KEY_RESOURCES: IBreakdownKeyResource[] = [
 	{
 		label: "Route 1 / I-95",
-		description: "use All-County Towing (24/7) — (215) 555-0110. BCEW account #4471.",
+		description: "use All-County Towing (24/7) — (215) 555-0110.  account #4471.",
 	},
 	{
 		label: "Turnpike (PA-276)",

@@ -147,8 +147,8 @@ const EmployeeEditModal: React.FC<Props> = ({ onClose, employee }) => {
 	return (
 		<div>
 			<Modal />
-			<form onSubmit={handleSubmit(onSubmit)} className="p-0">
-				<div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+			<form onSubmit={handleSubmit(onSubmit)} className="p-0 pb-2">
+				<div className="mt-4 grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
 					<InputField label={tPeople.fullName} value={employee.fullName} disabled />
 					<InputField label={tPeople.phone} value={employee.phone} disabled />
 

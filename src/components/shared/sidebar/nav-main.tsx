@@ -64,6 +64,7 @@ import { getNavItemKey } from "./utils/nav-main";
 import { FIXED_KEYS } from "./enum";
 import { SidebarItemBadge } from "@/components/ui/sidebar-item-badge";
 import Link from "next/link";
+import { useAuthAPI } from "@/module/auth/hooks/useAuth";
 
 type NavMainProps = {
 	items: SidebarItem[];
@@ -177,6 +178,8 @@ const NavMain = ({ items }: NavMainProps) => {
 	const isSubContractorRole =
 		user?.userType === ROLES.SUB_CONTRACTOR || user?.userType === ROLES.SUB_CONTRACTOR_CREW_LEADER;
 	const isNavReorderEnabled = !isSubContractorRole;
+	const { useSignout } = useAuthAPI();
+	const { signout } = useSignout();
 
 	useEffect(() => {
 		setNavItems(items);
@@ -227,7 +230,7 @@ const NavMain = ({ items }: NavMainProps) => {
 	};
 
 	const handleSignOut = () => {
-		clearCookies();
+		signout();
 		router.replace(routes.signIn);
 	};
 

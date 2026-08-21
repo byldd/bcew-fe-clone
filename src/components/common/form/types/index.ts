@@ -15,6 +15,8 @@ export enum FIELD_VARIANT {
 	IMAGE = "image",
 	MULTI_IMAGE = "multi-image",
 	MULTI_DOCUMENT = "multi-document",
+	LOCATION = "location",
+	READONLY_TEXT = "readonly-text",
 }
 
 export enum LABEL_POSITION {
@@ -47,6 +49,7 @@ export interface BaseFieldConfig {
 export interface InputFieldConfig extends BaseFieldConfig {
 	fieldVariant: FIELD_VARIANT.INPUT;
 	inputProps?: Omit<ComponentPropsWithoutRef<"input">, "disabled" | "className" | "placeholder">;
+	numericOnly?: boolean;
 }
 
 // Textarea field variant with all Textarea props
@@ -116,6 +119,18 @@ export interface MultiDocumentFieldConfig extends BaseFieldConfig {
 	fieldVariant: FIELD_VARIANT.MULTI_DOCUMENT;
 }
 
+// Read-only location field — value is picked from a map modal, never typed.
+export interface LocationFieldConfig extends BaseFieldConfig {
+	fieldVariant: FIELD_VARIANT.LOCATION;
+	speedLimitFieldName?: string;
+	speedLimitEndpoint?: string;
+}
+
+export interface ReadonlyTextFieldConfig extends BaseFieldConfig {
+	fieldVariant: FIELD_VARIANT.READONLY_TEXT;
+	emptyText?: string;
+}
+
 // Union type for all field configurations
 export type FormFieldConfig<TData extends FieldValues> = (
 	| InputFieldConfig
@@ -130,6 +145,8 @@ export type FormFieldConfig<TData extends FieldValues> = (
 	| ImageFieldConfig
 	| MultiImageFieldConfig
 	| MultiDocumentFieldConfig
+	| LocationFieldConfig
+	| ReadonlyTextFieldConfig
 ) & {
 	name: Path<TData>;
 };
@@ -212,4 +229,11 @@ export interface FormMultiDocumentProps<TData extends FieldValues> {
 	className?: string;
 	disabled?: boolean;
 	canDelete?: boolean;
+}
+
+export interface FormLocationProps<TData extends FieldValues> {
+	field: ControllerRenderProps<TData, Path<TData>>;
+	fieldConfig: VariantFieldConfig<TData, FIELD_VARIANT.LOCATION>;
+	className?: string;
+	disabled?: boolean;
 }

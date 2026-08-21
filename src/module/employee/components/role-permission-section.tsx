@@ -2,9 +2,7 @@
 
 import { useRef, useState } from "react";
 import { IRoleWithPermissions } from "@/module/employee/types";
-import RolePermissionCard from "@/module/employee/components/role-permission-card";
-import RolePermissionEditModalTrigger from "@/module/employee/components/role-permission-edit-modal-trigger";
-import { isProductionEnv } from "@/utils";
+
 import { IPage } from "@/module/admin/types/sideb-bar-page";
 import { IMapZoneTab } from "@/module/project-management/mapv2/types/zone";
 import RolePermissionEditModal from "./role-permission-edit-modal";
@@ -39,14 +37,6 @@ const RolePermissionSection = ({ data, adminAllPages, adminAllTabs }: IRolePermi
 	const handleSave = () => {
 		submitRef.current?.();
 	};
-
-	if (isProductionEnv()) {
-		return (
-			<RolePermissionCard rolePermissions={data.permissions}>
-				<RolePermissionEditModalTrigger data={data} adminAllPages={adminAllPages} adminAllTabs={adminAllTabs} />
-			</RolePermissionCard>
-		);
-	}
 
 	return (
 		<Card className="rounded-3xl border border-brand-dark10 bg-white !p-7">

@@ -15,6 +15,7 @@ import { FormInputWrapper } from "@/components/common/form/form-input-wrapper";
 import { openErrorToast, openSuccessToast } from "@/components/toast";
 import { useHandleFileUpload } from "@/hooks/useFile";
 import { getTodayDate, isFutureDate } from "@/lib/utils/date";
+import { isValidLatLng } from "@/lib/utils/coordinates";
 import { routes } from "@/config/routes";
 import { INCIDENT_REPORT_STATUS, VIOLATION_TYPE_CATEGORY } from "@/module/driving-safety/incident-reports/utils/enums";
 import { useDrivingSafetyPolicies } from "@/module/driving-safety/policies/hooks/useDrivingSafetyPolicies";
@@ -59,6 +60,7 @@ import {
 	personStruckField,
 	policeContactedField,
 	policeFields,
+	speedLimitField,
 	towCostField,
 	towProviderField,
 	truckNumberField,
@@ -217,10 +219,16 @@ const VehicleAccidentRecordForm = ({ draftId }: { draftId?: string }) => {
 			skipAutoDefaults.current = false;
 			return;
 		}
-		const scenarioValue = anotherVehicleInvolved || personStruck ? YES_NO.YES : YES_NO.NO;
+		const vehicleAnswer = values.anotherVehicleInvolved;
+		const personAnswer = values.personStruck;
+		const scenarioKnown =
+			(vehicleAnswer === YES_NO.YES || vehicleAnswer === YES_NO.NO) &&
+			(personAnswer === YES_NO.YES || personAnswer === YES_NO.NO);
+		if (!scenarioKnown) return;
+		const scenarioValue = vehicleAnswer === YES_NO.YES || personAnswer === YES_NO.YES ? YES_NO.YES : YES_NO.NO;
 		form.setValue("policeContacted", scenarioValue);
 		form.setValue("drugScreenNeeded", scenarioValue);
-	}, [anotherVehicleInvolved, personStruck, form]);
+	}, [values.anotherVehicleInvolved, values.personStruck, form]);
 
 	// The truck number is editable; verify it matches a real fleet vehicle and surface an
 	// inline error when it doesn't (mirrors the technician "Report an Accident" lookup).
@@ -247,6 +255,77 @@ const VehicleAccidentRecordForm = ({ draftId }: { draftId?: string }) => {
 			missing.push(field);
 		};
 
+		if (targetStatus !== INCIDENT_REPORT_STATUS.DRAFT) {
+			if (!data.onJobSite) fail("onJobSite", "Please answer this question");
+			else if (data.onJobSite === YES_NO.YES && !data.jobSiteType) {
+				fail("jobSiteType", "Please select the job-site type");
+			}
+			if (!data.anotherVehicleInvolved) fail("anotherVehicleInvolved", "Please answer this question");
+			else if (data.anotherVehicleInvolved === YES_NO.YES && !data.numberOfVehicles) {
+				fail("numberOfVehicles", "Please select how many vehicles were involved");
+			}
+			if (!data.personStruck) fail("personStruck", "Please answer this question");
+
+			// Accident Details are required unless the admin defers the whole section to
+			// the technician via its "Ask Technician" toggle.
+			if (!requestedSections.includes(ACCIDENT_SECTION.ACCIDENT_DETAILS)) {
+				if (!data.accidentDate) fail("accidentDate", "Please select the date of accident");
+				if (!data.accidentTime) fail("accidentTime", "Please enter the time of accident");
+				if (!data.location?.trim()) fail("location", "Please enter the location of accident");
+			}
+
+			if (!requestedSections.includes(ACCIDENT_SECTION.POLICE)) {
+				if (!data.policeContacted) fail("policeContacted", "Please answer this question");
+				else if (data.policeContacted === YES_NO.YES && !data.policeDepartment?.trim()) {
+					fail("policeDepartment", "Please enter the police department");
+				}
+			}
+
+			if (!data.violationTypeId) fail("violationTypeId", "Please select a violation type");
+
+			// Follow-up (on-site only): company name is required when another company's
+			// property was struck — unless the section is deferred to the technician.
+			if (
+				data.onJobSite === YES_NO.YES &&
+				!requestedSections.includes(ACCIDENT_SECTION.FOLLOW_UP) &&
+				data.propertyDamage?.anotherCompanyProperty === YES_NO.YES &&
+				!data.propertyDamage?.companyName?.trim()
+			) {
+				fail("propertyDamage.companyName", "Please enter the company name");
+			}
+
+			// Tow & Impound cost fields are required only when their Yes toggle is set —
+			// unless the section is deferred to the technician.
+			if (!requestedSections.includes(ACCIDENT_SECTION.TOW_IMPOUND)) {
+				if (data.bcewVehicleTowed === YES_NO.YES) {
+					if (!data.towProviderName?.trim()) fail("towProviderName", "Please enter the tow provider name");
+					if (data.towCostOnSpot == null) fail("towCostOnSpot", "Please enter the tow cost");
+				}
+				if (
+					data.anotherVehicleInvolved === YES_NO.YES &&
+					data.otherVehicleTowed === YES_NO.YES &&
+					data.otherVehicleTowCost == null
+				) {
+					fail("otherVehicleTowCost", "Please enter the other vehicle tow cost");
+				}
+				if (data.vehicleImpounded === YES_NO.YES) {
+					if (data.impoundLotCost == null) fail("impoundLotCost", "Please enter the impound lot cost");
+					if (data.impoundReleaseCharges == null) fail("impoundReleaseCharges", "Please enter the release charges");
+				}
+			}
+
+			// Medical treatment location is required only when medical care was needed.
+			if (data.medicalCareNeeded === YES_NO.YES && !data.medicalTreatmentLocation) {
+				fail("medicalTreatmentLocation", "Please select the medical treatment location");
+			} else if (
+				data.medicalCareNeeded === YES_NO.YES &&
+				data.medicalTreatmentLocation === MEDICAL_TREATMENT_LOCATION_OTHER &&
+				!data.medicalTreatmentLocationOther?.trim()
+			) {
+				fail("medicalTreatmentLocationOther", "Please enter the medical treatment location");
+			}
+		}
+
 		const truckNumber = data.truckNumber?.trim();
 		if (!data.employeeId) fail("employeeId", "Please select an employee");
 		if (data.accidentDate && isFutureDate(data.accidentDate)) {
@@ -255,36 +334,6 @@ const VehicleAccidentRecordForm = ({ draftId }: { draftId?: string }) => {
 		if (!truckNumber) fail("truckNumber", "Please select a truck");
 		else if (trucks && !trucks.some((truck) => truck.truckNumber === truckNumber)) {
 			fail("truckNumber", `No vehicle found for truck number ${truckNumber}`);
-		}
-		if (targetStatus === INCIDENT_REPORT_STATUS.WITH_INSURANCE && !data.violationTypeId) {
-			fail("violationTypeId", "Please select a violation type");
-		}
-		if (data.medicalCareNeeded === YES_NO.YES && !data.medicalTreatmentLocation) {
-			fail("medicalTreatmentLocation", "Please select the medical treatment location");
-		} else if (
-			data.medicalCareNeeded === YES_NO.YES &&
-			data.medicalTreatmentLocation === MEDICAL_TREATMENT_LOCATION_OTHER &&
-			!data.medicalTreatmentLocationOther?.trim()
-		) {
-			fail("medicalTreatmentLocationOther", "Please enter the medical treatment location");
-		}
-
-		if (!requestedSections.includes(ACCIDENT_SECTION.TOW_IMPOUND)) {
-			if (data.bcewVehicleTowed === YES_NO.YES) {
-				if (!data.towProviderName?.trim()) fail("towProviderName", "Please enter the tow provider name");
-				if (data.towCostOnSpot == null) fail("towCostOnSpot", "Please enter the tow cost");
-			}
-			if (
-				data.anotherVehicleInvolved === YES_NO.YES &&
-				data.otherVehicleTowed === YES_NO.YES &&
-				data.otherVehicleTowCost == null
-			) {
-				fail("otherVehicleTowCost", "Please enter the other vehicle tow cost");
-			}
-			if (data.vehicleImpounded === YES_NO.YES) {
-				if (data.impoundLotCost == null) fail("impoundLotCost", "Please enter the impound lot cost");
-				if (data.impoundReleaseCharges == null) fail("impoundReleaseCharges", "Please enter the release charges");
-			}
 		}
 
 		if (missing.length) {
@@ -410,6 +459,7 @@ const VehicleAccidentRecordForm = ({ draftId }: { draftId?: string }) => {
 					</div>
 					<div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 						<FormInputWrapper form={form} fieldConfig={locationField} />
+						{isValidLatLng(values.location) && <FormInputWrapper form={form} fieldConfig={speedLimitField} />}
 						<FormInputWrapper form={form} fieldConfig={nearestCrossStreetField} />
 						<FormInputWrapper form={form} fieldConfig={buildWeatherField(weatherOptions)} />
 					</div>
@@ -458,7 +508,7 @@ const VehicleAccidentRecordForm = ({ draftId }: { draftId?: string }) => {
 							/>
 							{anotherCompanyStruck && (
 								<div className="space-y-3">
-									<InfoNote>Collect Company Information</InfoNote>
+									<InfoNote>Collect company information</InfoNote>
 									<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 										<FormInputWrapper form={form} fieldConfig={followUpFields.companyName} />
 										<FormInputWrapper form={form} fieldConfig={followUpFields.contactPhoneNumber} />
@@ -470,7 +520,7 @@ const VehicleAccidentRecordForm = ({ draftId }: { draftId?: string }) => {
 							<FormInputWrapper form={form} fieldConfig={followUpFields.builderProperty} wrapperClassName="space-y-3" />
 							{builderStruck && (
 								<InfoNote>
-									Inform the Foreman to Contact the Builder Representative Regarding the Property Damage.
+									Inform the foreman to contact the builder representative regarding the property damage.
 								</InfoNote>
 							)}
 							<FormInputWrapper

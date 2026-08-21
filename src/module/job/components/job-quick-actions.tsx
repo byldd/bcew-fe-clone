@@ -22,21 +22,6 @@ const quickActions = [
 	{ key: QUICK_ACTIONS.SUBMIT_PLAN_CHANGE, label: "Submit Plan Change", Icon: JobDetailsIconImage },
 ];
 
-const crateQuickActions = [
-	{
-		key: "scan-crate-received",
-		label: "Scan Crate Received",
-		Icon: QrCode,
-		href: routes.employee.crateManagementScanReceive,
-	},
-	{
-		key: "scan-crate-return",
-		label: "Scan Crate Return",
-		Icon: Undo2,
-		href: routes.employee.crateManagementScanReturn,
-	},
-];
-
 export function JobQuickActions({
 	assignmentId,
 	recnum,
@@ -70,6 +55,24 @@ export function JobQuickActions({
 				]
 			: quickActions
 		: [];
+
+	const jobNum = recnum ? Number(recnum) : undefined;
+	const taskNum = tsknum ? Number(tsknum) : undefined;
+
+	const crateQuickActions = [
+		{
+			key: "scan-crate-received",
+			label: "Scan Crate Received",
+			Icon: QrCode,
+			href: routes.employee.crateManagementScanReceive(jobNum, taskNum),
+		},
+		{
+			key: "scan-crate-return",
+			label: "Scan Crate Return",
+			Icon: Undo2,
+			href: routes.employee.crateManagementScanReturn(jobNum, taskNum),
+		},
+	];
 
 	const visibleCrateActions = isCrateHandlerAllowed ? crateQuickActions : [];
 

@@ -39,7 +39,7 @@ export default function RecentScansList({ scans }: RecentScansListProps) {
 						<div className="text-right">
 							<p className={cn("text-sm font-medium", STATUS_COLOR[scanAction])}>{STATUS_LABEL[scanAction]}</p>
 							<p className="mt-0.5 text-xs text-gray-400">
-								{toLocalFormattedDate(scan.scanned_date, DATE_FORMAT.HH_MM_AA_PM)}
+								{toLocalFormattedDate(scan.scanned_date, DATE_FORMAT.DATE_AND_TIME)}
 							</p>
 						</div>
 					</div>

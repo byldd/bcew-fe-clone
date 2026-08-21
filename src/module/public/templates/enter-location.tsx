@@ -10,13 +10,13 @@ const EnterLocation = () => {
 			<div className="mx-auto max-w-3xl">
 				<div className="mb-8 flex flex-col items-center text-center">
 					<div className="mb-6 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-gray-900/5">
-						<Image
+						{/* <Image
 							src="/assets/svg/bcew-logo.svg"
 							alt="Company Logo"
 							width={90}
 							height={90}
 							className="object-contain"
-						/>
+						/> */}
 					</div>
 					<div className="bg-brand-blue/10 mb-3 flex h-12 w-12 items-center justify-center rounded-full">
 						<MapPin className="text-brand-blue h-6 w-6" />

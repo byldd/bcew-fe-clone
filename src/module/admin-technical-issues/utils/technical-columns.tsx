@@ -20,6 +20,8 @@ import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
 import { useAdminUpdateTechnicalIssue } from "../hooks/useTechnicalIssues";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
 
 const StatusBadge = ({ label }: { label: TECHNICAL_ISSUE_STATUS }) => {
 	const styles: Record<TECHNICAL_ISSUE_STATUS, string> = {
@@ -142,6 +144,7 @@ export const useTechnicalIssuesColumns = () => {
 	const { user } = useAuthStore((state) => state);
 
 	const tAdmin = useTypedTranslations(NAMESPACE.ADMIN);
+	const { pageAccess } = useAdminPageAccessContext();
 
 	const baseColumns: ColumnDef<IAdminTechnicalIssueResponse>[] = [
 		{
@@ -248,26 +251,28 @@ export const useTechnicalIssuesColumns = () => {
 	];
 
 	// Action column logic
-	baseColumns.push({
-		header: tAdmin.action,
-		cell: ({ row }) => {
-			const issue = row.original;
+	if (pageAccess?.accessLevel === ACCESS_LEVEL.WRITE) {
+		baseColumns.push({
+			header: tAdmin.action,
+			cell: ({ row }) => {
+				const issue = row.original;
 
-			const isAdmin = user?.userType === ROLES.ADMIN;
-			const isClassified = !!issue?.classification?.classification;
+				const isAdmin = user?.userType === ROLES.ADMIN;
+				const isClassified = !!issue?.classification?.classification;
 
-			if (isAdmin) {
-				return <ActionCell issue={issue} />;
-			} else if (isClassified) {
-				return <ActionCell issue={issue} />;
-			}
+				if (isAdmin) {
+					return <ActionCell issue={issue} />;
+				} else if (isClassified) {
+					return <ActionCell issue={issue} />;
+				}
 
-			return null;
-		},
-	});
+				return null;
+			},
+		});
+	}
 
 	// Only add Edit column if ADMIN
-	if (user?.userType === ROLES.ADMIN) {
+	if (user?.userType === ROLES.ADMIN && pageAccess?.accessLevel === ACCESS_LEVEL.WRITE) {
 		baseColumns.push({
 			header: tAdmin.edit,
 			cell: ({ row }) => <EditIssueCell issue={row.original} />,

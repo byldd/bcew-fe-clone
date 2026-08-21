@@ -64,7 +64,7 @@ const HeaderToolbar = () => {
 				{!pdf && (
 					<div className="no-scrollbar overflow-x-auto">
 						<div className="flex min-w-max items-center gap-2">
-							{user?.modules.builderCommunications !== undefined && <BuilderCommunicationTrigger />}
+							{user?.modules?.builderCommunications !== undefined && <BuilderCommunicationTrigger />}
 
 							{accessLevel === ACCESS_LEVEL.WRITE && <RerunModalButton />}
 

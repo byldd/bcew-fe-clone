@@ -34,6 +34,7 @@ import {
 	collectReviewDocuments,
 } from "../utils/accident-review-payload";
 import { IAccidentReviewSchema } from "../utils/accident-review-schema";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 const EmailField = ({
 	label,
@@ -260,21 +261,23 @@ const InsuranceEmailReview = ({ reportId }: { reportId: string }) => {
 									</Button>
 								</div>
 							) : (
-								<div className="space-y-3">
-									<Button
-										type="button"
-										variant="filled"
-										className="w-full"
-										loading={thirdReview.isPending}
-										onClick={confirmApproveAndSend}
-									>
-										Approve &amp; Send Email
-									</Button>
-									<p className="text-xs text-brand-dark50">
-										<span className="font-medium text-brand-dark">Approving</span> will send the email directly to
-										Insurance Company.
-									</p>
-								</div>
+								<WriteAccessWrapper>
+									<div className="space-y-3">
+										<Button
+											type="button"
+											variant="filled"
+											className="w-full"
+											loading={thirdReview.isPending}
+											onClick={confirmApproveAndSend}
+										>
+											Approve &amp; Send Email
+										</Button>
+										<p className="text-xs text-brand-dark50">
+											<span className="font-medium text-brand-dark">Approving</span> will send the email directly to
+											Insurance Company.
+										</p>
+									</div>
+								</WriteAccessWrapper>
 							)}
 						</ReviewCard>
 					</aside>

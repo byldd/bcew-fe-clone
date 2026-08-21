@@ -18,6 +18,7 @@ import { useHandleFileUpload } from "@/hooks/useFile";
 import { getTodayDate } from "@/lib/utils/date";
 import { routes } from "@/config/routes";
 import { MATERIAL_JOB_PHASE_LABEL } from "@/module/employee-safety/utils";
+import { buildNoJobAssignmentMessage } from "@/module/employee-safety/utils/job-site-injury-fields";
 
 import {
 	useCreateViolation,
@@ -70,12 +71,17 @@ const JobSiteSafetyViolationForm = () => {
 	const formValues = form.watch();
 	const { violationDate } = formValues;
 
-	const { data: assignedJobs } = useViolationAssignedJobs(employeeId || undefined, violationDate);
+	const { data: assignedJobs, isLoading: isLoadingAssignedJobs } = useViolationAssignedJobs(
+		employeeId || undefined,
+		violationDate
+	);
 	const jobSiteOptions = (assignedJobs ?? []).map((job) => ({
 		label: [job.jobName, job.jobPhase && MATERIAL_JOB_PHASE_LABEL[job.jobPhase]].filter(Boolean).join(" — "),
 		value: job.jobDailyRecordId,
 	}));
 	const jobSiteField = buildViolationJobSiteField(jobSiteOptions, Boolean(employeeId && violationDate));
+	const hasNoJobAssignment =
+		Boolean(employeeId && violationDate) && !isLoadingAssignedJobs && jobSiteOptions.length === 0;
 
 	// The job site list is scoped to the selected employee + date, so a previously
 	// picked job is no longer valid once either changes. This only reacts to the
@@ -187,7 +193,12 @@ const JobSiteSafetyViolationForm = () => {
 				</div>
 
 				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-					<FormInputWrapper key={jobSiteFieldKey} form={form} fieldConfig={jobSiteField} />
+					<div className="space-y-1">
+						<FormInputWrapper key={jobSiteFieldKey} form={form} fieldConfig={jobSiteField} />
+						{hasNoJobAssignment && (
+							<p className="text-xs text-brand-red">{buildNoJobAssignmentMessage(violationDate as Date)}</p>
+						)}
+					</div>
 					<FormField
 						control={form.control}
 						name="violationTime"
@@ -225,7 +236,7 @@ const JobSiteSafetyViolationForm = () => {
 					/>
 				</div>
 
-				<div className="flex gap-2 pt-2">
+				<div className="flex gap-2 pt-2 sm:justify-end">
 					<Button type="button" variant="outline" className="flex-1 sm:flex-none" onClick={() => router.back()}>
 						Cancel
 					</Button>

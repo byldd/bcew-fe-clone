@@ -18,14 +18,15 @@ import { NAMESPACE } from "@/i18n/type";
 import useAuthStore from "@/store/auth-store";
 import { useModal } from "@/hooks/useModal";
 import { routes } from "@/config/routes";
-import { clearCookies } from "@/module/auth/utils/helpers";
 import SmsConsent from "@/components/shared/sms-consent";
 import EmulationMenuItem from "@/module/auth/components/emulation-menu-item";
+import { useAuthAPI } from "@/module/auth/hooks/useAuth";
 
 const AdminSidebarFooter = () => {
 	const { Modal, openModal, closeModal } = useModal();
 	const tCommon = useTypedTranslations(NAMESPACE.COMMON);
-
+	const { useSignout } = useAuthAPI();
+	const { signout } = useSignout();
 	const router = useRouter();
 
 	const { user } = useAuthStore((store) => store);
@@ -36,7 +37,7 @@ const AdminSidebarFooter = () => {
 	const displayRole = user?.impersonatedByUser?.role?.name ?? user?.role?.name;
 
 	const handleSignOut = () => {
-		clearCookies();
+		signout();
 		router.replace(routes.signIn);
 	};
 

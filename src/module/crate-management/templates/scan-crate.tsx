@@ -1,17 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios, { HttpStatusCode } from "axios";
 import { Camera, Keyboard } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { FormLabelRequired } from "@/components/ui/formLabelrequired";
 import { routes } from "@/config/routes";
 import { useHandleFileUpload } from "@/hooks/useFile";
 import { openErrorToast } from "@/components/toast";
 import type { IFileUploadable } from "@/types/file-upload";
-import QRScanner from "../components/qr-scanner";
+import QRScanner from "../components/react-qr-scanner";
 import SealIntactPrompt from "../components/seal-intact-prompt";
 import UploadCrateImages from "../components/upload-crate-images";
 import EnterSealTag from "../components/enter-seal-tag";
@@ -45,6 +46,11 @@ interface ScanCrateTemplateProps {
 export default function ScanCrateTemplate({ action }: ScanCrateTemplateProps) {
 	const isReturn = action === CRATE_SCAN_ACTION.CRATE_SCANNED_TO_RETURN;
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const jobnumParam = searchParams.get("jobnum");
+	const tasknumParam = searchParams.get("tasknum");
+	const jobNum = jobnumParam ? Number(jobnumParam) : undefined;
+	const taskNum = tasknumParam ? Number(tasknumParam) : undefined;
 	const [step, setStep] = useState<RECEIVE_STEP>(RECEIVE_STEP.SCAN);
 	const [activeTab, setActiveTab] = useState<SCANNER_TAB>(SCANNER_TAB.CAMERA);
 	const [crateIdInput, setCrateIdInput] = useState("");
@@ -78,7 +84,7 @@ export default function ScanCrateTemplate({ action }: ScanCrateTemplateProps) {
 
 	const startCrateFlow = async (id: string) => {
 		try {
-			await checkScanStatus({ assetId: id, action });
+			await checkScanStatus({ assetId: id, action, jobNum, taskNum });
 		} catch (error) {
 			openErrorToast({ error: error as Error, message: "This crate has already been scanned." });
 			setScannerKey((prev) => prev + 1);
@@ -147,6 +153,8 @@ export default function ScanCrateTemplate({ action }: ScanCrateTemplateProps) {
 				sealTagNumber,
 				note: note || undefined,
 				photos,
+				jobNum,
+				taskNum,
 			});
 
 			setScanSummary(summary);
@@ -228,7 +236,7 @@ export default function ScanCrateTemplate({ action }: ScanCrateTemplateProps) {
 	}
 
 	if (step === RECEIVE_STEP.PROCESSING) {
-		return <ReceiveProcessing isComplete={false} />;
+		return <ReceiveProcessing isComplete={false} notifyAdmin={isReturn || sealIntact === false} />;
 	}
 
 	if (step === RECEIVE_STEP.SUCCESS && scanSummary) {
@@ -259,12 +267,12 @@ export default function ScanCrateTemplate({ action }: ScanCrateTemplateProps) {
 				onValueChange={(value) => setActiveTab(value as SCANNER_TAB)}
 				className="flex flex-1 flex-col px-4"
 			>
-				<TabsList className="grid w-full grid-cols-2 border border-gray-300">
-					<TabsTrigger value={SCANNER_TAB.CAMERA} className="gap-1.5">
+				<TabsList className="grid w-full grid-cols-2 gap-2">
+					<TabsTrigger value={SCANNER_TAB.CAMERA} className="h-9 gap-1.5 rounded-[8px] border border-gray-300">
 						<Camera className="h-4 w-4" />
 						Camera
 					</TabsTrigger>
-					<TabsTrigger value={SCANNER_TAB.MANUAL} className="gap-1.5">
+					<TabsTrigger value={SCANNER_TAB.MANUAL} className="h-9 gap-1.5 rounded-[8px] border border-gray-300">
 						<Keyboard className="h-4 w-4" />
 						Manual Entry
 					</TabsTrigger>
@@ -277,18 +285,16 @@ export default function ScanCrateTemplate({ action }: ScanCrateTemplateProps) {
 
 				<TabsContent value={SCANNER_TAB.MANUAL} className="mt-4 flex flex-1 flex-col">
 					<div className="flex flex-col gap-1.5">
-						<label htmlFor="crate-id-input" className="text-sm font-medium text-gray-700">
-							Crate ID*
-						</label>
+						<FormLabelRequired label="Crate ID" required htmlFor="crate-id-input" />
 						<Input
 							id="crate-id-input"
 							type="text"
+							inputMode="numeric"
 							value={crateIdInput}
-							onChange={(e) => setCrateIdInput(e.target.value)}
-							placeholder="e.g. CRATE-0045"
-							className="h-auto rounded-xl px-4 py-3 text-sm"
+							onChange={(e) => setCrateIdInput(e.target.value.replace(/\D/g, ""))}
+							placeholder="125634"
+							className="h-10"
 							autoComplete="off"
-							autoCapitalize="characters"
 						/>
 					</div>
 
@@ -300,7 +306,7 @@ export default function ScanCrateTemplate({ action }: ScanCrateTemplateProps) {
 							disabled={!crateIdInput.trim() || isCheckingScanStatus}
 							loading={isCheckingScanStatus}
 							loadingText="Checking..."
-							className="h-auto w-full rounded-2xl py-4 text-sm"
+							className="h-10 w-full"
 						>
 							Go
 						</Button>

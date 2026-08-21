@@ -33,6 +33,7 @@ export const mapReportToForm = (report: IAccidentReportDetail): IAccidentReportS
 	accidentTime: report.accidentDate ?? "",
 	location: report.location ?? "",
 	nearestCrossStreet: report.nearestCrossStreet ?? "",
+	speedLimit: toNumber(report.speedLimit),
 	weather: report.weather ?? "",
 
 	describeAccident: report.describeAccident ?? "",
@@ -59,6 +60,7 @@ export const mapReportToForm = (report: IAccidentReportDetail): IAccidentReportS
 	drugScreenLocation: report.drugScreenLocation ?? "",
 	medicalTreatmentLocation: report.medicalTreatmentLocation ?? "",
 	isMedicalTreatmentLocationOther: report.isMedicalTreatmentLocationOther,
+	wasDriverInjured: report.injury ? YES_NO.YES : "",
 
 	isConfirmedAccurate: report.isConfirmedAccurate,
 

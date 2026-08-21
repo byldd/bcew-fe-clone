@@ -160,7 +160,7 @@ const JobSiteSafetyViolationReviewTemplate = ({ id }: JobSiteSafetyViolationRevi
 			loading={approveInternally.isPending}
 			onClick={() => confirmAction(APPROVE_INTERNALLY_CONFIRM, onApproveInternally)}
 		>
-			Approve Internally
+			Resolve Internally
 		</Button>
 	);
 

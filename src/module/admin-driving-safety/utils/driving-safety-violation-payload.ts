@@ -20,10 +20,9 @@ const combineDateTime = (date: Date, time?: string): string => {
 };
 
 export const buildDrivingSafetyViolationPayload = (
-	data: IDrivingSafetyViolationSchema,
-	employeeId: string
+	data: IDrivingSafetyViolationSchema
 ): ICreateDrivingSafetyViolationPayload => ({
-	employeeId,
+	employeeId: data.employeeId!,
 	truckNumber: data.truckNumber!,
 	violationTypeId: data.violationTypeId!,
 	severity: data.severity || undefined,

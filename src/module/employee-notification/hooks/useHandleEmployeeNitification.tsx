@@ -51,11 +51,7 @@ export const useHandleEmployeeNotification = ({
 
 		// Opens the technician's own injury report, prefilled. Violations have no
 		// technician-side form, so those notifications stay non-clickable.
-		if (
-			(mappedTitle === NOTIFICATION_KEY.JOB_SITE_SAFETY_REPORT_CREATED_BY_ADMIN ||
-				mappedTitle === NOTIFICATION_KEY.JOB_SITE_SAFETY_CLOSED_FOR_TECHNICIAN) &&
-			parsedData?.jobSiteInjuryReportId
-		) {
+		if (mappedTitle === NOTIFICATION_KEY.JOB_SITE_SAFETY_REPORT_CREATED_BY_ADMIN && parsedData?.jobSiteInjuryReportId) {
 			router.push(`${routes.employee.newJobSiteInjuryReport}?draftId=${parsedData.jobSiteInjuryReportId}`);
 			return;
 		}

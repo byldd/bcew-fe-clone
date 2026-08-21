@@ -15,9 +15,6 @@ import { DATE_FORMAT } from "@/types/date";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
 import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
-import { useGetUserModuleAccess } from "@/module/profile/hooks/useProfile";
-import { MODULE } from "@/utils/enums";
-import { isProductionEnv } from "@/utils";
 
 export const EmployeeActivityList = ({ employeeActivities }: IEmployeeActivityList) => {
 	const [expandedRows, setExpandedRows] = useState<string[]>([]);
@@ -28,9 +25,8 @@ export const EmployeeActivityList = ({ employeeActivities }: IEmployeeActivityLi
 	const tPeople = useTypedTranslations(NAMESPACE.PEOPLE_MANAGEMENT);
 
 	const { pageAccess } = useAdminPageAccessContext();
-	const { data: moduleAccessLevel } = useGetUserModuleAccess(MODULE.TIME_LOGS);
 
-	const finalAccessLevel = isProductionEnv() ? moduleAccessLevel?.data.accessLevel : pageAccess?.accessLevel;
+	const finalAccessLevel = pageAccess?.accessLevel;
 
 	const isTimeLogsEditAccess = finalAccessLevel === ACCESS_LEVEL?.WRITE;
 

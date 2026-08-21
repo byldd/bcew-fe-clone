@@ -2,7 +2,7 @@ import type { FormInputProps, FormTextAreaProps } from "@/components/common/form
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Eye, EyeOff } from "lucide-react";
-import { useMemo, useState } from "react";
+import { type ChangeEvent, useMemo, useState } from "react";
 import { type FieldValues } from "react-hook-form";
 import { cn } from "@/lib/utils/utils";
 
@@ -24,6 +24,10 @@ export function FormInput<TData extends FieldValues>({
 			<Input
 				{...field}
 				{...fieldConfig.inputProps}
+				{...(fieldConfig.numericOnly && {
+					inputMode: "numeric" as const,
+					onChange: (event: ChangeEvent<HTMLInputElement>) => field.onChange(event.target.value.replace(/\D/g, "")),
+				})}
 				type={isPassword && showPassword ? "text" : fieldConfig.inputProps?.type}
 				placeholder={fieldConfig.placeholder}
 				id={field.name}

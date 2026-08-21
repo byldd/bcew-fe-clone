@@ -4,6 +4,7 @@ import { ALLOWED_DOCUMENT_FILE_TYPES } from "@/utils/constants";
 
 // Office-entered record — no draft state, created directly on submit.
 export const drivingSafetyViolationSchema = z.object({
+	employeeId: z.string().optional(),
 	truckNumber: z.string().optional(),
 	violationTypeId: z.string().optional(),
 	severity: z.string().optional(),
@@ -16,9 +17,10 @@ export const drivingSafetyViolationSchema = z.object({
 export type IDrivingSafetyViolationSchema = z.infer<typeof drivingSafetyViolationSchema>;
 
 // Mirrors the backend's validateCreateViolationPayload required-field rules.
-// `employeeId` isn't part of this schema — it's checked separately by the form
-// itself (it lives outside react-hook-form, as local component state).
 export const drivingSafetyViolationRequiredFieldsSchema = drivingSafetyViolationSchema.superRefine((data, ctx) => {
+	if (!data.employeeId) {
+		ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Employee is required", path: ["employeeId"] });
+	}
 	if (!data.truckNumber) {
 		ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Truck number is required", path: ["truckNumber"] });
 	}

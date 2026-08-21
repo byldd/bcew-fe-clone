@@ -6,7 +6,7 @@ const AccidentTowImpoundCard = ({ report }: { report: IAccidentReviewDetail }) =
 	<ReviewCard title="Tow &amp; Impound">
 		<ReviewRowGrid>
 			<div className="border-b">
-				<ReviewRow label=" towed" value={yesNo(report.bcewVehicleTowed)} />
+				<ReviewRow label="BCEW towed" value={yesNo(report.bcewVehicleTowed)} />
 				{report.bcewVehicleTowed && (
 					<>
 						<ReviewRow label="Tow provider" value={orDash(report.towProviderName)} />

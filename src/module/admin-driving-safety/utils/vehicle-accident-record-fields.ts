@@ -62,10 +62,19 @@ export const personStruckField: AccidentField = {
 
 export const locationField: AccidentField = {
 	name: "location",
-	fieldVariant: FIELD_VARIANT.INPUT,
+	fieldVariant: FIELD_VARIANT.LOCATION,
 	label: "Location of Accident *",
-	placeholder: "Type here",
+	placeholder: "Enter Lat, Long",
 	className: "h-10 rounded-[8px]",
+	speedLimitFieldName: "speedLimit",
+	speedLimitEndpoint: "/admin/driving-safety/vehicle-accident/speed-limit",
+};
+
+export const speedLimitField: AccidentField = {
+	name: "speedLimit",
+	fieldVariant: FIELD_VARIANT.READONLY_TEXT,
+	label: "Speed Limit (mph)",
+	emptyText: "Not Available",
 };
 
 export const nearestCrossStreetField: AccidentField = {
@@ -186,7 +195,7 @@ export const otherVehicleTowCostField: AccidentField = {
 	fieldVariant: FIELD_VARIANT.CURRENCY_INPUT,
 	label: "Other vehicle tow cost*",
 	placeholder: "$0.00",
-	note: "Reported to the other party's insurance when BCEW is not at fault.",
+	note: "Reported to the other party's insurance when  is not at fault.",
 };
 
 export const impoundedField: AccidentField = {

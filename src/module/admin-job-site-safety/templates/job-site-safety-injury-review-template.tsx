@@ -31,6 +31,7 @@ import {
 	formatJobSiteSafetyReportNumber,
 } from "../utils/dashboard-constants";
 import JobSiteInjuryReportSummary from "../components/job-site-injury-report-summary";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 const HintText = ({ children }: { children: React.ReactNode }) => (
 	<p className="my-3 text-sm text-brand-dark50">{children}</p>
@@ -166,7 +167,7 @@ const JobSiteSafetyInjuryReviewTemplate = ({ id }: JobSiteSafetyInjuryReviewTemp
 			loading={approveInternally.isPending}
 			onClick={() => confirmAction(APPROVE_INTERNALLY_CONFIRM, onApproveInternally)}
 		>
-			Approve Internally
+			Resolve Internally
 		</Button>
 	);
 
@@ -182,18 +183,20 @@ const JobSiteSafetyInjuryReviewTemplate = ({ id }: JobSiteSafetyInjuryReviewTemp
 
 		if (canMarkResolved) {
 			return (
-				<div className="space-y-2">
-					<HintText>This claim has been sent to the insurer.</HintText>
-					<Button
-						type="button"
-						variant="filled"
-						className="w-full"
-						loading={markResolved.isPending}
-						onClick={onMarkResolved}
-					>
-						Approved
-					</Button>
-				</div>
+				<WriteAccessWrapper>
+					<div className="space-y-2">
+						<HintText>This claim has been sent to the insurer.</HintText>
+						<Button
+							type="button"
+							variant="filled"
+							className="w-full"
+							loading={markResolved.isPending}
+							onClick={onMarkResolved}
+						>
+							Approved
+						</Button>
+					</div>
+				</WriteAccessWrapper>
 			);
 		}
 
@@ -208,36 +211,40 @@ const JobSiteSafetyInjuryReviewTemplate = ({ id }: JobSiteSafetyInjuryReviewTemp
 
 		if (canPresidentAct) {
 			return (
-				<div className="space-y-2">
-					<Button
-						type="button"
-						variant="filled"
-						className="w-full"
-						loading={approveAndSendToInsurance.isPending}
-						onClick={() => confirmAction(APPROVE_AND_SEND_TO_INSURANCE_CONFIRM, onApproveAndSendToInsurance)}
-					>
-						Approve &amp; Send to Insurance
-					</Button>
-					{approveInternallyButton()}
-				</div>
+				<WriteAccessWrapper>
+					<div className="space-y-2">
+						<Button
+							type="button"
+							variant="filled"
+							className="w-full"
+							loading={approveAndSendToInsurance.isPending}
+							onClick={() => confirmAction(APPROVE_AND_SEND_TO_INSURANCE_CONFIRM, onApproveAndSendToInsurance)}
+						>
+							Approve &amp; Send to Insurance
+						</Button>
+						{approveInternallyButton()}
+					</div>
+				</WriteAccessWrapper>
 			);
 		}
 
 		if (report.status === SAFETY_REPORT_STATUS.PENDING) {
 			return (
-				<div className="mt-3 space-y-2">
-					<HintText>First-level approver reviews and marks the report ready.</HintText>
-					<Button
-						type="button"
-						variant="filled"
-						className="w-full"
-						loading={markReadyForInsurance.isPending}
-						onClick={() => confirmAction(MARK_READY_FOR_INSURANCE_CONFIRM, onMarkReadyForInsurance)}
-					>
-						Mark for President&apos;s Review
-					</Button>
-					{canFleetManagerApproveInternally && approveInternallyButton()}
-				</div>
+				<WriteAccessWrapper>
+					<div className="mt-3 space-y-2">
+						<HintText>First-level approver reviews and marks the report ready.</HintText>
+						<Button
+							type="button"
+							variant="filled"
+							className="w-full"
+							loading={markReadyForInsurance.isPending}
+							onClick={() => confirmAction(MARK_READY_FOR_INSURANCE_CONFIRM, onMarkReadyForInsurance)}
+						>
+							Mark for President&apos;s Review
+						</Button>
+						{canFleetManagerApproveInternally && approveInternallyButton()}
+					</div>
+				</WriteAccessWrapper>
 			);
 		}
 
@@ -266,18 +273,20 @@ const JobSiteSafetyInjuryReviewTemplate = ({ id }: JobSiteSafetyInjuryReviewTemp
 
 			if (isFleetManager) {
 				return (
-					<div className="mt-3 space-y-2">
-						<HintText>In your queue — review the email draft and take action.</HintText>
-						<Button
-							type="button"
-							variant="filled"
-							className="w-full"
-							onClick={() => router.push(routes.admin.jobSiteSafetyInsuranceEmailReview(id))}
-						>
-							Review Email Draft
-						</Button>
-						{approveInternallyButton(true)}
-					</div>
+					<WriteAccessWrapper>
+						<div className="mt-3 space-y-2">
+							<HintText>In your queue — review the email draft and take action.</HintText>
+							<Button
+								type="button"
+								variant="filled"
+								className="w-full"
+								onClick={() => router.push(routes.admin.jobSiteSafetyInsuranceEmailReview(id))}
+							>
+								Review Email Draft
+							</Button>
+							{approveInternallyButton(true)}
+						</div>
+					</WriteAccessWrapper>
 				);
 			}
 

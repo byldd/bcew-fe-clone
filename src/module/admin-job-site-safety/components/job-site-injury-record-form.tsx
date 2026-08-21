@@ -25,6 +25,7 @@ import ReportSection from "@/module/employee-safety/components/report-section";
 import JobSiteInjuryTreatmentLocationSelect from "@/module/employee-safety/components/job-site-injury-treatment-location-select";
 import { jobSiteInjurySchema, IJobSiteInjurySchema } from "@/module/employee-safety/utils/job-site-injury-schema";
 import {
+	buildNoJobAssignmentMessage,
 	doctorsMedicsField,
 	equipmentMalfunctionExplainField,
 	incidentDetailFields,
@@ -172,16 +173,22 @@ const JobSiteInjuryRecordForm = () => {
 		form.setValue("medicalAction", deriveMedicalAction(isDrugScreenRequired, isMedicalCareNeeded));
 	}, [isDrugScreenRequired, isMedicalCareNeeded, form]);
 
-	const { data: assignedJobs } = useAdminAssignedJobs(employeeId || undefined, injuryDate);
+	const { data: assignedJobs, isLoading: isLoadingAssignedJobs } = useAdminAssignedJobs(
+		employeeId || undefined,
+		injuryDate
+	);
 	const { data: treatmentLocations } = useAdminTreatmentLocations();
 	const jobSiteOptions = (assignedJobs ?? []).map((job) => ({
 		label: [job.jobName, job.jobPhase && MATERIAL_JOB_PHASE_LABEL[job.jobPhase]].filter(Boolean).join(" — "),
 		value: job.jobDailyRecordId,
 	}));
-	const jobSiteField = buildAdminJobSiteField(
-		withSavedJobSiteOption(jobSiteOptions, draft?.jobDailyRecordId, draft?.jobSiteName),
-		Boolean(employeeId && injuryDate)
-	);
+	const jobSiteOptionsWithSaved = withSavedJobSiteOption(jobSiteOptions, draft?.jobDailyRecordId, draft?.jobSiteName);
+	const jobSiteField = buildAdminJobSiteField(jobSiteOptionsWithSaved, Boolean(employeeId && injuryDate));
+	// Checked against the list including the saved fallback — editing a draft
+	// whose live assignment has since changed still shows the job it was
+	// originally filed against, so that isn't a "no assignment" case.
+	const hasNoJobAssignment =
+		Boolean(employeeId && injuryDate) && !isLoadingAssignedJobs && jobSiteOptionsWithSaved.length === 0;
 
 	// The job site list is scoped to the selected employee + injury date, so a
 	// previously picked job is no longer valid once either changes. This only
@@ -408,6 +415,9 @@ const JobSiteInjuryRecordForm = () => {
 					</div>
 
 					<FormInputWrapper key={jobSiteFieldKey} form={form} fieldConfig={jobSiteField} />
+					{hasNoJobAssignment && (
+						<p className="text-xs text-brand-red">{buildNoJobAssignmentMessage(injuryDate as Date)}</p>
+					)}
 
 					<FormInputWrapper form={form} fieldConfig={howInjuryOccurredField} />
 
@@ -467,6 +477,7 @@ const JobSiteInjuryRecordForm = () => {
 														form.setValue("treatmentStartDate", range?.from);
 														form.setValue("treatmentEndDate", range?.to ?? range?.from);
 													}}
+													disabledDate={injuryDate ? { before: injuryDate } : undefined}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -526,7 +537,7 @@ const JobSiteInjuryRecordForm = () => {
 					/>
 				</section>
 
-				<div className="flex flex-col gap-2 pb-4 sm:flex-row sm:flex-wrap sm:justify-start">
+				<div className="flex flex-col gap-2 pb-4 sm:flex-row sm:flex-wrap sm:justify-end">
 					{/* Cancel + Save Progress share one row, split evenly, so mobile has no dangling gap */}
 					<div className="flex gap-2">
 						<Button type="button" variant="outline" className="flex-1 sm:flex-none" onClick={() => router.back()}>

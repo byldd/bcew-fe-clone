@@ -259,82 +259,9 @@ export const CreateNewRoleModal = ({ onClose, handleSuccessfulRoleCreation }: IC
 				{/* Permissions Table */}
 				<RoleMapZoneTabPermissions />
 
-				{!isProductionEnv() ? (
-					<>
-						<RolePagePermissions />
-					</>
-				) : (
-					<div className="space-y-2 border-t">
-						<p className="text-sm font-semibold text-brand-dark">{tPmanagement.module}</p>
-						<div className="overflow-x-auto">
-							<Table>
-								<TableHeader>
-									<TableRow className="text-brand-dark50">
-										<TableHead className="w-1/3">{tPmanagement.module}</TableHead>
-										<TableHead className="text-center">
-											<div className="flex items-center justify-center gap-1">{tPmanagement.readOnlyAccess}</div>
-										</TableHead>
-										<TableHead className="text-center">
-											<div className="flex items-center justify-center gap-1">{tPmanagement.writeEditAccess}</div>
-										</TableHead>
-									</TableRow>
-								</TableHeader>
-								<TableBody>
-									{Object.entries(MODULE_HEADING_WITH_DISPLAY_ORDER).map(([heading, keys]) => (
-										<React.Fragment key={heading}>
-											{!Object.values(SKIP_HEADINGS)?.includes(heading as SKIP_HEADINGS) && (
-												<TableRow>
-													<TableCell colSpan={3} className="font-medium">
-														{heading}
-													</TableCell>
-												</TableRow>
-											)}
-
-											{keys.map((modKey) => {
-												const moduleId = getModuleId(modKey);
-												if (!moduleId) return null;
-
-												const access = permissions[moduleId];
-												const hasRead = access === ACCESS_LEVEL.READ || access === ACCESS_LEVEL.WRITE;
-												const hasWrite = access === ACCESS_LEVEL.WRITE;
-												const isLocked = LOCKED_MODULES.includes(modKey);
-
-												return (
-													<TableRow key={modKey}>
-														<TableCell
-															className={`${
-																modKey !== MODULE.DASHBOARD &&
-																modKey !== MODULE.REPORTS_AND_EXPORTS &&
-																modKey !== MODULE.BUILDER_COMMUNICATIONS &&
-																"pl-6"
-															} font-medium`}
-														>
-															{MODULE_LABELS[modKey] ?? modKey}
-														</TableCell>
-														<TableCell className="text-center">
-															<Switch
-																checked={hasRead}
-																onCheckedChange={() => updateAccessLevel(moduleId, ACCESS_LEVEL.READ)}
-																disabled={isLocked}
-															/>
-														</TableCell>
-														<TableCell className="text-center">
-															<Switch
-																checked={hasWrite}
-																onCheckedChange={() => updateAccessLevel(moduleId, ACCESS_LEVEL.WRITE)}
-																disabled={isLocked}
-															/>
-														</TableCell>
-													</TableRow>
-												);
-											})}
-										</React.Fragment>
-									))}
-								</TableBody>
-							</Table>
-						</div>
-					</div>
-				)}
+				<>
+					<RolePagePermissions />
+				</>
 
 				{/* Actions */}
 				<div className="flex gap-3 border-t py-4">

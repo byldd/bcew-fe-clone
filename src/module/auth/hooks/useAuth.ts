@@ -18,6 +18,8 @@ import type {
 	UserOTPLoginDataType,
 } from "@/module/auth/types";
 import { IImpersonationUsersResponse, IModulesResponse } from "@/module/employee/types";
+import { clearCookies } from "../utils/helpers";
+import useAuthStore from "@/store/auth-store";
 
 const API_AUTH_URL = "/auth";
 
@@ -153,6 +155,19 @@ export const useAuthAPI = () => {
 		},
 	});
 
+	const useSignout = () => {
+		const { clearStore } = useAuthStore((state) => state);
+
+		const signout = () => {
+			clearCookies();
+			clearStore();
+		};
+
+		return {
+			signout,
+		};
+	};
+
 	return {
 		useLoginMutation,
 		useRegisterMutation,
@@ -168,5 +183,6 @@ export const useAuthAPI = () => {
 		useImpersonationUsers,
 		useImpersonateUserMutation,
 		useStopImpersonationMutation,
+		useSignout,
 	};
 };

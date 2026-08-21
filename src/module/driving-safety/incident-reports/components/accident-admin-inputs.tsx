@@ -97,7 +97,7 @@ const AccidentAdminInputs = ({
 							</div>
 						)}
 						{values.bcewVehicleTowed === YES_NO.NO && (
-							<p className="text-xs text-brand-dark50">No tow was required for the BCEW vehicle.</p>
+							<p className="text-xs text-brand-dark50">No tow was required for the vehicle.</p>
 						)}
 						{anotherVehicleInvolved && (
 							<>
@@ -128,13 +128,13 @@ const AccidentAdminInputs = ({
 							</div>
 						)}
 						{values.vehicleImpounded === YES_NO.NO && (
-							<p className="text-xs text-brand-dark50">The vehicle was not impounded.</p>
+							<p className="text-xs text-brand-dark50">The BCEW vehicle was not impounded.</p>
 						)}
 					</fieldset>
 				</div>
 
 				{(anotherVehicleInvolved || personStruck || objectStruck) && (
-					<div className="space-y-2 border-t border-brand-dark10 pt-3">
+					<div className="space-y-1 border-t border-brand-dark10 pt-3">
 						<SectionTitle>Was Drug Screen needed?</SectionTitle>
 						<FormInputWrapper
 							form={form}
@@ -143,12 +143,12 @@ const AccidentAdminInputs = ({
 							wrapperClassName="space-y-2"
 						/>
 						{values.drugScreenNeeded === YES_NO.YES && (
-							<InfoNote>Call Drug Coordinator to inform of drug screen.</InfoNote>
+							<InfoNote>Call drug coordinator to inform of drug screen.</InfoNote>
 						)}
 					</div>
 				)}
 
-				<div className="space-y-1 border-t border-brand-dark10 pt-3">
+				<div className="space-y-1 border-t border-brand-dark10 pt-2">
 					<SectionTitle>Was medical care needed?</SectionTitle>
 					<FormInputWrapper
 						form={form}

@@ -61,7 +61,7 @@ const styles: Record<string, CSSProperties> = {
 const DashboardPlaceholder = () => {
 	return (
 		<div>
-			<SectionHeader title={""} hideSidebarToggle />
+			<SectionHeader title={""} />
 
 			<div style={styles.wrap}>
 				{/* Crane illustration */}

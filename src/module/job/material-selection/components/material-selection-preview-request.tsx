@@ -82,7 +82,7 @@ const PreviewRequestView: React.FC<PreviewRequestViewProps> = ({
 	};
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-4 p-4">
 			<div className={topActions ? "flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between" : "space-y-1"}>
 				<div className="space-y-1">
 					<div className="ml-[-10] flex items-center gap-2">

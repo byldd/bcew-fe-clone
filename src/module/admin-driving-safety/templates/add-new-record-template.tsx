@@ -10,6 +10,8 @@ import DrivingSafetyViolationForm from "../components/driving-safety-violation-f
 import VehicleAccidentRecordForm from "../components/vehicle-accident-record-form";
 import VehicleBreakdownRecordForm from "../components/vehicle-breakdown-record-form";
 import { ADD_RECORD_TAB, ADD_RECORD_TAB_PARAM } from "../enums";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
 
 const TAB_TRIGGER_CLASS =
 	"flex flex-col items-start gap-0.5 rounded-[10px] border px-4 py-2 text-left transition-colors data-[state=active]:border-brand-dark data-[state=inactive]:border-brand-dark10";
@@ -22,6 +24,16 @@ const AddNewRecordTemplate = () => {
 		? (tabParam as ADD_RECORD_TAB)
 		: ADD_RECORD_TAB.VEHICLE_ACCIDENT;
 	const [tab, setTab] = useState<ADD_RECORD_TAB>(initialTab);
+
+	const { pageAccess } = useAdminPageAccessContext();
+
+	if (pageAccess?.accessLevel !== ACCESS_LEVEL.WRITE) {
+		return (
+			<div className="flex h-full items-center justify-center text-center text-sm font-medium text-red-500">
+				You don&apos;t have permission to add new record
+			</div>
+		);
+	}
 
 	return (
 		<div className="space-y-4">

@@ -17,6 +17,7 @@ import IncidentsByTypeChart from "../components/incidents-by-type-chart";
 import { useDrivingSafetyDashboard } from "../hooks/useDrivingSafetyDashboard";
 import { useDrivingSafetyDashboardParams } from "../hooks/useDrivingSafetyDashboardParams";
 import { IDashboardDateRange } from "../types";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 const DrivingSafetyDashboard = () => {
 	const router = useRouter();
@@ -46,7 +47,7 @@ const DrivingSafetyDashboard = () => {
 					<>
 						<DatePicker
 							mode="range"
-							placeholder="Select date"
+							placeholder="Select Date"
 							alwaysShowLabel
 							selected={{ from: startDate ?? undefined, to: endDate ?? undefined }}
 							onSelect={(value) => {
@@ -60,9 +61,11 @@ const DrivingSafetyDashboard = () => {
 							required={false}
 							className="!h-10 w-[180px] border border-brand-dark10 !bg-white text-sm shadow-none"
 						/>
-						<Button type="button" variant="filled" onClick={goToCreateViolation}>
-							Create Driving Safety Violation
-						</Button>
+						<WriteAccessWrapper>
+							<Button type="button" variant="filled" onClick={goToCreateViolation}>
+								Create Driving Safety Violation
+							</Button>
+						</WriteAccessWrapper>
 					</>
 				}
 			/>

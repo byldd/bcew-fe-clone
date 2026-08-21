@@ -16,9 +16,6 @@ import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
 import { openSuccessToast } from "@/components/toast";
 import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
-import { useGetUserModuleAccess } from "@/module/profile/hooks/useProfile";
-import { MODULE } from "@/utils/enums";
-import { isProductionEnv } from "@/utils";
 
 export const useCrewColumns = () => {
 	const tPeople = useTypedTranslations(NAMESPACE.PEOPLE_MANAGEMENT);
@@ -68,9 +65,8 @@ interface ActionCellProps {
 const ActionCell: React.FC<ActionCellProps> = ({ crew }) => {
 	const { openModal, closeModal, Modal } = useModal();
 	const { pageAccess } = useAdminPageAccessContext();
-	const { data } = useGetUserModuleAccess(MODULE.CREW_LIST);
 
-	const accessLevel = isProductionEnv() ? data?.data.accessLevel : pageAccess?.accessLevel;
+	const accessLevel = pageAccess?.accessLevel;
 
 	const queryClient = useQueryClient();
 	const tPeople = useTypedTranslations(NAMESPACE.PEOPLE_MANAGEMENT);

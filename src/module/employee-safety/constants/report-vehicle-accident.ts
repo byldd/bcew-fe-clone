@@ -10,7 +10,7 @@ export const ACCIDENT_EMERGENCY_CONTACTS: IEmergencyContact[] = [
 
 export const ACCIDENT_DISCLAIMER_POINTS: string[] = [
 	"Do not leave the scene of an accident without completing the steps.",
-	"Employee is not authorized to speak to insurance companies, attorneys or other third-party entities regarding accidents without the approval of .",
+	"Employee is not authorized to speak to insurance companies, attorneys or other third-party entities regarding accidents without the approval of BCEW.",
 ];
 
 export const ACCIDENT_POLICE_INSTRUCTION =

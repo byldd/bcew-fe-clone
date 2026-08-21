@@ -1,5 +1,5 @@
 import { modalBodyVariants } from "@/utils/constants";
-import { MODULE } from "@/utils/enums";
+import { FILTER_SAVED_VIEW_PAGE_KEY, MODULE } from "@/utils/enums";
 import { IconType } from "react-icons/lib";
 
 export type USER_TYPE = "USER" | "ADMIN" | "SUPER_ADMIN" | "SYSTEM";
@@ -130,6 +130,40 @@ export type IPaginatedApiResponse<T> = {
 	page: number;
 	pageSize: number;
 	total: number;
+};
+
+// A per-user, per-page saved filter preset (FilterSavedView table on the BE). `TFilters` is each
+// page's own filter-state shape (e.g. MaterialRequestFiltersState, IMapZoneParams) - the BE stores
+// it as an opaque JSON blob, so every page reuses this shape instead of redeclaring it.
+export type IFilterSavedView<TFilters> = {
+	id: string;
+	name: string;
+	pageKey: FILTER_SAVED_VIEW_PAGE_KEY;
+	filters: TFilters;
+	isDefault: boolean;
+	isLastViewed: boolean;
+	userId: string;
+	createdAt: string;
+	updatedAt: string;
+};
+
+export type IFilterSavedViewsResponse<TFilters> = {
+	items: IFilterSavedView<TFilters>[];
+};
+
+export type ICreateFilterSavedViewPayload<TFilters> = {
+	name: string;
+	pageKey: FILTER_SAVED_VIEW_PAGE_KEY;
+	filters: TFilters;
+	isDefault?: boolean;
+	isLastViewed?: boolean;
+};
+
+export type IUpdateFilterSavedViewPayload<TFilters> = {
+	name?: string;
+	filters?: TFilters;
+	isDefault?: boolean;
+	isLastViewed?: boolean;
 };
 
 export interface IOpenModal {

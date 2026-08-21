@@ -96,6 +96,7 @@ export type IAccidentReportDetail = {
 	accidentDate: string | null;
 	location: string | null;
 	nearestCrossStreet: string | null;
+	speedLimit: number | null;
 	weather: string | null;
 	describeAccident: string | null;
 	damageToBcewVehicle: string | null;
@@ -246,6 +247,7 @@ export type ISaveAccidentPayload = {
 	accidentDate?: string | null;
 	location?: string | null;
 	nearestCrossStreet?: string | null;
+	speedLimit?: number | null;
 	weather?: string | null;
 
 	describeAccident?: string | null;

@@ -3,6 +3,7 @@ import { MATERIAL_ROLE } from "@/utils/enums";
 import type { JobPullListTakeoffItem } from "@/module/job-level-details/utils/types";
 import { IMaterialSelectionFormSchema } from "./material-selection-form";
 import { EmployeePullListItem, MaterialSelectionItem, ReasonAvailability } from "./types";
+import { MATERIAL_VENDOR } from "./enums";
 
 const FALLBACK_LABEL = "--";
 
@@ -37,6 +38,13 @@ export const mapPullListItemsToMaterials = (items: EmployeePullListItem[]): Mate
 			inPullList: true,
 		};
 	});
+};
+
+export const isMaterialSelectionItemDisabled = (item: MaterialSelectionItem) => {
+	if (item.inPullList === false) return false;
+	const backorder = Number(item.backorder);
+	const hasBackorder = Number.isFinite(backorder) && backorder > 0;
+	return hasBackorder && item.vendor !== MATERIAL_VENDOR.BCEW;
 };
 
 export const filterMaterials = (items: MaterialSelectionItem[], query: string) => {

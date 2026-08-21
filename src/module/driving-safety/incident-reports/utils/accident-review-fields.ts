@@ -23,5 +23,4 @@ export const insuranceCorrespondenceField: AccidentReviewField = {
 	name: "insuranceCorrespondence",
 	fieldVariant: FIELD_VARIANT.MULTI_DOCUMENT,
 	label: "Upload Insurance Correspondence",
-	description: "Letters, emails",
 };

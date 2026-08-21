@@ -17,6 +17,7 @@ import { routes } from "@/config/routes";
 import useAuthStore from "@/store/auth-store";
 import { useHandleFileUpload } from "@/hooks/useFile";
 import { cn } from "@/lib/utils/utils";
+import { isValidLatLng } from "@/lib/utils/coordinates";
 
 import { ACCIDENT_SECTION, MEDICAL_DRUG_SCREEN, TECHNICIAN_REPORT_STATUS, YES_NO } from "../enums";
 import { TECHNICIAN_STATUS_LABEL, toTechnicianStatus } from "../utils/technician-report-status";
@@ -28,6 +29,8 @@ import OtherVehiclesSection from "../components/other-vehicles-section";
 import PersonStruckSection from "../components/person-struck-section";
 import PoliceSection from "../components/police-section";
 import FollowUpQuestionsSection from "../components/follow-up-questions-section";
+import InjuryReportSection from "../components/injury-report-section";
+import InjuryReportPage from "../components/injury-report-page";
 import {
 	accidentRequiredFieldsSchema,
 	accidentSubmitSchema,
@@ -60,10 +63,12 @@ import {
 	useAccidentReport,
 	useAssignedVehicle,
 	useCreateAccidentDraft,
+	useMedicalTreatmentLocations,
 	useSafetyFormOptions,
 	useSubmitAccidentReport,
 	useUpdateAccidentDraft,
 } from "../hooks/useVehicleAccident";
+import { isProductionEnv } from "@/utils";
 
 const NewVehicleAccidentReportTemplate = () => {
 	const router = useRouter();
@@ -72,8 +77,10 @@ const NewVehicleAccidentReportTemplate = () => {
 	const { user } = useAuthStore((state) => state);
 	const [reportId, setReportId] = useState<string | null>(null);
 	const [isSubmitted, setIsSubmitted] = useState(false);
+	const [showInjuryReport, setShowInjuryReport] = useState(false);
 
 	const { data: formOptions } = useSafetyFormOptions();
+	const { data: treatmentLocations } = useMedicalTreatmentLocations();
 	const { data: assignedVehicle } = useAssignedVehicle();
 	const { data: draft } = useAccidentReport(draftId);
 	const createDraft = useCreateAccidentDraft();
@@ -183,9 +190,18 @@ const NewVehicleAccidentReportTemplate = () => {
 			skipPoliceAutofill.current = false;
 			return;
 		}
-		const anotherVehicle = watchedValues.anotherVehicleInvolved === YES_NO.YES;
-		const personStruck = watchedValues.personStruck === YES_NO.YES;
-		form.setValue("policeContacted", anotherVehicle || personStruck ? YES_NO.YES : YES_NO.NO);
+		const vehicleAnswer = watchedValues.anotherVehicleInvolved;
+		const personAnswer = watchedValues.personStruck;
+		// Don't preselect a value until the scenario is known — i.e. both quick questions
+		// are answered — so a freshly opened blank form doesn't auto-select "No".
+		const scenarioKnown =
+			(vehicleAnswer === YES_NO.YES || vehicleAnswer === YES_NO.NO) &&
+			(personAnswer === YES_NO.YES || personAnswer === YES_NO.NO);
+		if (!scenarioKnown) return;
+		form.setValue(
+			"policeContacted",
+			vehicleAnswer === YES_NO.YES || personAnswer === YES_NO.YES ? YES_NO.YES : YES_NO.NO
+		);
 	}, [watchedValues.anotherVehicleInvolved, watchedValues.personStruck, isClosed, isPendingApproval, form]);
 
 	const scrolledDraftRef = useRef<string | null>(null);
@@ -251,6 +267,19 @@ const NewVehicleAccidentReportTemplate = () => {
 			openErrorToast({ error: error as Error });
 		}
 	};
+
+	if (showInjuryReport) {
+		return (
+			<InjuryReportPage
+				form={form}
+				painLevels={formOptions?.painLevels ?? []}
+				treatmentLocations={treatmentLocations ?? []}
+				onCancel={() => setShowInjuryReport(false)}
+				onCreate={() => setShowInjuryReport(false)}
+				disabled={disabledFor()}
+			/>
+		);
+	}
 
 	if (isSubmitted) {
 		return (
@@ -371,14 +400,16 @@ const NewVehicleAccidentReportTemplate = () => {
 										)}
 									/>
 								</div>
-								{accidentDetailFields.map((fieldConfig) => (
-									<FormInputWrapper
-										key={fieldConfig.name}
-										form={form}
-										fieldConfig={fieldConfig}
-										disabled={disabledFor(ACCIDENT_SECTION.ACCIDENT_DETAILS)}
-									/>
-								))}
+								{accidentDetailFields
+									.filter((fieldConfig) => fieldConfig.name !== "speedLimit" || isValidLatLng(watchedValues.location))
+									.map((fieldConfig) => (
+										<FormInputWrapper
+											key={fieldConfig.name}
+											form={form}
+											fieldConfig={fieldConfig}
+											disabled={disabledFor(ACCIDENT_SECTION.ACCIDENT_DETAILS)}
+										/>
+									))}
 							</ReportSection>
 						</div>
 
@@ -508,6 +539,14 @@ const NewVehicleAccidentReportTemplate = () => {
 									canDelete={uploadCanDelete()}
 								/>
 							</ReportSection>
+						)}
+
+						{isProductionEnv() && !isAdditionalInfoRequested && (
+							<InjuryReportSection
+								form={form}
+								onOpenInjury={() => setShowInjuryReport(true)}
+								disabled={disabledFor()}
+							/>
 						)}
 
 						{!isAdditionalInfoRequested && (

@@ -72,7 +72,7 @@ const SmsConsent = ({ onClose, isSubCrew = false, showCloseButton = true }: SmsC
 	return (
 		<div className="flex w-full flex-col gap-2 px-2">
 			<div className="relative h-[46px] w-[162px]">
-				<Image src="/assets/svg/bcew-logo.svg" alt="bcew-logo" fill className="object-contain" priority />
+				{/* <Image src="/assets/svg/bcew-logo.svg" alt="bcew-logo" fill className="object-contain" priority /> */}
 			</div>
 
 			<h2 className="text-lg font-medium">{tAdmin.provideDetails}</h2>

@@ -27,6 +27,8 @@ import { NAMESPACE } from "@/i18n/type";
 import { DATE_FORMAT } from "@/types/date";
 import ActiveScheduleConflictModal from "./active-schedule-conflict-modal";
 import { AxiosError } from "axios";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
 
 interface RosterTimeTooltipProps {
 	timeRange: string;
@@ -102,7 +104,7 @@ const TimeSourceSelector = ({
 	const updateRosterTimeMutation = useUpdateRosterTime(roster?.id);
 	const { openModal, closeModal, Modal } = useModal();
 	const queryClient = useQueryClient();
-
+	const { pageAccess } = useAdminPageAccessContext();
 	const isPastDate = handlePastDateOperations(roster?.date, getTodayDate());
 	const isTimeExtended =
 		roster?.isTimeOverridden && roster?.extendedApprovedStartTime && roster?.extendedApprovedEndTime ? true : false;
@@ -168,7 +170,7 @@ const TimeSourceSelector = ({
 					<Button
 						variant="ghost"
 						className="flex h-auto w-full flex-col items-center px-2 py-1 text-center"
-						disabled={updateRosterTimeMutation?.isPending}
+						disabled={updateRosterTimeMutation?.isPending || pageAccess?.accessLevel !== ACCESS_LEVEL.WRITE}
 					>
 						<p
 							className="flex items-center text-sm font-medium"

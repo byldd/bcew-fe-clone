@@ -10,6 +10,7 @@ import { JOB_SITE_SAFETY_REVIEWER_ROLE } from "@/module/admin-job-site-safety/en
 import { IAccidentReviewDetail } from "../types";
 import { INCIDENT_REPORT_STATUS } from "../utils/enums";
 import { ReviewCard } from "./review-card";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 const workflowButtonClass = "h-auto min-h-10 w-full !whitespace-normal break-words py-2 text-center leading-snug";
 
@@ -110,48 +111,52 @@ const AccidentApprovalWorkflow = ({
 			case INCIDENT_REPORT_STATUS.PENDING:
 				if (hasAskedTechnician) {
 					return (
-						<div className="mt-3 space-y-4">
-							<HintText>First-level approver reviews and marks the report ready.</HintText>
-							<Button
-								type="button"
-								variant="filled"
-								className={workflowButtonClass}
-								loading={isSendingToTechnician}
-								onClick={onSendToTechnician}
-							>
-								Send to Technician
-							</Button>
-						</div>
-					);
-				}
-
-				return (
-					<div className="mt-3 space-y-4">
-						<HintText>First-level approver reviews and marks the report ready.</HintText>
-						<div className="space-y-2">
-							{isPresident ? (
-								approveAndSendToInsuranceButton
-							) : (
+						<WriteAccessWrapper>
+							<div className="mt-3 space-y-4">
+								<HintText>First-level approver reviews and marks the report ready.</HintText>
 								<Button
 									type="button"
 									variant="filled"
 									className={workflowButtonClass}
-									loading={isAssigning}
-									onClick={onAssignToKevin}
+									loading={isSendingToTechnician}
+									onClick={onSendToTechnician}
 								>
-									Mark for President&apos;s Review
+									Send to Technician
 								</Button>
-							)}
-							{(isPresident || isFleetManager) && resolveInternallyButton}
+							</div>
+						</WriteAccessWrapper>
+					);
+				}
+
+				return (
+					<WriteAccessWrapper>
+						<div className="mt-3 space-y-4">
+							<HintText>First-level approver reviews and marks the report ready.</HintText>
+							<div className="space-y-2">
+								{isPresident ? (
+									approveAndSendToInsuranceButton
+								) : (
+									<Button
+										type="button"
+										variant="filled"
+										className={workflowButtonClass}
+										loading={isAssigning}
+										onClick={onAssignToKevin}
+									>
+										Mark for President&apos;s Review
+									</Button>
+								)}
+								{(isPresident || isFleetManager) && resolveInternallyButton}
+							</div>
 						</div>
-					</div>
+					</WriteAccessWrapper>
 				);
 
 			case INCIDENT_REPORT_STATUS.ADDITIONAL_INFO_REQUESTED:
 				return (
 					<div className="mt-3 space-y-4">
 						<WorkflowHeader
-							title="Waiting on technician"
+							title="Waiting for Technician"
 							description="Sent back to the technician to complete the requested details. It returns for review once they resubmit."
 						/>
 						<Button type="button" variant="outline" className={workflowButtonClass} disabled>
@@ -163,28 +168,32 @@ const AccidentApprovalWorkflow = ({
 			case INCIDENT_REPORT_STATUS.PENDING_SECOND_REVIEW:
 				if (isPresident) {
 					return (
-						<div className="mt-3 space-y-4">
-							<WorkflowHeader
-								title="Pending second review"
-								description="In your queue. Approving forwards the report to the Fleet Manager for the insurance email."
-							/>
-							<div className="space-y-2">
-								{approveAndSendToInsuranceButton}
-								{resolveInternallyButton}
+						<WriteAccessWrapper>
+							<div className="mt-3 space-y-4">
+								<WorkflowHeader
+									title="Pending second review"
+									description="In your queue. Approving forwards the report to the Fleet Manager for the insurance email."
+								/>
+								<div className="space-y-2">
+									{approveAndSendToInsuranceButton}
+									{resolveInternallyButton}
+								</div>
 							</div>
-						</div>
+						</WriteAccessWrapper>
 					);
 				}
 
 				if (isFleetManager) {
 					return (
-						<div className="mt-3 space-y-4">
-							<WorkflowHeader
-								title="Pending President's review"
-								description="In the President's queue for the insurance decision. You can still resolve it internally."
-							/>
-							{resolveInternallyButton}
-						</div>
+						<WriteAccessWrapper>
+							<div className="mt-3 space-y-4">
+								<WorkflowHeader
+									title="Pending President's review"
+									description="In the President's queue for the insurance decision. You can still resolve it internally."
+								/>
+								{resolveInternallyButton}
+							</div>
+						</WriteAccessWrapper>
 					);
 				}
 

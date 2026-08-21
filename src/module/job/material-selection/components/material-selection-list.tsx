@@ -8,6 +8,7 @@ import { MaterialSelectionListProps, MaterialSelectionItem } from "../utils/type
 import { MATERIAL_AVAILABILITY } from "../utils/enums";
 import {
 	getMaterialSelectionReasonOptions,
+	isMaterialSelectionItemDisabled,
 	isAddendumReason,
 	isDamagedReason,
 	isPullListIssueReason,
@@ -17,6 +18,7 @@ import {
 	MATERIAL_SELECTION_REASON_KEYS,
 } from "../utils";
 import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils/utils";
 import MaterialQuantityBadges from "./material-quantity-badges";
 
 export default function MaterialSelectionList({
@@ -40,6 +42,7 @@ export default function MaterialSelectionList({
 	const availableReasonOptions = getMaterialSelectionReasonOptions(reasonAvailability, canSelectAddendum);
 
 	const renderCard = (item: MaterialSelectionItem) => {
+		const isDisabled = isMaterialSelectionItemDisabled(item);
 		const isSelected = Boolean(selectedById[item.partId]);
 		const selectedIndex = selectedIndexById[item.partId];
 		const currentItem = selectedIndex !== undefined ? formItems[selectedIndex] : undefined;
@@ -64,10 +67,14 @@ export default function MaterialSelectionList({
 		return (
 			<div
 				key={item.partId}
-				className="flex items-start gap-3 rounded-[12px] border border-brand-dark10 bg-white px-3 py-3"
+				className={cn(
+					"flex items-start gap-3 rounded-[12px] border border-brand-dark10 bg-white px-3 py-3",
+					isDisabled && "opacity-60"
+				)}
 			>
 				<Checkbox
 					checked={isSelected}
+					disabled={isDisabled}
 					onCheckedChange={(checked) => onToggle(item, checked === true)}
 					className="mt-1"
 				/>

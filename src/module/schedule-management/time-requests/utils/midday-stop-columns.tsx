@@ -1,19 +1,23 @@
 import { toFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { IMiddayStopRequest } from "./types";
 import { formatDuration } from ".";
 import { requestTypeLabel } from "@/module/midday-stops/utils/constants";
-import AccpetMDTRAction from "../components/accept-mdtr-action";
 import { ViewETRAndMDTRNote } from "../components/view-etr-mdtr-note";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
 import { MIDDAY_STOP_REQUEST_TYPE } from "@/module/midday-stops/utils/enums";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
+import AccpetMDTRAction from "../components/accept-mdtr-action";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
 
 export const useMiddayStopColumns = () => {
 	const tEmployee = useTypedTranslations(NAMESPACE.EMPLOYEE);
 	const tTimelogs = useTypedTranslations(NAMESPACE.TIME_LOGS);
 	const tTravel = useTypedTranslations(NAMESPACE.TRAVEL_PAY);
+
+	const { pageAccess } = useAdminPageAccessContext();
 	const tAdmin = useTypedTranslations(NAMESPACE.ADMIN);
 
 	const Columns: ColumnDef<IMiddayStopRequest>[] = [
@@ -101,16 +105,21 @@ export const useMiddayStopColumns = () => {
 				);
 			},
 		},
-		{
-			header: tAdmin.action,
-			cell: ({ row }) => {
-				return (
-					<div className="flex items-center justify-center">
-						<AccpetMDTRAction row={row.original} />
-					</div>
-				);
-			},
-		},
+
+		...(pageAccess?.accessLevel === ACCESS_LEVEL.WRITE
+			? [
+					{
+						header: tAdmin.action,
+						cell: ({ row }: { row: Row<IMiddayStopRequest> }) => {
+							return (
+								<div className="flex items-center justify-center">
+									<AccpetMDTRAction row={row.original} />
+								</div>
+							);
+						},
+					},
+				]
+			: []),
 	];
 	return Columns;
 };

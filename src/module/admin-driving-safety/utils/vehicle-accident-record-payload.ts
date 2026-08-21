@@ -83,6 +83,7 @@ export const buildVehicleAccidentRecordPayload = (
 		accidentDate: combineDateTime(data.accidentDate, data.accidentTime),
 		location: data.location ?? null,
 		nearestCrossStreet: data.nearestCrossStreet ?? null,
+		speedLimit: numOrNull(data.speedLimit),
 		weather: data.weather || null,
 
 		policeContacted: toBool(data.policeContacted) ?? false,

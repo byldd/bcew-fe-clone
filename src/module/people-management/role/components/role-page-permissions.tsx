@@ -19,6 +19,19 @@ const RolePagePermissions = ({ disabled }: { disabled?: boolean }) => {
 	const tree = buildRolePagePermissionTree(rolePagePermissions ?? []);
 	const flattenedNodes = flattenRolePagePermissionTree(tree);
 
+	const isToggleableNode = (node: (typeof flattenedNodes)[number]["node"]) =>
+		node.children.length === 0 || (!!node.parentPageId && node.children.length > 0);
+
+	const toggleableNodes = flattenedNodes.filter(({ node }) => isToggleableNode(node));
+
+	const headerReadChecked =
+		toggleableNodes.length > 0 &&
+		toggleableNodes.every(
+			({ node }) => node.accessLevel === ACCESS_LEVEL.READ || node.accessLevel === ACCESS_LEVEL.WRITE
+		);
+	const headerWriteChecked =
+		toggleableNodes.length > 0 && toggleableNodes.every(({ node }) => node.accessLevel === ACCESS_LEVEL.WRITE);
+
 	const updateAccessLevel = (index: number, current: IPageAccessLevel, toggled: ACCESS_LEVEL) => {
 		const next: IPageAccessLevel =
 			toggled === ACCESS_LEVEL.WRITE
@@ -32,6 +45,28 @@ const RolePagePermissions = ({ disabled }: { disabled?: boolean }) => {
 		formContext.setValue(`rolePagePermissions.${index}.accessLevel`, next);
 	};
 
+	const updateAllAccessLevels = (toggled: ACCESS_LEVEL) => {
+		const turnOn = toggled === ACCESS_LEVEL.WRITE ? !headerWriteChecked : !headerReadChecked;
+
+		toggleableNodes.forEach(({ node }) => {
+			const current = node.accessLevel;
+			const next: IPageAccessLevel =
+				toggled === ACCESS_LEVEL.WRITE
+					? turnOn
+						? ACCESS_LEVEL.WRITE
+						: current === ACCESS_LEVEL.WRITE
+							? ACCESS_LEVEL.READ
+							: current
+					: turnOn
+						? current === ACCESS_LEVEL.WRITE
+							? ACCESS_LEVEL.WRITE
+							: ACCESS_LEVEL.READ
+						: null;
+
+			formContext.setValue(`rolePagePermissions.${node.index}.accessLevel`, next);
+		});
+	};
+
 	return (
 		<div className="space-y-2 border-t pt-4">
 			<div className="overflow-x-auto">
@@ -40,10 +75,28 @@ const RolePagePermissions = ({ disabled }: { disabled?: boolean }) => {
 						<TableRow className="text-brand-dark50">
 							<TableHead className="w-1/2">Module</TableHead>
 							<TableHead className="text-center">
-								<div className="flex items-center justify-center gap-1">{tPmanagement.readOnlyAccess}</div>
+								<div className="flex items-center justify-center gap-1">
+									{tPmanagement.readOnlyAccess}
+									{toggleableNodes.length > 0 && (
+										<Switch
+											disabled={disabled}
+											checked={headerReadChecked}
+											onCheckedChange={() => updateAllAccessLevels(ACCESS_LEVEL.READ)}
+										/>
+									)}
+								</div>
 							</TableHead>
 							<TableHead className="text-center">
-								<div className="flex items-center justify-center gap-1">{tPmanagement.writeEditAccess}</div>
+								<div className="flex items-center justify-center gap-1">
+									{tPmanagement.writeEditAccess}
+									{toggleableNodes.length > 0 && (
+										<Switch
+											disabled={disabled}
+											checked={headerWriteChecked}
+											onCheckedChange={() => updateAllAccessLevels(ACCESS_LEVEL.WRITE)}
+										/>
+									)}
+								</div>
 							</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -52,7 +105,7 @@ const RolePagePermissions = ({ disabled }: { disabled?: boolean }) => {
 							const hasRead = node.accessLevel === ACCESS_LEVEL.READ || node.accessLevel === ACCESS_LEVEL.WRITE;
 							const hasWrite = node.accessLevel === ACCESS_LEVEL.WRITE;
 
-							const showToggles = node.children.length === 0 || (!!node.parentPageId && node.children.length > 0);
+							const showToggles = isToggleableNode(node);
 
 							return (
 								<TableRow key={node.pageId}>

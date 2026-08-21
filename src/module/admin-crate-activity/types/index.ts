@@ -66,8 +66,20 @@ export type IMarkCrateReturnedResponse = Pick<
 	createdAt: string;
 };
 
-export type IAdminCrateActivityFilterOptions = {
-	projects: { projectNum: number; projectName: string }[];
-	jobs: { jobnum: number; jobName: string; projectNum: number | null }[];
-	technicians: Pick<IUser, "id" | "name">[];
+export type IAdminCrateActivityReceiveDetails = Pick<
+	IAdminCrateActivityItem,
+	"id" | "scanned_crate" | "scan_action" | "scanned_date" | "sealStatus" | "sealTagNumber" | "note" | "user" | "photos"
+>;
+
+export type IAdminCrateActivityProjectOption = {
+	projectNum: number;
+	projectName: string;
 };
+
+export type IAdminCrateActivityJobOption = {
+	jobnum: number;
+	jobName: string;
+	projectNum: number | null;
+};
+
+export type IAdminCrateActivityEmployeeOption = Pick<IUser, "id" | "name">;

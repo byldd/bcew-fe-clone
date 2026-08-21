@@ -1,22 +1,22 @@
 "use client";
 
 import { routes } from "@/config/routes";
-import { clearCookies } from "@/module/auth/utils/helpers";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import useAuthStore from "@/store/auth-store";
 import { LOGIN_MODE } from "@/utils/enums";
 import { AUTH_QUERY_PARAM } from "@/module/auth/utils/constants";
-
+import { useAuthAPI } from "@/module/auth/hooks/useAuth";
 export default function SignOutBtn() {
 	const { user, subcontractorCrew } = useAuthStore((state) => state);
-
+	const { useSignout } = useAuthAPI();
+	const { signout } = useSignout();
 	const router = useRouter();
 
 	const handleSignOut = () => {
 		if (!user && !subcontractorCrew) return;
 
-		clearCookies();
+		signout();
 
 		// Sub-contractor crew leaders
 		if (subcontractorCrew) {

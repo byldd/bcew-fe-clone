@@ -165,6 +165,7 @@ export const buildAccidentPayload = (data: IAccidentReportSchema): ISaveAccident
 	accidentDate: combineDateTime(data.accidentDate, data.accidentTime),
 	location: data.location ?? null,
 	nearestCrossStreet: data.nearestCrossStreet ?? null,
+	speedLimit: numOrNull(data.speedLimit),
 	weather: data.weather || null,
 
 	describeAccident: data.describeAccident ?? null,

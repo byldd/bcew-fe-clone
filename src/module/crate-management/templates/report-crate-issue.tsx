@@ -6,7 +6,7 @@ import { Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormLabelRequired } from "@/components/ui/formLabelrequired";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { openErrorToast } from "@/components/toast";
@@ -24,6 +24,12 @@ import { useReportCrateIssue } from "../hooks/useCrateManagement";
 import { ICrateIssueReportSummary } from "../types";
 import { CRATE_ISSUE_SEVERITY_OPTIONS } from "../utils/constants";
 
+const NO_TASK_KEY = "none";
+
+function getJobTaskKey(recnum: number, tsknum: number | null): string {
+	return `${recnum}-${tsknum ?? NO_TASK_KEY}`;
+}
+
 export default function ReportCrateIssueTemplate() {
 	const router = useRouter();
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -31,6 +37,7 @@ export default function ReportCrateIssueTemplate() {
 	const [crateId, setCrateId] = useState("");
 	const [jobDate, setJobDate] = useState<Date>(() => getTodayDate());
 	const [jobNum, setJobNum] = useState<number | "">("");
+	const [taskNum, setTaskNum] = useState<number | null>(null);
 	const [category, setCategory] = useState<CRATE_ISSUE_CATEGORY | null>(null);
 	const [severity, setSeverity] = useState<CRATE_ISSUE_SEVERITY | "">("");
 	const [photos, setPhotos] = useState<File[]>([]);
@@ -45,7 +52,7 @@ export default function ReportCrateIssueTemplate() {
 		new Map(
 			(scheduleJobs ?? [])
 				.filter((job) => job.jobDailyRecord.recnum !== null && job.jobDailyRecord.recnum !== undefined)
-				.map((job) => [String(job.jobDailyRecord.recnum), job.jobDailyRecord])
+				.map((job) => [getJobTaskKey(job.jobDailyRecord.recnum, job.jobDailyRecord.tsknum), job.jobDailyRecord])
 		).values()
 	);
 
@@ -61,6 +68,7 @@ export default function ReportCrateIssueTemplate() {
 	const handleJobDateChange = (date: Date) => {
 		setJobDate(date);
 		setJobNum("");
+		setTaskNum(null);
 	};
 
 	const handleFilesSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,10 +83,10 @@ export default function ReportCrateIssueTemplate() {
 	};
 
 	const isSubmitDisabled =
-		!category || !jobNum || (isCrateIdRequired && !crateId.trim()) || !severity || !description.trim();
+		!category || !jobNum || !taskNum || (isCrateIdRequired && !crateId.trim()) || !severity || !description.trim();
 
 	const handleSubmit = async () => {
-		if (isSubmitDisabled || !category || !severity || !jobNum) return;
+		if (isSubmitDisabled || !category || !severity || !jobNum || !taskNum) return;
 
 		try {
 			const uploadable: IFileUploadable[] = photos.map((file) => ({
@@ -99,6 +107,7 @@ export default function ReportCrateIssueTemplate() {
 			const summary = await reportIssue({
 				crateId: isCrateIdRequired ? crateId.trim() : undefined,
 				jobNum,
+				taskNum,
 				category,
 				severity,
 				description: description.trim(),
@@ -123,13 +132,20 @@ export default function ReportCrateIssueTemplate() {
 				<IssueCategoryPicker value={category} onChange={handleCategoryChange} />
 
 				<div className="flex flex-col gap-1.5">
-					<Label>Select Job Date*</Label>
+					<FormLabelRequired label="Select Job Date" required />
 					<DatePicker value={jobDate} onChange={handleJobDateChange} className="bg-white" />
 				</div>
 
 				<div className="flex flex-col gap-1.5">
-					<Label>Select Job*</Label>
-					<Select value={jobNum === "" ? "" : String(jobNum)} onValueChange={(value) => setJobNum(Number(value))}>
+					<FormLabelRequired label="Select Job" required />
+					<Select
+						value={jobNum === "" ? "" : getJobTaskKey(jobNum, taskNum)}
+						onValueChange={(value) => {
+							const [recnumStr, taskStr] = value.split("-");
+							setJobNum(Number(recnumStr));
+							setTaskNum(taskStr === NO_TASK_KEY ? null : Number(taskStr));
+						}}
+					>
 						<SelectTrigger className="bg-white">
 							<SelectValue placeholder="Select job" />
 						</SelectTrigger>
@@ -138,7 +154,7 @@ export default function ReportCrateIssueTemplate() {
 								<p className="px-2 py-1.5 text-sm text-gray-400">No job found for this date</p>
 							) : (
 								jobOptions.map((job) => (
-									<SelectItem key={job.recnum} value={String(job.recnum)}>
+									<SelectItem key={getJobTaskKey(job.recnum, job.tsknum)} value={getJobTaskKey(job.recnum, job.tsknum)}>
 										{job.jobnme}
 										{job.tsknme ? ` (${job.tsknme})` : ""}
 									</SelectItem>
@@ -150,24 +166,22 @@ export default function ReportCrateIssueTemplate() {
 
 				{category && isCrateIdRequired && (
 					<div className="flex flex-col gap-1.5">
-						<label htmlFor="issue-crate-id" className="text-sm font-medium text-gray-700">
-							Crate ID*
-						</label>
+						<FormLabelRequired label="Crate ID" required htmlFor="issue-crate-id" />
 						<Input
 							id="issue-crate-id"
 							type="text"
+							inputMode="numeric"
 							value={crateId}
-							onChange={(e) => setCrateId(e.target.value)}
-							placeholder="e.g. CRATE-0045"
+							onChange={(e) => setCrateId(e.target.value.replace(/\D/g, ""))}
+							placeholder="123456"
 							className="h-auto w-full rounded-xl text-sm"
 							autoComplete="off"
-							autoCapitalize="characters"
 						/>
 					</div>
 				)}
 
 				<div className="flex flex-col gap-1.5">
-					<Label>Severity*</Label>
+					<FormLabelRequired label="Severity" required />
 					<Select value={severity} onValueChange={(value) => setSeverity(value as CRATE_ISSUE_SEVERITY)}>
 						<SelectTrigger className="bg-white">
 							<SelectValue placeholder="Select" />
@@ -183,11 +197,11 @@ export default function ReportCrateIssueTemplate() {
 				</div>
 
 				<div className="flex flex-col gap-1.5">
-					<p className="text-sm font-medium text-gray-700">Photo</p>
+					<FormLabelRequired label="Photo" />
 					<Button
 						type="button"
 						onClick={() => fileInputRef.current?.click()}
-						className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-300 bg-white py-8 text-gray-400 transition-colors active:bg-gray-50"
+						className="flex flex-col items-center justify-center gap-2 rounded-[8px] border border-dashed border-gray-300 bg-white py-8 text-gray-400 transition-colors active:bg-gray-50"
 					>
 						<Camera className="h-6 w-6" />
 						<span className="text-sm">Tap to take photo</span>
@@ -201,33 +215,26 @@ export default function ReportCrateIssueTemplate() {
 						onChange={handleFilesSelected}
 					/>
 					{photos.length > 0 && (
-						<div className="mt-2">
+						<div>
 							<PhotoGrid photos={photos} onRemove={removePhoto} />
 						</div>
 					)}
 				</div>
 
 				<div className="flex flex-col gap-1.5">
-					<label htmlFor="issue-note" className="text-sm font-medium text-gray-700">
-						Note*
-					</label>
+					<FormLabelRequired label="Note" required htmlFor="issue-note" />
 					<Textarea
 						id="issue-note"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
 						placeholder="Add details"
-						className="min-h-[80px] rounded-xl bg-white text-sm"
+						className="min-h-[80px] rounded-[8px] border bg-brand-bgLightgrey04 text-sm"
 					/>
 				</div>
 			</div>
 
 			<div className="flex gap-2 px-4 pb-8 pt-4">
-				<Button
-					type="button"
-					variant="outline"
-					onClick={() => router.back()}
-					className="h-auto flex-1 rounded-2xl py-4 text-sm"
-				>
+				<Button type="button" variant="outline" onClick={() => router.back()} className="h-10 w-full">
 					Cancel
 				</Button>
 				<Button
@@ -237,7 +244,7 @@ export default function ReportCrateIssueTemplate() {
 					disabled={isSubmitDisabled}
 					loading={isPending}
 					loadingText="Submitting..."
-					className="h-auto flex-1 rounded-2xl py-4 text-sm"
+					className="h-10 w-full"
 				>
 					Submit Report
 				</Button>

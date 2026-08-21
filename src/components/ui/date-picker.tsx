@@ -94,27 +94,30 @@ export function DatePicker({
 							</div>
 						)}
 
-						{onClear && hasSelection ? (
-							<span
-								role="button"
-								tabIndex={0}
-								className="ml-1 flex items-center rounded-full p-0.5 hover:bg-brand-dark10"
-								onClick={(e) => {
-									e.stopPropagation();
-									onClear();
-								}}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" || e.key === " ") {
-										e.stopPropagation();
-										onClear();
-									}
-								}}
-							>
-								<X className="h-3.5 w-3.5" />
-							</span>
-						) : (
+						<div className="flex items-center gap-1">
 							<CalendarIcon className={iconClassName} />
-						)}
+							{onClear && hasSelection && (
+								<span
+									role="button"
+									tabIndex={0}
+									className="flex items-center rounded-full p-0.5 hover:bg-brand-dark10"
+									onClick={(e) => {
+										e.stopPropagation();
+										setOpen(false);
+										onClear();
+									}}
+									onKeyDown={(e) => {
+										if (e.key === "Enter" || e.key === " ") {
+											e.stopPropagation();
+											setOpen(false);
+											onClear();
+										}
+									}}
+								>
+									<X className="h-3.5 w-3.5" />
+								</span>
+							)}
+						</div>
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent
@@ -126,7 +129,7 @@ export function DatePicker({
 						maxHeight: "min(var(--radix-popover-content-available-height), 320px)",
 					}}
 				>
-					{props.mode && props.mode != "single" && <Calendar {...props} />}
+					{props.mode && props.mode != "single" && <Calendar {...props} disabled={disabledDate} />}
 					{(!props.mode || props.mode == "single") && (
 						<Calendar
 							mode="single"

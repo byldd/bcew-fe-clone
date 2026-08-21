@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import DateRangePickModal, { DATE_PICK_APPLY_TO } from "@/components/common/date-range-modal";
 import { openErrorToast, openSuccessToast } from "@/components/toast";
 import { useQueryClient } from "@tanstack/react-query";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 const AddPayrollLog = () => {
 	const { Modal, openModal, closeModal } = useModal();
@@ -20,12 +21,12 @@ const AddPayrollLog = () => {
 	};
 
 	return (
-		<>
+		<WriteAccessWrapper>
 			<Button onClick={onAddNewLogs} variant={"filled"}>
 				Add New Payroll Log
 			</Button>
 			<Modal />
-		</>
+		</WriteAccessWrapper>
 	);
 };
 

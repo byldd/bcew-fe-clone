@@ -40,6 +40,7 @@ const QuickToolsDrawer = ({ open, onClose, isTimeLogPending, setSelfScheduleOpen
 		isTimeLogPending,
 		isWeekendSelfSchedulingAllowed: user?.isWeekendSelfSchedulingAllowed,
 		isSelfSchedulingAllowed: user?.isSelfSchedulingAllowed,
+		isCrateHandlerAllowed: user?.isCrateHandlerAllowed,
 		setSelfScheduleOpen: (open) => {
 			onClose();
 			setSelfScheduleOpen?.(open);

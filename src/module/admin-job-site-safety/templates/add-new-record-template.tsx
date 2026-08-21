@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import JobSiteInjuryRecordForm from "../components/job-site-injury-record-form";
 import JobSiteSafetyViolationForm from "../components/job-site-safety-violation-form";
 import { ADD_RECORD_TAB } from "../enums";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
 
 const TAB_TRIGGER_CLASS =
 	"flex flex-col items-start gap-0.5 rounded-[10px] border px-4 py-2 text-left transition-colors data-[state=active]:border-brand-dark data-[state=inactive]:border-brand-dark10";
@@ -27,6 +29,15 @@ const AddNewRecordTemplate = () => {
 			? (initialTab as ADD_RECORD_TAB)
 			: ADD_RECORD_TAB.JOB_SITE_INJURY
 	);
+	const { pageAccess } = useAdminPageAccessContext();
+
+	if (pageAccess?.accessLevel !== ACCESS_LEVEL.WRITE) {
+		return (
+			<div className="flex h-screen w-full items-center justify-center text-red-500">
+				You don&apos;t have permission to add new record
+			</div>
+		);
+	}
 
 	return (
 		<div className="space-y-4">

@@ -44,6 +44,7 @@ export type IJobDailyRecordExtended = IJobDailyRecord &
 			crewLeaderName: string | null;
 		};
 		tsknme: string | null;
+		tsknum: number | null;
 		statusNumber: number | null;
 		weeklySchedulesSrvinv?: string | null;
 		specialJobId: string | null;

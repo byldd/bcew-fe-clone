@@ -8,6 +8,7 @@ import useAuthStore from "@/store/auth-store";
 import { LOGIN_MODE } from "@/utils/enums";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useCallback } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function CheckActiveStatus() {
 	const { data: userData, isError, isLoading, isSuccess } = useGetUserData();
@@ -50,6 +51,14 @@ export default function CheckActiveStatus() {
 			setUser(undefined);
 		}
 	}, [userData, isLoading, isError, isSuccess, router, getLoginRouteForCurrentPage, setUser, setSubcontractorCrew]);
+
+	if (isLoading) {
+		return (
+			<div className="flex h-screen w-full items-center justify-center">
+				<Spinner />
+			</div>
+		);
+	}
 
 	return null;
 }

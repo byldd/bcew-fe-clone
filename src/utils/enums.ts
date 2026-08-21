@@ -144,4 +144,5 @@ export enum TIMEZONE {
 
 export enum FILTER_SAVED_VIEW_PAGE_KEY {
 	MATERIAL_REQUESTS = "material-requests",
+	PROJECT_MAP = "project-map",
 }

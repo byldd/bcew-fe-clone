@@ -60,7 +60,7 @@ export type UserType = {
 			materialRole?: MATERIAL_ROLE | null;
 			userType: ROLES;
 			hasAnyAdminModuleAccess: boolean;
-			modules: Record<MODULE, ACCESS_LEVEL>;
+			modules?: Record<MODULE, ACCESS_LEVEL>;
 			pushSubscriptions?: {
 				endpoint: string;
 				p256dh: string;
@@ -102,6 +102,7 @@ export type IAuthStore = {
 	subcontractorCrew: UserType["data"]["subContractorCrew"] | null;
 	setUser: (user: UserType["data"]["user"]) => void;
 	setSubcontractorCrew: (subcontractorCrew: UserType["data"]["subContractorCrew"]) => void;
+	clearStore: () => void;
 };
 
 type IBcewUser = {

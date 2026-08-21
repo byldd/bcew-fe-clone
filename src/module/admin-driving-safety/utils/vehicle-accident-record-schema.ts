@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { getImageSchema } from "@/module/schedule-management/weekly-schedule-management/utils/mark-not-ready-form";
 import { ALLOWED_DOCUMENT_FILE_TYPES } from "@/utils/constants";
+import { INVALID_LAT_LNG_MESSAGE, isValidLatLng } from "@/lib/utils/coordinates";
 
 const propertyDamageSchema = z.object({
 	anotherCompanyProperty: z.string().optional(),
@@ -24,8 +25,14 @@ export const vehicleAccidentRecordSchema = z.object({
 
 	accidentDate: z.date().optional(),
 	accidentTime: z.string().optional(),
-	location: z.string().optional(),
+	location: z
+		.string()
+		.optional()
+		.refine((value) => !value || value.trim() === "" || isValidLatLng(value), {
+			message: INVALID_LAT_LNG_MESSAGE,
+		}),
 	nearestCrossStreet: z.string().optional(),
+	speedLimit: z.coerce.number().optional(),
 	weather: z.string().optional(),
 
 	propertyDamage: propertyDamageSchema.optional(),

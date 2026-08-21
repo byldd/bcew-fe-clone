@@ -15,8 +15,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import AuthRoleBanner from "@/components/auth-role-banner";
 
 export const metadata: Metadata = {
-	title: "BYLDD",
-	description: "Byldd",
+	title: "BCEW",
+	description: "Bucks County Electric Works",
 };
 
 export default async function RootLayout({

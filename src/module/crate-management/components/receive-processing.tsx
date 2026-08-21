@@ -4,26 +4,29 @@ import { useEffect, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/utils";
 
-const PROCESSING_STEPS = ["QR URL decoded", "Crate ID extracted", "Syncing to server", "Notifying admin"] as const;
+const BASE_PROCESSING_STEPS = ["QR URL decoded", "Crate ID extracted", "Syncing to server"] as const;
+const RETURN_PROCESSING_STEPS = [...BASE_PROCESSING_STEPS, "Notifying admin"] as const;
 
 interface ReceiveProcessingProps {
 	isComplete: boolean;
+	notifyAdmin?: boolean;
 }
 
-export default function ReceiveProcessing({ isComplete }: ReceiveProcessingProps) {
+export default function ReceiveProcessing({ isComplete, notifyAdmin = false }: ReceiveProcessingProps) {
+	const processingSteps = notifyAdmin ? RETURN_PROCESSING_STEPS : BASE_PROCESSING_STEPS;
 	const [completedCount, setCompletedCount] = useState(2);
 
 	useEffect(() => {
 		if (isComplete) {
-			setCompletedCount(PROCESSING_STEPS.length);
+			setCompletedCount(processingSteps.length);
 			return;
 		}
 
-		if (completedCount >= PROCESSING_STEPS.length - 1) return;
+		if (completedCount >= processingSteps.length - 1) return;
 
 		const timer = setTimeout(() => setCompletedCount((count) => count + 1), 500);
 		return () => clearTimeout(timer);
-	}, [completedCount, isComplete]);
+	}, [completedCount, isComplete, processingSteps.length]);
 
 	return (
 		<div className="flex min-h-screen flex-col items-center justify-center bg-brand-bgLightgrey px-6">
@@ -31,7 +34,7 @@ export default function ReceiveProcessing({ isComplete }: ReceiveProcessingProps
 			<p className="mt-1 text-xs text-gray-400">Syncing with servers</p>
 
 			<div className="mt-8 w-full max-w-xs space-y-3">
-				{PROCESSING_STEPS.map((step, index) => {
+				{processingSteps.map((step, index) => {
 					const isDone = index < completedCount;
 					const isCurrent = index === completedCount;
 					return (

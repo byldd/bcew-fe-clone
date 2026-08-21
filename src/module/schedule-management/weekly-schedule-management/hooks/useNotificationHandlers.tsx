@@ -13,8 +13,8 @@ import { toFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
 import RoleUpdateHistoryDetails from "@/module/employee/components/role-update-history-deatils";
 import UserPageUpdateHistoryDetails from "@/module/employee/components/user-page-update-history-details";
-import VehicleBreakdownReviewModal from "@/module/driving-safety/incident-reports/components/vehicle-breakdown-review-modal";
-import ViolationReviewModal from "@/module/driving-safety/incident-reports/components/violation-review-modal";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
 
 /**
  * Admin Notification Handlers
@@ -28,12 +28,17 @@ export const useAdminNotificationHandlers = ({
 }) => {
 	const router = useRouter();
 	const tTimeLogs = useTypedTranslations(NAMESPACE.TIME_LOGS);
+	const { pageAccess } = useAdminPageAccessContext();
 
 	const handleNotificationClick = <T extends NOTIFICATION_KEY>({ key, data }: { key: T; data: string }) => {
 		const { mappedTitle, parsedData } = {
 			mappedTitle: key,
 			parsedData: JSON.parse(data),
 		} as NotificationUnion;
+
+		if (pageAccess?.accessLevel !== ACCESS_LEVEL.WRITE) {
+			return;
+		}
 
 		switch (mappedTitle) {
 			case NOTIFICATION_KEY.JOB_MARK_AS_NOT_READY_BY_EMPLOYEE: {
@@ -303,13 +308,8 @@ export const useAdminNotificationHandlers = ({
 				return;
 
 			case NOTIFICATION_KEY.VEHICLE_BREAKDOWN_REPORTED:
-				if (!parsedData?.vehicleBreakdownReportId || !openModal || !closeModal) return;
-				openModal({
-					modalTitle: "Vehicle Breakdown Report",
-					modalView: (
-						<VehicleBreakdownReviewModal breakdownId={parsedData.vehicleBreakdownReportId} onClose={closeModal} />
-					),
-				});
+				if (!parsedData?.vehicleBreakdownReportId) return;
+				router.push(routes.admin.drivingSafetyBreakdownReview(parsedData.vehicleBreakdownReportId));
 				return;
 
 			// Every job site safety notification opens the record's own review page,
@@ -321,7 +321,6 @@ export const useAdminNotificationHandlers = ({
 			case NOTIFICATION_KEY.JOB_SITE_SAFETY_PENDING_PRESIDENT_REVIEW:
 			case NOTIFICATION_KEY.JOB_SITE_SAFETY_INTERNALLY_RESOLVED:
 			case NOTIFICATION_KEY.JOB_SITE_SAFETY_RESOLVED:
-			case NOTIFICATION_KEY.JOB_SITE_SAFETY_CLOSED_FOR_TECHNICIAN:
 				if (parsedData?.jobSiteInjuryReportId) {
 					router.push(routes.admin.jobSiteSafetyInjuryReview(parsedData.jobSiteInjuryReportId));
 					return;
@@ -332,11 +331,21 @@ export const useAdminNotificationHandlers = ({
 				return;
 
 			case NOTIFICATION_KEY.DRIVING_SAFETY_VIOLATION_REPORTED:
-				if (!parsedData?.drivingSafetyViolationReportId || !openModal) return;
-				openModal({
-					modalTitle: "Safety Violation Report",
-					modalView: <ViolationReviewModal violationId={parsedData.drivingSafetyViolationReportId} />,
-				});
+				if (!parsedData?.drivingSafetyViolationReportId) return;
+				router.push(routes.admin.drivingSafetyViolationReview(parsedData.drivingSafetyViolationReportId));
+				return;
+
+			case NOTIFICATION_KEY.CRATE_SEAL_ISSUE_REPORTED:
+			case NOTIFICATION_KEY.CRATE_RETURNED:
+				router.push(
+					routes.admin.crateActivity + (parsedData?.crateEventId ? `?crateEventId=${parsedData.crateEventId}` : "")
+				);
+				return;
+
+			case NOTIFICATION_KEY.CRATE_DAMAGED_REPORTED:
+			case NOTIFICATION_KEY.CRATE_NOT_FOUND:
+			case NOTIFICATION_KEY.CRATE_ISSUE_REPORTED:
+				router.push(routes.admin.crateIssues + (parsedData?.issueId ? `?issueId=${parsedData.issueId}` : ""));
 				return;
 
 			default:

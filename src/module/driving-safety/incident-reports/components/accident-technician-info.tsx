@@ -9,7 +9,7 @@ import { DATE_FORMAT } from "@/types/date";
 import { PreviewFile, useFilePreview } from "@/hooks/useFilePreview";
 import { JOB_SITE_TYPE, PERSON_STRUCK_TYPE, VEHICLE_ACCIDENT_PHOTO_CATEGORY } from "@/module/employee-safety/enums";
 import { IAccidentReviewDetail } from "../types";
-import { WEATHER_CONDITION_LABEL } from "../utils/constants";
+import { buildGoogleMapsUrl, isCoordinateLocation, WEATHER_CONDITION_LABEL } from "../utils/constants";
 import { DASH, orDash, yesNo } from "../utils/accident-review-display";
 import AccidentTechnicianEditForm from "./accident-technician-edit-form";
 import { InfoNote } from "./info-note";
@@ -156,8 +156,25 @@ const AccidentTechnicianInfo = ({
 					/>
 				</div>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-					<Field label="Location of Accident" value={orDash(report.location)} />
+					<Field
+						label="Location of Accident"
+						value={
+							report.location && isCoordinateLocation(report.location) ? (
+								<a
+									href={buildGoogleMapsUrl(report.location)}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-blue-600 underline underline-offset-2"
+								>
+									View Location
+								</a>
+							) : (
+								orDash(report.location)
+							)
+						}
+					/>
 					<Field label="Nearest Cross Street" value={orDash(report.nearestCrossStreet)} />
+					<Field label="Speed Limit" value={report.speedLimit != null ? `${report.speedLimit} MPH` : DASH} />
 					<Field label="Weather Conditions" value={report.weather ? WEATHER_CONDITION_LABEL[report.weather] : DASH} />
 				</div>
 			</Section>
@@ -167,14 +184,14 @@ const AccidentTechnicianInfo = ({
 				{report.policeContacted && (
 					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field label="Police Department" value={orDash(report.policeDepartment)} />
-						<Field label="Do you have a Police Report Number?" value={orDash(report.policeReportNumber)} />
+						<Field label="Do you have a police report number?" value={orDash(report.policeReportNumber)} />
 					</div>
 				)}
 			</Section>
 
 			<Section title="What happened?">
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-					<Field label="Briefly Describe how the Accident Happened" value={orDash(report.describeAccident)} />
+					<Field label="Briefly describe how the accident happened?" value={orDash(report.describeAccident)} />
 					<Field label="Damage to BCEW Vehicle" value={orDash(report.damageToBcewVehicle)} />
 				</div>
 			</Section>

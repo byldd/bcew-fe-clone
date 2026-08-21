@@ -12,7 +12,7 @@ const RequestSuccessView: React.FC<RequestSuccessViewProps> = ({
 	const requestMoreButton = (
 		<Button
 			variant="outline"
-			className={topActions ? "h-10 shrink-0 rounded-[12px] px-4 text-sm" : "h-10 min-w-0 flex-1 px-2 text-xs"}
+			className={topActions ? "h-10 shrink-0 rounded-[8px] px-4 text-sm" : "h-10 min-w-0 flex-1 px-2 text-sm"}
 			onClick={closeSuccessModal}
 		>
 			Request More Material
@@ -22,7 +22,7 @@ const RequestSuccessView: React.FC<RequestSuccessViewProps> = ({
 	const goToJobButton = (
 		<Button
 			variant="filled"
-			className={topActions ? "h-10 shrink-0 rounded-[12px] px-4 text-sm" : "h-10 min-w-0 flex-1 px-2 text-xs"}
+			className={topActions ? "h-10 shrink-0 rounded-[8px] px-4 text-sm" : "h-10 min-w-0 flex-1 px-2 text-sm"}
 			onClick={() => {
 				closeSuccessModal();
 				window.history.back();

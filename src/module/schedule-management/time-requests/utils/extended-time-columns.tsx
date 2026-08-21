@@ -1,6 +1,6 @@
 import { toFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { IExtendedTimeRequestRow } from "./types";
 import { extendedReasonType, extendedTimeType } from "@/module/job/utils/enums";
 import { extendedReasonMap } from "@/module/job/utils/constants";
@@ -9,12 +9,16 @@ import { calculateExtendedHours } from "@/module/job/utils";
 import { ViewETRAndMDTRNote } from "../components/view-etr-mdtr-note";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
 
 export const useExtendedTimeRequestColumns = () => {
 	const tEmployee = useTypedTranslations(NAMESPACE.EMPLOYEE);
 	const tTimelogs = useTypedTranslations(NAMESPACE.TIME_LOGS);
 	const tTravel = useTypedTranslations(NAMESPACE.TRAVEL_PAY);
 	const tAdmin = useTypedTranslations(NAMESPACE.ADMIN);
+
+	const { pageAccess } = useAdminPageAccessContext();
 
 	const Columns: ColumnDef<IExtendedTimeRequestRow>[] = [
 		{
@@ -143,16 +147,20 @@ export const useExtendedTimeRequestColumns = () => {
 			},
 		},
 
-		{
-			header: tAdmin.action,
-			cell: ({ row }) => {
-				return (
-					<div className="flex items-center justify-center">
-						<AcceptETRAction extendedTimeId={row.original.id} />
-					</div>
-				);
-			},
-		},
+		...(pageAccess?.accessLevel === ACCESS_LEVEL.WRITE
+			? [
+					{
+						header: tAdmin.action,
+						cell: ({ row }: { row: Row<IExtendedTimeRequestRow> }) => {
+							return (
+								<div className="flex items-center justify-center">
+									<AcceptETRAction extendedTimeId={row.original.id} />
+								</div>
+							);
+						},
+					},
+				]
+			: []),
 	];
 
 	return Columns;

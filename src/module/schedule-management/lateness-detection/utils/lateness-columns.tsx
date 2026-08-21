@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { getAdjustedHours } from ".";
 import { toFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
@@ -16,8 +16,11 @@ import { VARIANCE_LABEL_MAP } from "../../roster-time-configuration/constants";
 import { ReactNode } from "react";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
 
 export const useLatenssColumns = () => {
+	const { pageAccess } = useAdminPageAccessContext();
 	const latenessColumns: ColumnDef<ILateEmployeeResponse>[] = [
 		{
 			header: "Employee Name",
@@ -164,10 +167,14 @@ export const useLatenssColumns = () => {
 			},
 		},
 
-		{
-			header: "Action",
-			cell: ({ row }) => <ActionCell lateEmployeeDetails={row.original} />,
-		},
+		...(pageAccess?.accessLevel === ACCESS_LEVEL.WRITE
+			? [
+					{
+						header: "Action",
+						cell: ({ row }: { row: Row<ILateEmployeeResponse> }) => <ActionCell lateEmployeeDetails={row.original} />,
+					},
+				]
+			: []),
 	];
 	return latenessColumns;
 };

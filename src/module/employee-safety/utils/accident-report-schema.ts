@@ -2,6 +2,7 @@ import { z } from "zod";
 import { getImageSchema } from "@/module/schedule-management/weekly-schedule-management/utils/mark-not-ready-form";
 import { ALLOWED_DOCUMENT_FILE_TYPES } from "@/utils/constants";
 import { isFutureDate } from "@/lib/utils/date";
+import { INVALID_LAT_LNG_MESSAGE, isValidLatLng } from "@/lib/utils/coordinates";
 import { ACCIDENT_SECTION, PERSON_STRUCK_TYPE, YES_NO } from "../enums";
 import { getAccidentSectionVisibility } from "./accident-section-visibility";
 
@@ -78,6 +79,7 @@ export const accidentReportSchema = z.object({
 	accidentTime: z.string().optional(),
 	location: z.string().optional(),
 	nearestCrossStreet: z.string().optional(),
+	speedLimit: z.coerce.number().optional(),
 	weather: z.string().optional(),
 
 	// What happened
@@ -109,6 +111,8 @@ export const accidentReportSchema = z.object({
 	drugScreenLocation: z.string().optional(),
 	medicalTreatmentLocation: z.string().optional(),
 	isMedicalTreatmentLocationOther: z.boolean().optional(),
+
+	wasDriverInjured: z.string().optional(),
 
 	// Nested blocks
 	otherVehicles: z.array(otherVehicleSchema).optional(),
@@ -163,6 +167,7 @@ const applyRequiredFieldRules = (
 			isFutureDate(data.accidentDate), "An accident cannot occur in the future");
 		require(["accidentTime"], isBlank(data.accidentTime));
 		require(["location"], isBlank(data.location));
+		require(["location"], !isBlank(data.location) && !isValidLatLng(data.location), INVALID_LAT_LNG_MESSAGE);
 	}
 
 	if (enforces(ACCIDENT_SECTION.WHAT_HAPPENED)) {

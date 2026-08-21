@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@/components/shared/datatable/datatable";
+import { DataTablePaginationProps } from "@/components/shared/datatable/data-table-pagination";
 import ConfirmModal from "@/components/confirm-modal";
 import { useModal } from "@/hooks/useModal";
 import { routes } from "@/config/routes";
@@ -29,10 +30,20 @@ import {
 	resolveJobSiteSafetyAction,
 } from "../utils/dashboard-constants";
 import { JOB_SITE_SAFETY_STATUS_ACTION_SUCCESS } from "../utils/status-actions";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
 
-const JobSiteSafetyRecordsTable = ({ data, isLoading }: { data: IJobSiteSafetyDashboardRow[]; isLoading: boolean }) => {
+const JobSiteSafetyRecordsTable = ({
+	data,
+	isLoading,
+	paginatorOptions,
+}: {
+	data: IJobSiteSafetyDashboardRow[];
+	isLoading: boolean;
+	paginatorOptions?: DataTablePaginationProps;
+}) => {
 	const router = useRouter();
 	const { Modal, openModal, closeModal } = useModal();
+	const { pageAccess } = useAdminPageAccessContext();
 
 	const { user } = useAuthStore((state) => state);
 
@@ -116,8 +127,13 @@ const JobSiteSafetyRecordsTable = ({ data, isLoading }: { data: IJobSiteSafetyDa
 	);
 
 	const columns = useMemo(
-		() => getJobSiteSafetyDashboardColumns(onView, { roleName: user?.role?.name, onStatusAction }),
-		[onView, user?.role?.name, onStatusAction]
+		() =>
+			getJobSiteSafetyDashboardColumns(onView, {
+				roleName: user?.role?.name,
+				onStatusAction,
+				accessLevel: pageAccess?.accessLevel,
+			}),
+		[onView, user?.role?.name, onStatusAction, pageAccess]
 	);
 
 	return (
@@ -131,6 +147,7 @@ const JobSiteSafetyRecordsTable = ({ data, isLoading }: { data: IJobSiteSafetyDa
 				compact
 				mobileCompact
 				useSectionHeader={false}
+				paginatorOptions={paginatorOptions}
 			/>
 			<Modal />
 		</>

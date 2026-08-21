@@ -27,7 +27,7 @@ const SeveritySelectCell = ({
 		>
 			<SelectTrigger
 				className={cn(
-					"h-8 w-full rounded-[8px] border-none bg-transparent px-2 text-sm font-medium shadow-none",
+					"h-8 w-full justify-center gap-1 rounded-[8px] border-none bg-transparent px-2 text-sm font-medium shadow-none",
 					meta?.className
 				)}
 			>

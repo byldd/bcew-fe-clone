@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
 	return {
-		name: "BYLDD",
-		short_name: "BYLDD",
-		description: "Byldd - Job  System",
+		name: "Project",
+		short_name: "Project",
+		description: "Job Management System",
 		start_url: "/",
 		display: "standalone",
 		background_color: "#ffffff",

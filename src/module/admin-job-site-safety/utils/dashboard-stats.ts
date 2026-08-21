@@ -9,15 +9,23 @@ const CLOSED_STATUSES: SAFETY_REPORT_STATUS[] = [
 
 const isOpen = (row: IJobSiteSafetyDashboardRow) => !CLOSED_STATUSES.includes(row.status);
 
+// Violations have no reviewable status in this UI (see IS_VIOLATION_WORKFLOW_ENABLED
+// in dashboard-constants.ts) — they sit at PENDING forever, so review-stage counts
+// only make sense for injuries.
+const isInjury = (row: IJobSiteSafetyDashboardRow) => row.type === JOB_SITE_SAFETY_REPORT_TYPE.JOB_SITE_INJURY;
+
 export const buildJobSiteSafetyStats = (rows: IJobSiteSafetyDashboardRow[]) => [
 	{ label: "Total Reports", value: rows.filter(isOpen).length },
-	{ label: "Pending Review", value: rows.filter((row) => row.status === SAFETY_REPORT_STATUS.PENDING).length },
 	{
-		label: "Injury Claims open",
-		value: rows.filter((row) => row.type === JOB_SITE_SAFETY_REPORT_TYPE.JOB_SITE_INJURY && isOpen(row)).length,
+		label: "Pending Review",
+		value: rows.filter((row) => isInjury(row) && row.status === SAFETY_REPORT_STATUS.PENDING).length,
 	},
 	{
-		label: "Pending 2nd review",
-		value: rows.filter((row) => row.status === SAFETY_REPORT_STATUS.PENDING_SECOND_REVIEW).length,
+		label: "Injury Claims Open",
+		value: rows.filter((row) => isInjury(row) && isOpen(row)).length,
+	},
+	{
+		label: "Pending 2nd Review",
+		value: rows.filter((row) => isInjury(row) && row.status === SAFETY_REPORT_STATUS.PENDING_SECOND_REVIEW).length,
 	},
 ];

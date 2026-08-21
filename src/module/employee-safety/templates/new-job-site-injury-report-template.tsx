@@ -25,6 +25,7 @@ import JobSiteInjuryTreatmentLocationSelect from "../components/job-site-injury-
 import { jobSiteInjurySchema, IJobSiteInjurySchema } from "../utils/job-site-injury-schema";
 import {
 	buildJobSiteField,
+	buildNoJobAssignmentMessage,
 	doctorsMedicsField,
 	equipmentMalfunctionExplainField,
 	equipmentMalfunctionField,
@@ -89,13 +90,14 @@ const NewJobSiteInjuryReportTemplate = () => {
 	// supporting photos, not edit any field or remove an already-uploaded one.
 	const isReadOnly = Boolean(draft) && draft?.status !== SAFETY_REPORT_STATUS.DRAFT;
 
-	const { data: assignedJobs } = useAssignedJobs(injuryDate);
+	const { data: assignedJobs, isLoading: isLoadingAssignedJobs } = useAssignedJobs(injuryDate);
 	const { data: treatmentLocations } = useMedicalTreatmentLocations();
 	const jobSiteOptions = (assignedJobs ?? []).map((job) => ({
 		label: [job.jobName, job.jobPhase && MATERIAL_JOB_PHASE_LABEL[job.jobPhase]].filter(Boolean).join(" — "),
 		value: job.jobDailyRecordId,
 	}));
 	const jobSiteField = buildJobSiteField(jobSiteOptions, Boolean(injuryDate));
+	const hasNoJobAssignment = Boolean(injuryDate) && !isLoadingAssignedJobs && jobSiteOptions.length === 0;
 	// A job restored from a draft can briefly have no matching option yet (the
 	// assigned-jobs list for that date hasn't loaded/refreshed), and the Select
 	// won't pick up a label added after it first mounted — remounting once a
@@ -294,6 +296,9 @@ const NewJobSiteInjuryReportTemplate = () => {
 							fieldConfig={jobSiteField}
 							disabled={isReadOnly}
 						/>
+						{hasNoJobAssignment && (
+							<p className="text-xs text-brand-red">{buildNoJobAssignmentMessage(injuryDate as Date)}</p>
+						)}
 
 						{incidentDetailFields.map((fieldConfig) => (
 							<FormInputWrapper key={fieldConfig.name} form={form} fieldConfig={fieldConfig} disabled={isReadOnly} />
@@ -338,6 +343,7 @@ const NewJobSiteInjuryReportTemplate = () => {
 														form.setValue("treatmentStartDate", range?.from);
 														form.setValue("treatmentEndDate", range?.to ?? range?.from);
 													}}
+													disabledDate={injuryDate ? { before: injuryDate } : undefined}
 												/>
 											</FormControl>
 											<FormMessage />

@@ -52,11 +52,11 @@ const AccidentViolationAssessment = ({
 				{disabled ? (
 					<div className="space-y-1.5">
 						<FormLabelRequired
-							label="Violation type"
+							label="Violation Type"
 							required
 							className="font-inter text-sm font-normal text-brand-grey"
 						/>
-						<Input value={selected?.name ?? DASH} readOnly disabled />
+						<Input value={selected?.name ?? DASH} readOnly disabled className="h-10 rounded-[8px]" />
 					</div>
 				) : (
 					<FormInputWrapper form={form} fieldConfig={buildViolationTypeField(options)} />

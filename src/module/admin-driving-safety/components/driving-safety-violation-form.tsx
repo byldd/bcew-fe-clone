@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/date-picker";
 import TimeInput from "@/components/ui/time-input";
 import DocumentUpload from "@/components/shared/document-upload/document-upload";
-import SearchableSelect from "@/components/common/form/searchable-select";
 import { FormInputWrapper } from "@/components/common/form/form-input-wrapper";
 import { openErrorToast, openSuccessToast } from "@/components/toast";
 import { useHandleFileUpload } from "@/hooks/useFile";
@@ -26,6 +24,7 @@ import {
 	useDrivingSafetyViolationTrucks,
 } from "../hooks/useAdminDrivingSafetyViolation";
 import {
+	buildEmployeeField,
 	buildTruckField,
 	buildViolationTypeField,
 	descriptionField,
@@ -41,7 +40,6 @@ import PolicyReferenceCard from "./policy-reference-card";
 
 const DrivingSafetyViolationForm = () => {
 	const router = useRouter();
-	const [employeeId, setEmployeeId] = useState("");
 
 	const { data: employees } = useDrivingSafetyViolationEmployees();
 	const { data: trucks } = useDrivingSafetyViolationTrucks();
@@ -52,6 +50,7 @@ const DrivingSafetyViolationForm = () => {
 	const form = useForm<IDrivingSafetyViolationSchema>({
 		resolver: zodResolver(drivingSafetyViolationSchema),
 		defaultValues: {
+			employeeId: "",
 			truckNumber: "",
 			violationTypeId: "",
 			severity: "",
@@ -69,6 +68,7 @@ const DrivingSafetyViolationForm = () => {
 	);
 	const selectedType = violationTypes.find((violationType) => violationType.id === violationTypeId);
 
+	const employeeOptions = (employees ?? []).map((employee) => ({ label: employee.name, value: employee.employeeId }));
 	const truckOptions = (trucks ?? []).map((truck) => ({ label: truck.truckNumber, value: truck.truckNumber }));
 	const violationTypeOptions = violationTypes.map((violationType) => ({
 		label: violationType.name,
@@ -76,10 +76,7 @@ const DrivingSafetyViolationForm = () => {
 	}));
 
 	const onSubmit = async (data: IDrivingSafetyViolationSchema) => {
-		if (!employeeId) {
-			openErrorToast({ message: "Please select an employee" });
-			return;
-		}
+		let hasError = false;
 
 		const validation = drivingSafetyViolationRequiredFieldsSchema.safeParse(data);
 		if (!validation.success) {
@@ -89,8 +86,7 @@ const DrivingSafetyViolationForm = () => {
 					message: issue.message,
 				});
 			});
-			openErrorToast({ message: "Please fill required fields" });
-			return;
+			hasError = true;
 		}
 
 		if (data.violationDate && isFutureDate(data.violationDate)) {
@@ -98,6 +94,11 @@ const DrivingSafetyViolationForm = () => {
 				type: "custom",
 				message: "A violation cannot occur in the future",
 			});
+			hasError = true;
+		}
+
+		if (hasError) {
+			openErrorToast({ message: "Please fill required fields" });
 			return;
 		}
 
@@ -108,7 +109,7 @@ const DrivingSafetyViolationForm = () => {
 				await handleFileUpload({ signedUrls, filesToUpload });
 			}
 
-			await createViolation.mutateAsync(buildDrivingSafetyViolationPayload(data, employeeId));
+			await createViolation.mutateAsync(buildDrivingSafetyViolationPayload(data));
 			openSuccessToast("Driving safety violation created");
 			router.push(routes.admin.drivingSafetyIncidentReports);
 		} catch (error) {
@@ -129,17 +130,11 @@ const DrivingSafetyViolationForm = () => {
 					</div>
 
 					<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-						<div className="space-y-1.5">
-							<p className="font-inter text-sm font-normal text-brand-grey">
-								Employee Name<span className="ml-0.5 align-super text-xs leading-none text-brand-grey">*</span>
-							</p>
-							<SearchableSelect
-								value={employeeId}
-								onChange={setEmployeeId}
-								placeholder="Select Employee"
-								options={(employees ?? []).map((employee) => ({ label: employee.name, value: employee.employeeId }))}
-							/>
-						</div>
+						<FormInputWrapper
+							form={form}
+							fieldConfig={buildEmployeeField(employeeOptions)}
+							wrapperClassName="space-y-1"
+						/>
 						<FormInputWrapper form={form} fieldConfig={buildTruckField(truckOptions)} wrapperClassName="space-y-1" />
 					</div>
 

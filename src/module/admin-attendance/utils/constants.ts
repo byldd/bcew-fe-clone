@@ -1,0 +1,1 @@
+export const ATTENDANCE_CHART_BAR_COLORS = ["#93C5FD", "#FCD34D", "#5EEAD4", "#6EE7B7", "#22C55E", "#FDBA74"];

@@ -31,9 +31,7 @@ import { ViewMiddayStop } from "../components/view-midday-stop";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
 import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
-import { useGetUserModuleAccess } from "@/module/profile/hooks/useProfile";
-import { MODULE } from "@/utils/enums";
-import { isProductionEnv } from "@/utils";
+
 import { useTeams } from "@/module/team/hooks/useTeams";
 import { sortTeamsByDisplayOrder } from "@/module/schedule-management/roster-time-configuration/utils";
 // import AttendanceRecordsButton from "../../lateness-detection/components/attendance-records-button";
@@ -49,9 +47,8 @@ const TimeLogs = () => {
 	const tEmployeeRoster = useTypedTranslations(NAMESPACE.EMPLOYEE_ROSTER);
 
 	const { pageAccess } = useAdminPageAccessContext();
-	const { data: moduleAccessLevel } = useGetUserModuleAccess(MODULE.TIME_LOGS);
 
-	const accessLevel = isProductionEnv() ? moduleAccessLevel?.data.accessLevel : pageAccess?.accessLevel;
+	const accessLevel = pageAccess?.accessLevel;
 
 	const isTimeLogsEditAccess = accessLevel === ACCESS_LEVEL?.WRITE;
 

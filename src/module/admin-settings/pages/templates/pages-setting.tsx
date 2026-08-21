@@ -8,6 +8,7 @@ import PageForm from "../components/page-form";
 import PageTreeItem from "../components/page-tree-item";
 import { useGetAppPages } from "../hooks/pages";
 import { buildPageTree, IPageNode } from "../utils/page-tree";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 const PagesSetting = () => {
 	const { data: pages, isLoading } = useGetAppPages();
@@ -36,15 +37,17 @@ const PagesSetting = () => {
 			<div className="space-y-4">
 				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 					<SectionHeader title={"Page Management"} />
-					<Button
-						variant="filled"
-						size="sm"
-						onClick={() => openAddModal()}
-						className="flex items-center gap-1.5 self-start"
-					>
-						<Plus size={14} />
-						Add Page
-					</Button>
+					<WriteAccessWrapper>
+						<Button
+							variant="filled"
+							size="sm"
+							onClick={() => openAddModal()}
+							className="flex items-center gap-1.5 self-start"
+						>
+							<Plus size={14} />
+							Add Page
+						</Button>
+					</WriteAccessWrapper>
 				</div>
 			</div>
 

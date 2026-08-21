@@ -57,9 +57,17 @@ export const accidentDateField: AccidentField = {
 export const buildAccidentDetailFields = (weatherOptions: IOptions[]): AccidentField[] => [
 	{
 		name: "location",
-		fieldVariant: FIELD_VARIANT.INPUT,
+		fieldVariant: FIELD_VARIANT.LOCATION,
 		label: "Location of Accident*",
-		placeholder: "Type here",
+		placeholder: "Enter Lat, Long",
+		speedLimitFieldName: "speedLimit",
+		speedLimitEndpoint: "/employee/safety/vehicle-accident/speed-limit",
+	},
+	{
+		name: "speedLimit",
+		fieldVariant: FIELD_VARIANT.READONLY_TEXT,
+		label: "Speed Limit (mph)",
+		emptyText: "Not Available",
 	},
 	{
 		name: "nearestCrossStreet",
@@ -80,7 +88,7 @@ export const whatHappenedFields: AccidentField[] = [
 	{
 		name: "describeAccident",
 		fieldVariant: FIELD_VARIANT.TEXTAREA,
-		label: "Briefly describe how the accident happened*",
+		label: "Briefly describe how the accident happened?*",
 		placeholder: "Type here",
 	},
 	{
@@ -94,7 +102,7 @@ export const whatHappenedFields: AccidentField[] = [
 export const bcewVehiclePhotosField: AccidentField = {
 	name: "bcewVehiclePhotos",
 	fieldVariant: FIELD_VARIANT.MULTI_IMAGE,
-	label: "Photos of the BCEW Vehicle*",
+	label: "Photos of the  Vehicle*",
 	description: "Take photos of all damage from multiple angles, including wide and close-up views",
 };
 
@@ -141,7 +149,7 @@ export const buildOtherVehicleFields = (index: number) =>
 		whatWasStruck: {
 			name: `otherVehicles.${index}.whatWasStruck`,
 			fieldVariant: FIELD_VARIANT.INPUT,
-			label: "What was Struck*",
+			label: "What was Struck?*",
 			placeholder: "Type here",
 		},
 		vin: {
@@ -295,7 +303,6 @@ export const towToggleFields = {
 	bcewVehicleTowed: {
 		name: "bcewVehicleTowed",
 		fieldVariant: FIELD_VARIANT.RADIO_GROUP,
-		label: "Was the BCEW Vehicle Towed?",
 		options: yesNoOptions,
 	},
 	otherVehicleTowed: {
@@ -307,7 +314,7 @@ export const towToggleFields = {
 	vehicleImpounded: {
 		name: "vehicleImpounded",
 		fieldVariant: FIELD_VARIANT.RADIO_GROUP,
-		label: "Was the BCEW vehicle impounded?",
+		label: "Was the  vehicle impounded?",
 		options: yesNoOptions,
 	},
 } satisfies Record<string, AccidentField>;
@@ -371,6 +378,13 @@ export const policeFields: AccidentField[] = [
 ];
 
 // ── Injury details (page) ──
+export const injuredInAccidentField: AccidentField = {
+	name: "wasDriverInjured",
+	fieldVariant: FIELD_VARIANT.RADIO_GROUP,
+	label: "Were you injured in the accident?",
+	options: yesNoOptions,
+};
+
 export const injuryBodyPartField: AccidentField = {
 	name: "injury.bodyPartInjured",
 	fieldVariant: FIELD_VARIANT.INPUT,

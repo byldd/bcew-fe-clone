@@ -16,6 +16,8 @@ export type ICreateReceiveEventPayload = {
 	sealTagNumber?: string;
 	note?: string;
 	photos?: { keyFile: string; url: string }[];
+	jobNum?: number;
+	taskNum?: number;
 };
 
 export type IRecentCrateScan = Pick<ICrateScanAudit, "id" | "scanned_crate" | "scan_action" | "scanned_date"> & {
@@ -80,6 +82,7 @@ export type ICrateScanSummary = ICrateReceiveScanSummary | ICrateReturnScanSumma
 export type IReportCrateIssuePayload = {
 	crateId?: string;
 	jobNum: number;
+	taskNum: number;
 	category: CRATE_ISSUE_CATEGORY;
 	severity: CRATE_ISSUE_SEVERITY;
 	description: string;
@@ -88,6 +91,7 @@ export type IReportCrateIssuePayload = {
 
 export type ICrateIssueReportSummary = {
 	id: string;
+	reportId: number;
 	crateId: string | null;
 	jobNum: number;
 	jobName: string | null;

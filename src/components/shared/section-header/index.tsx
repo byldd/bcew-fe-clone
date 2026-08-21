@@ -28,12 +28,16 @@ export default function SectionHeader({
 	actions,
 }: HeaderProps) {
 	const sidebar = useSidebarOptional();
-	const showHamburger = !showBackButton && !hideSidebarToggle && !!sidebar && (sidebar.isMobile || !sidebar.open);
+	// Hamburger and back-arrow are mutually exclusive: the hamburger takes priority
+	// whenever the sidebar is collapsed/mobile (it's the only way to reopen it from
+	// here), and the back arrow only shows once the sidebar is already visible.
+	const showHamburger = !hideSidebarToggle && !!sidebar && (sidebar.isMobile || !sidebar.open);
+	const showBack = showBackButton && !showHamburger;
 
 	return (
 		<div className={cn("flex items-center gap-3", actions ? "justify-between" : "", className)}>
 			<div className="flex items-center gap-3">
-				{showBackButton && <BackButton />}
+				{showBack && <BackButton />}
 				{showHamburger && (
 					<button
 						className={cn(

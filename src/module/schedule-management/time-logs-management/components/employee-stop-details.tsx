@@ -14,6 +14,7 @@ import { JobWorkType } from "@/module/job/utils/enums";
 import { formatPascalCase } from "@/lib/utils/value-formatter";
 import { getStopTime } from "@/utils/time-logs";
 import { AppTooltip } from "@/components/ui/tooltip";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 export default function EmployeeStopDetails({
 	jobs,
@@ -150,35 +151,39 @@ export default function EmployeeStopDetails({
 													dailyJobNotes={dailyJobNotes}
 												/>
 											</TableCell>
-											<TableCell className="mt-2 flex justify-center border-r px-4 py-2 text-center">
-												<FaRegEdit
-													className={`mr-2 ${!isTimeLogsEditAccess ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
-													onClick={() => {
-														if (isTimeLogsEditAccess) {
-															openModal({
-																modalTitle: (
-																	<span>
-																		Edit Logged Time
-																		{stopNumber ? ` (S${stopNumber})` : ""}
-																	</span>
-																),
-																subHeader: <p className="text-sm font-normal text-brand-grey">{jobnme}</p>,
+											{
+												<WriteAccessWrapper>
+													<TableCell className="mt-2 flex justify-center border-r px-4 py-2 text-center">
+														<FaRegEdit
+															className={`mr-2 ${!isTimeLogsEditAccess ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+															onClick={() => {
+																if (isTimeLogsEditAccess) {
+																	openModal({
+																		modalTitle: (
+																			<span>
+																				Edit Logged Time
+																				{stopNumber ? ` (S${stopNumber})` : ""}
+																			</span>
+																		),
+																		subHeader: <p className="text-sm font-normal text-brand-grey">{jobnme}</p>,
 
-																modalView: (
-																	<EditLoggedTimeModal
-																		onClose={closeModal}
-																		onSave={refetch}
-																		stop={stop}
-																		employeeName={employeeName}
-																		trackTimeByGPS={trackTimeByGPS}
-																		rosterTime={rosterTime}
-																	/>
-																),
-															});
-														}
-													}}
-												/>
-											</TableCell>
+																		modalView: (
+																			<EditLoggedTimeModal
+																				onClose={closeModal}
+																				onSave={refetch}
+																				stop={stop}
+																				employeeName={employeeName}
+																				trackTimeByGPS={trackTimeByGPS}
+																				rosterTime={rosterTime}
+																			/>
+																		),
+																	});
+																}
+															}}
+														/>
+													</TableCell>
+												</WriteAccessWrapper>
+											}
 										</TableRow>
 									);
 								})}

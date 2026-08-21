@@ -6,6 +6,7 @@ const useAuthStore = create<IAuthStore>((set) => ({
 	subcontractorCrew: null,
 	setUser: (user: UserType["data"]["user"]) => set({ user }),
 	setSubcontractorCrew: (subcontractorCrew: UserType["data"]["subContractorCrew"]) => set({ subcontractorCrew }),
+	clearStore: () => set({ user: null, subcontractorCrew: null }),
 }));
 
 export default useAuthStore;

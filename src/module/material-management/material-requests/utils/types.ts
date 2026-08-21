@@ -5,6 +5,12 @@ import {
 } from "@/module/schedule-management/weekly-schedule-management/types/schedule-interface";
 import { ISchlin } from "@/module/sub-contractor/types";
 import {
+	ICreateFilterSavedViewPayload,
+	IFilterSavedView,
+	IFilterSavedViewsResponse,
+	IUpdateFilterSavedViewPayload,
+} from "@/types";
+import {
 	MATERIAL_REQUEST_ASSIGN_TO,
 	MATERIAL_REQUEST_AUDIT_EVENT_TYPE,
 	MATERIAL_REQUEST_NOTE_MODE,
@@ -255,11 +261,7 @@ export type MaterialRequestAssignmentModalProps = {
 };
 
 export type MaterialRequestNoteField =
-	| "approveNote"
-	| "foremanNote"
-	| "warehouseManagerNote"
-	| "officeNote"
-	| "procurementSpecialistNote";
+	"approveNote" | "foremanNote" | "warehouseManagerNote" | "officeNote" | "procurementSpecialistNote";
 
 export type FilterSelectPopoverProps = {
 	label: string;
@@ -286,47 +288,10 @@ export type MaterialRequestForemanReassignModalProps = {
 	onCancel: () => void;
 };
 
-export type MaterialRequestSavedView = {
-	id: string;
-
-	name: string;
-
-	pageKey: string;
-
-	filters: MaterialRequestFiltersState;
-
-	isDefault: boolean;
-	isLastViewed: boolean;
-
-	userId: string;
-
-	createdAt: string;
-	updatedAt: string;
-};
-
-export type MaterialRequestSavedViewsResponse = {
-	items: MaterialRequestSavedView[];
-};
-
-export type CreateMaterialRequestSavedViewPayload = {
-	name: string;
-
-	pageKey: string;
-
-	filters: MaterialRequestFiltersState;
-
-	isDefault?: boolean;
-	isLastViewed?: boolean;
-};
-
-export type UpdateMaterialRequestSavedViewPayload = {
-	name?: string;
-
-	filters?: MaterialRequestFiltersState;
-
-	isDefault?: boolean;
-	isLastViewed?: boolean;
-};
+export type MaterialRequestSavedView = IFilterSavedView<MaterialRequestFiltersState>;
+export type MaterialRequestSavedViewsResponse = IFilterSavedViewsResponse<MaterialRequestFiltersState>;
+export type CreateMaterialRequestSavedViewPayload = ICreateFilterSavedViewPayload<MaterialRequestFiltersState>;
+export type UpdateMaterialRequestSavedViewPayload = IUpdateFilterSavedViewPayload<MaterialRequestFiltersState>;
 
 export type MaterialRequestAuditEvent = {
 	type: MATERIAL_REQUEST_AUDIT_EVENT_TYPE;

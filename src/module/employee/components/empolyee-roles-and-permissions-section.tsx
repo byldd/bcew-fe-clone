@@ -17,13 +17,11 @@ import {
 	useUpdateSpecialJobExempt,
 } from "@/module/employee/hooks/useEmployee";
 import EmployeeRolePermissionCard from "./employee-role-permission-card";
-import EmployeeRolePermissionEditModalTrigger from "@/module/employee/components/employee-role-permission-edit-modal-trigger";
 import { IEmployeeDetailsResponse, IUserPagesPermissionPayload, StagingConfiguration } from "@/module/employee/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { openErrorToast, openSuccessToast } from "@/components/toast";
 import { useRoleWithPermissions } from "../hooks/useRolesAndPermissions";
 import { useGetAdminPages } from "@/module/people-management/role/hooks/useRoles";
-import { isProductionEnv } from "@/utils";
 import EditPermissions from "./edit-permissions";
 import { ACCESS_LEVEL } from "../enums";
 
@@ -47,6 +45,7 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 	const { mutate: updateUserPagesPermissions, isPending: isSaving } = useUpdateUserPagesPermissions();
 	const currentPermission = employee?.employee?.user?.employeeReleaseNotePermission;
 	const [isPermissionEditable, setIsPermissionEditable] = useState<boolean>(true);
+	const [initialPermissionEditable, setInitialPermissionEditable] = useState<boolean>(true);
 	const { data: roleData } = useRoleWithPermissions(employee.employee.user.roleId);
 	const { data: adminPages } = useGetAdminPages();
 	const { mutate: updateQcPermission } = useUpdateQcPermission();
@@ -76,6 +75,7 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 	useEffect(() => {
 		const overrideFromDb = userWithPermissions?.items?.user?.isPermissionOverridden ?? false;
 		setIsPermissionEditable(overrideFromDb);
+		setInitialPermissionEditable(overrideFromDb);
 	}, [userWithPermissions?.items?.user?.isPermissionOverridden]);
 
 	useEffect(() => {
@@ -359,6 +359,7 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 
 	const handleDiscard = () => {
 		setStagingConfiguration(initialConfiguration);
+		setIsPermissionEditable(initialPermissionEditable);
 
 		queryClient.invalidateQueries({
 			queryKey: ["employeePermissions", userId],
@@ -373,6 +374,7 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 				userId,
 				updated: {
 					...stagingConfiguration,
+					isPermissionOverridden: isPermissionEditable,
 					userPagePermissions: pagePermissionsRef.current,
 				},
 			},
@@ -427,6 +429,7 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 			handlePermissionEdit={handlePermissionEditToggle}
 			handleTechnicianPermission={handleTechnicianPermission}
 			isPermissionEditable={isPermissionEditable}
+			setIsPermissionEditable={setIsPermissionEditable}
 			currentPermission={currentPermission}
 			handleWeekendSelfScheduling={handleWeekendSelfScheduling}
 			handleFingerprintPermission={handleFingerprintPermission}
@@ -444,22 +447,13 @@ export const EmployeeRolePermissionSection = ({ userId, employee }: EmployeeRole
 			stagingConfiguration={stagingConfiguration}
 			setStagingConfiguration={setStagingConfiguration}
 			trigger={
-				isProductionEnv() ? (
-					<EmployeeRolePermissionEditModalTrigger
-						id={userId}
-						permissions={userWithPermissions?.items?.permissions}
-						employeeName={employee?.fullName}
-						isPermissionEditable={isPermissionEditable}
-					/>
-				) : (
-					<EditPermissions
-						isEditing={isEditing}
-						isSaving={isSaving}
-						onEdit={handleEdit}
-						onDiscard={handleDiscard}
-						onSave={handleSave}
-					/>
-				)
+				<EditPermissions
+					isEditing={isEditing}
+					isSaving={isSaving}
+					onEdit={handleEdit}
+					onDiscard={handleDiscard}
+					onSave={handleSave}
+				/>
 			}
 		/>
 	);

@@ -71,6 +71,8 @@ export default function ScanHistoryTemplate() {
 					mode="range"
 					className="h-8"
 					iconClassName="h-4 w-4"
+					alwaysShowLabel
+					placeholder="Select Date"
 					onClear={clearDates}
 					selected={{
 						from: startDate ? toDate(startDate) : undefined,
@@ -86,7 +88,7 @@ export default function ScanHistoryTemplate() {
 				/>
 			</div>
 
-			<div className="px-4">
+			<div className="px-4 pb-2">
 				<div className="no-scrollbar flex gap-2 overflow-x-auto">
 					{tabs.map(({ tab: tabValue, count }) => (
 						<Button
@@ -95,7 +97,7 @@ export default function ScanHistoryTemplate() {
 							variant="ghost"
 							onClick={() => setParams({ tab: tabValue })}
 							className={cn(
-								"h-9 shrink-0 rounded-full px-3 text-xs font-medium",
+								"h-9 shrink-0 rounded-[8px] px-3 text-xs font-medium",
 								tab === tabValue
 									? "bg-gray-900 text-white hover:bg-gray-900 hover:text-white"
 									: "bg-gray-100 text-gray-700"

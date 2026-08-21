@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type FieldValues } from "react-hook-form";
 import { FormDateInput } from "@/components/common/form/date-input";
+import { FormLocationInput } from "@/components/common/form/location-input";
 import { cn } from "@/lib/utils/utils";
 import { MultiSelect } from "./multi-select";
 
@@ -33,6 +34,25 @@ export function RenderFormInput<TData extends FieldValues>({
 
 		case FIELD_VARIANT.DATE:
 			return <FormDateInput field={field} fieldConfig={fieldConfig} className={className} disabled={disabled} />;
+
+		case FIELD_VARIANT.LOCATION:
+			return <FormLocationInput field={field} fieldConfig={fieldConfig} className={className} disabled={disabled} />;
+
+		case FIELD_VARIANT.READONLY_TEXT: {
+			const hasValue = field.value !== null && field.value !== undefined && String(field.value).trim() !== "";
+			return (
+				<p
+					className={cn(
+						"flex min-h-10 items-center text-sm",
+						hasValue ? "text-brand-black" : "text-brand-grey",
+						fieldConfig.className,
+						className
+					)}
+				>
+					{hasValue ? String(field.value) : (fieldConfig.emptyText ?? "Not Available")}
+				</p>
+			);
+		}
 
 		case FIELD_VARIANT.TOGGLE:
 			return <FormToggle field={field} fieldConfig={fieldConfig} className={className} disabled={disabled} />;

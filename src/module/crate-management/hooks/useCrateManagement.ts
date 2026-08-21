@@ -26,9 +26,19 @@ export const useCreateCrateReceiveEvent = () => {
 export const useCheckCrateScanStatus = () => {
 	return useMutation({
 		mutationKey: ["check-crate-scan-status"],
-		mutationFn: async ({ assetId, action }: { assetId: string; action: CRATE_SCAN_ACTION }) => {
+		mutationFn: async ({
+			assetId,
+			action,
+			jobNum,
+			taskNum,
+		}: {
+			assetId: string;
+			action: CRATE_SCAN_ACTION;
+			jobNum?: number;
+			taskNum?: number;
+		}) => {
 			const { data } = await apiClient.get<IApiResponse<null>>(`/employee/crate/${assetId}/scan-status`, {
-				params: { action },
+				params: { action, jobNum, taskNum },
 			});
 			return data.data;
 		},

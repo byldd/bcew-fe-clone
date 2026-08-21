@@ -44,6 +44,11 @@ export enum NOTIFICATION_TITLE {
 	MISSING_ITEM_REQUEST_NOTE = "Unknown Item Request Note",
 	MATERIAL_REQUEST_NOTE = "Material Request Note",
 	ROLES_AND_PERMISSIONS_UPDATED = "Roles and Permissions Updated",
+	CRATE_SEAL_ISSUE_REPORTED = "Security Seal Issue Reported",
+	CRATE_DAMAGED_REPORTED = "Damaged Crate Reported",
+	CRATE_NOT_FOUND = "Crate Not Found",
+	CRATE_ISSUE_REPORTED = "Crate Issue Reported",
+	CRATE_RETURNED = "Crate Returned Successfully",
 }
 
 //  each gruop can have multiple notifications for that we are using key
@@ -152,6 +157,11 @@ export enum NOTIFICATION_KEY {
 	JOB_SITE_SAFETY_INTERNALLY_RESOLVED = "JOB_SITE_SAFETY_INTERNALLY_RESOLVED",
 	JOB_SITE_SAFETY_RESOLVED = "JOB_SITE_SAFETY_RESOLVED",
 	JOB_SITE_SAFETY_CLOSED_FOR_TECHNICIAN = "JOB_SITE_SAFETY_CLOSED_FOR_TECHNICIAN",
+	CRATE_SEAL_ISSUE_REPORTED = "CRATE_SEAL_ISSUE_REPORTED",
+	CRATE_DAMAGED_REPORTED = "CRATE_DAMAGED_REPORTED",
+	CRATE_NOT_FOUND = "CRATE_NOT_FOUND",
+	CRATE_ISSUE_REPORTED = "CRATE_ISSUE_REPORTED",
+	CRATE_RETURNED = "CRATE_RETURNED",
 }
 
 // type is group of notifications
@@ -201,6 +211,7 @@ export enum NOTIFICATION_TYPE {
 	DRIVING_SAFETY_VIOLATION_REPORT = "DRIVING_SAFETY_VIOLATION_REPORT",
 	JOB_SITE_INJURY_REPORT = "JOB_SITE_INJURY_REPORT",
 	JOB_SITE_SAFETY_VIOLATION_REPORT = "JOB_SITE_SAFETY_VIOLATION_REPORT",
+	CRATE_MANAGEMENT = "CRATE_MANAGEMENT",
 }
 
 export type INotification = {
@@ -450,6 +461,11 @@ export type INotificationDataMap = {
 		jobSiteSafetyViolationId?: string;
 		reportId: number;
 	};
+	[NOTIFICATION_KEY.CRATE_SEAL_ISSUE_REPORTED]: { crateEventId: string };
+	[NOTIFICATION_KEY.CRATE_DAMAGED_REPORTED]: { issueId: string };
+	[NOTIFICATION_KEY.CRATE_NOT_FOUND]: { issueId: string };
+	[NOTIFICATION_KEY.CRATE_ISSUE_REPORTED]: { issueId: string };
+	[NOTIFICATION_KEY.CRATE_RETURNED]: { crateEventId: string };
 };
 
 export const NotificationTitleMap: Record<NOTIFICATION_KEY, string> = {
@@ -558,6 +574,11 @@ export const NotificationTitleMap: Record<NOTIFICATION_KEY, string> = {
 	[NOTIFICATION_KEY.JOB_SITE_SAFETY_INTERNALLY_RESOLVED]: "Incident Internally Resolved",
 	[NOTIFICATION_KEY.JOB_SITE_SAFETY_RESOLVED]: "Incident Resolved",
 	[NOTIFICATION_KEY.JOB_SITE_SAFETY_CLOSED_FOR_TECHNICIAN]: "Job Site Safety Incident Closed",
+	[NOTIFICATION_KEY.CRATE_SEAL_ISSUE_REPORTED]: "Security Seal Issue Reported",
+	[NOTIFICATION_KEY.CRATE_DAMAGED_REPORTED]: "Damaged Crate Reported",
+	[NOTIFICATION_KEY.CRATE_NOT_FOUND]: "Crate Not Found",
+	[NOTIFICATION_KEY.CRATE_ISSUE_REPORTED]: "Crate Issue Reported",
+	[NOTIFICATION_KEY.CRATE_RETURNED]: "Crate Returned Successfully",
 };
 
 export type NotificationUnion = {

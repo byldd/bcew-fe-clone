@@ -14,7 +14,6 @@ import { NAMESPACE } from "@/i18n/type";
 import { getBcewWeekRange } from "@/lib/utils/date";
 import DateRangePickModal, { DATE_PICK_APPLY_TO } from "@/components/common/date-range-modal";
 import { useTimeRequestsParams } from "./hooks/useTimeRequestsParams.ts";
-import { isProductionEnv } from "@/utils";
 
 const TimeRequests = () => {
 	const { getParams, setParams } = useTimeRequestsParams();

@@ -5,15 +5,11 @@ import { DATE_FORMAT } from "@/types/date";
 import EditTeamTrigger from "@/module/team/components/edit-team-trigger";
 import { ACCESS_LEVEL } from "@/module/employee/enums";
 import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
-import { useGetUserModuleAccess } from "@/module/profile/hooks/useProfile";
-import { MODULE } from "@/utils/enums";
-import { isProductionEnv } from "@/utils";
 
 export const useTeamColumns = () => {
 	const { pageAccess } = useAdminPageAccessContext();
-	const { data: moduleAccess } = useGetUserModuleAccess(MODULE.EMPLOYEES_LIST);
 
-	const accessLevel = isProductionEnv() ? moduleAccess?.data.accessLevel : pageAccess?.accessLevel;
+	const accessLevel = pageAccess?.accessLevel;
 
 	const columns: ColumnDef<ITeam>[] = [
 		{

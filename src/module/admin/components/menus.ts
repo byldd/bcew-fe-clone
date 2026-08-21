@@ -5,7 +5,7 @@ import { routes } from "@/config/routes";
 import type { SidebarItem } from "@/types";
 
 // React‑Icons Heroicons outline
-import { HiOutlineCalendar, HiOutlineCog } from "react-icons/hi";
+import { HiOutlineCalendar, HiOutlineCog, HiOutlineDocumentAdd } from "react-icons/hi";
 
 import { MODULE } from "@/utils/enums";
 import { MdOutlinePolicy } from "react-icons/md";
@@ -172,10 +172,24 @@ export const useAdminMenu = () => {
 					moduleKey: MODULE.SUB_CONTRACTOR,
 				},
 				{
-					title: tCommon.attendance,
+					title: "Attendance Dashboard",
 					icon: AttendanceIconImage,
-					url: routes.bcew.attendance,
-					newTab: true,
+					url: routes.admin.attendanceDashboard,
+				},
+				{
+					title: "Records & Approvals",
+					icon: ReportIconImage,
+					url: routes.admin.attendanceRecordsApprovals,
+				},
+				{
+					title: "Create New Record",
+					icon: HiOutlineDocumentAdd,
+					url: routes.admin.attendanceCreateNewRecord,
+				},
+				{
+					title: "Policies",
+					icon: PolicyIconImage,
+					url: routes.admin.attendancePolicies,
 				},
 				{
 					title: "Human Resources",

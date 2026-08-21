@@ -37,14 +37,14 @@ export const CRATE_QUICK_ACTIONS: ICrateQuickAction[] = [
 		label: "Scan Received",
 		subtitle: "Crate arrived on site",
 		icon: QrCode,
-		href: routes.employee.crateManagementScanReceive,
+		href: routes.employee.crateManagementScanReceive(),
 	},
 	{
 		key: "scan-return",
 		label: "Scan Return",
 		subtitle: "Sending crate back",
 		icon: Undo2,
-		href: routes.employee.crateManagementScanReturn,
+		href: routes.employee.crateManagementScanReturn(),
 	},
 	{
 		key: "history",
@@ -79,7 +79,7 @@ export const CRATE_ISSUE_CATEGORY_OPTIONS: ICrateIssueCategoryOption[] = [
 	{
 		value: CRATE_ISSUE_CATEGORY.NO_CRATE,
 		label: "No Crate",
-		subtitle: "Crate not present or delivery",
+		subtitle: "Crate not present at delivery",
 		icon: XCircle,
 	},
 	{

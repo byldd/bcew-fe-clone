@@ -8,7 +8,6 @@ import { MdOutlineHistory, MdOutlineBugReport, MdOutlineHealthAndSafety } from "
 import { HiOutlineRefresh } from "react-icons/hi";
 import { TbBox } from "react-icons/tb";
 import { MdOutlineLogout } from "react-icons/md";
-import { isProductionEnv } from "@/utils";
 
 export interface NavItem {
 	label: string;
@@ -28,6 +27,7 @@ interface GetNavItemsParams {
 	isWeekendSelfSchedulingAllowed?: boolean;
 	isSelfSchedulingAllowed?: boolean;
 	setSelfScheduleOpen?: (open: boolean) => void;
+	isCrateHandlerAllowed?: boolean;
 }
 
 export const getNavItems = ({
@@ -37,6 +37,7 @@ export const getNavItems = ({
 	isWeekendSelfSchedulingAllowed,
 	isSelfSchedulingAllowed,
 	setSelfScheduleOpen,
+	isCrateHandlerAllowed,
 }: GetNavItemsParams): NavItem[] => [
 	{
 		label: "Vehicle History",
@@ -124,9 +125,8 @@ export const getNavItems = ({
 		onClick: () => navigate(routes.employee.technicalIssue),
 	},
 
-	...(isProductionEnv()
-		? []
-		: [
+	...(isCrateHandlerAllowed
+		? [
 				{
 					label: "Crate Management",
 					icon: <TbBox size={18} />,
@@ -134,7 +134,8 @@ export const getNavItems = ({
 					iconColor: "text-gray-500",
 					onClick: () => navigate(routes.employee.crateManagement),
 				},
-			]),
+			]
+		: []),
 	{
 		label: "My Attendance",
 		icon: <LuCalendar size={18} />,

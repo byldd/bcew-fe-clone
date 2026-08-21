@@ -38,8 +38,9 @@ export interface IIncidentReportRow {
 	location: string | null;
 	// Violations have no review workflow, so they carry no status.
 	status: INCIDENT_REPORT_STATUS | null;
-	// Only GeoTab safety-violation rows carry this — drives the record-number deep link.
+	statusLabel?: string | null;
 	geotabId?: string | null;
+	isLegacyImport?: boolean;
 	createdAt: string;
 }
 
@@ -101,11 +102,34 @@ export interface IRawSafetyViolationReport {
 	recordLastChangedUtc: string;
 }
 
+export interface IRawLegacyAccidentReport {
+	id: string;
+	emp_nme: string | null;
+	eqpmnt_recnum: string | null;
+	eqpmnt_dam: string | null;
+	acc_loc: string | null;
+	acc_dte: string | null;
+	report_status: number | null;
+}
+
+export interface IRawLegacyBreakdownReport {
+	id: string;
+	eqpmnt_recnum: string;
+	request: string | null;
+	date: string | null;
+	issue: string | null;
+	Notes: string | null;
+	add_dte: string | null;
+	employeeName: string | null;
+}
+
 export interface IIncidentReportsResponse {
 	accidentReports: IRawAccidentReport[];
 	breakdownReports: IRawBreakdownReport[];
 	violationReports: IRawViolationReport[];
 	safetyViolationReports: IRawSafetyViolationReport[];
+	legacyAccidentReports: IRawLegacyAccidentReport[];
+	legacyBreakdownReports: IRawLegacyBreakdownReport[];
 }
 
 interface IAccidentReviewDocument {
@@ -180,6 +204,7 @@ export interface IAccidentReviewDetail {
 	accidentDate: string | null;
 	location: string | null;
 	nearestCrossStreet: string | null;
+	speedLimit: number | null;
 	weather: WEATHER_CONDITION | null;
 
 	describeAccident: string | null;
@@ -230,6 +255,122 @@ export interface IApproveAccidentReportPayload {
 	violationTypeId: string;
 	overrideReason: string | null;
 	documents: { category: VEHICLE_ACCIDENT_PHOTO_CATEGORY; keyFile: string }[];
+}
+
+export interface ISafetyViolationDetail {
+	id: string;
+	geotabId: string;
+	employeeName: string | null;
+	truck: string | null;
+	violationType: string | null;
+	description: string | null;
+	pointWeight: number | null;
+	activeFrom: string | null;
+	decision: string | null;
+	latitude: number | null;
+	longitude: number | null;
+}
+
+export interface IRawLegacyOtherVehicle {
+	ID: string;
+	Year: string | null;
+	MakeModel: string | null;
+	VIN: string | null;
+	Damage: string | null;
+	oth_drv_nme: string | null;
+	oth_drv_lic: string | null;
+	oth_drv_phn: string | null;
+	oth_drv_ins_cmp: string | null;
+	oth_drv_ins_num: string | null;
+	oth_veh_tow: boolean | null;
+}
+
+export interface IRawLegacyAccidentDetail {
+	id: string;
+	emp_nme: string | null;
+	emp_add: string | null;
+	emp_phn: string | null;
+	emp_lic: string | null;
+	eqpmnt_recnum: string | null;
+	eqpmnt_vin: string | null;
+	eqpmnt_lic: string | null;
+	eqpmnt_dam: string | null;
+	acc_loc: string | null;
+	cross_st: string | null;
+	acc_dte: string | null;
+	weather: string | null;
+	pol_cont: string | null;
+	pol_dept: string | null;
+	pol_rep_num: string | null;
+	wit_nme: string | null;
+	wit_add: string | null;
+	wit_phn: string | null;
+	drug_scr: string | null;
+	med_treat: string | null;
+	med_treat_loc: string | null;
+	injury_report: string | null;
+	veh_tow: boolean | null;
+	report_status: number | null;
+	FM_OtherVehiclesTable: IRawLegacyOtherVehicle[];
+}
+
+export interface ILegacyOtherVehicle {
+	id: string;
+	year: string | null;
+	makeModel: string | null;
+	vin: string | null;
+	damage: string | null;
+	driverName: string | null;
+	driverLicense: string | null;
+	driverPhone: string | null;
+	insuranceCompany: string | null;
+	insuranceNumber: string | null;
+	vehicleTowed: boolean | null;
+}
+
+export interface ILegacyAccidentDetail {
+	id: string;
+	employeeName: string | null;
+	employeeAddress: string | null;
+	employeePhone: string | null;
+	employeeLicense: string | null;
+	truckNumber: string | null;
+	vin: string | null;
+	licensePlate: string | null;
+	vehicleDamage: string | null;
+	location: string | null;
+	crossStreet: string | null;
+	accidentDate: string | null;
+	weather: string | null;
+	policeContacted: string | null;
+	policeDepartment: string | null;
+	policeReportNumber: string | null;
+	witnessName: string | null;
+	witnessAddress: string | null;
+	witnessPhone: string | null;
+	drugScreen: string | null;
+	medicalTreatment: string | null;
+	medicalTreatmentLocation: string | null;
+	injuryReport: string | null;
+	vehicleTowed: boolean | null;
+	status: INCIDENT_REPORT_STATUS;
+	statusLabel: string;
+	otherVehicles: ILegacyOtherVehicle[];
+}
+
+export interface IRawLegacyBreakdownDetail extends IRawLegacyBreakdownReport {
+	complete: number | null;
+}
+
+export interface ILegacyBreakdownDetail {
+	id: string;
+	recordNumber: string;
+	truckNumber: string | null;
+	employeeName: string | null;
+	issue: string | null;
+	description: string | null;
+	notes: string | null;
+	date: string | null;
 }
 
 export interface IViolationReportDetail {

@@ -12,8 +12,6 @@ interface ReportIssueSuccessProps {
 }
 
 export default function ReportIssueSuccess({ report, onDone }: ReportIssueSuccessProps) {
-	const referenceNumber = `REF-${new Date(report.createdAt).getFullYear()}-${report.id.replace(/-/g, "").slice(0, 4).toUpperCase()}`;
-
 	const timestamp = isSameDate(report.createdAt, new Date())
 		? `Today, ${toLocalFormattedDate(report.createdAt, DATE_FORMAT.HH_MM_AA_PM)}`
 		: toLocalFormattedDate(report.createdAt, DATE_FORMAT.DATE_AND_TIME);
@@ -39,7 +37,7 @@ export default function ReportIssueSuccess({ report, onDone }: ReportIssueSucces
 				<div className="mt-6 flex w-full max-w-xs items-center justify-between rounded-xl border border-gray-100 bg-white px-3 py-2.5">
 					<div className="flex items-center gap-2">
 						<QrCode className="h-4 w-4 text-red-500" />
-						<span className="text-sm font-medium text-gray-900">{referenceNumber}</span>
+						<span className="text-sm font-medium text-gray-900">{report.reportId}</span>
 					</div>
 					<span className="text-sm font-medium text-red-500">{report.isResolved ? "Resolved" : "Under review"}</span>
 				</div>

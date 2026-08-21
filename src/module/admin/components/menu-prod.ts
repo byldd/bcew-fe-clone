@@ -166,8 +166,28 @@ export const useAdminMenuProd = () => {
 				{
 					title: tCommon.attendance,
 					icon: HiCalendar,
-					url: routes.bcew.attendance,
-					newTab: true,
+					items: [
+						{
+							title: "Dashboard",
+							icon: HiOutlineChartBar,
+							url: routes.admin.attendanceDashboard,
+						},
+						{
+							title: "Records & Approvals",
+							icon: HiOutlineDocumentReport,
+							url: routes.admin.attendanceRecordsApprovals,
+						},
+						{
+							title: "Create New Record",
+							icon: HiOutlineDocumentAdd,
+							url: routes.admin.attendanceCreateNewRecord,
+						},
+						{
+							title: "Policies",
+							icon: MdOutlinePolicy,
+							url: routes.admin.attendancePolicies,
+						},
+					],
 				},
 			],
 		},

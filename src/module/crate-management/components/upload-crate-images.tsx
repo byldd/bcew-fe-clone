@@ -5,6 +5,7 @@ import { Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { FormLabelRequired } from "@/components/ui/formLabelrequired";
 import PhotoGrid from "./photo-grid";
 import ScreenHeader from "./screen-header";
 
@@ -43,7 +44,7 @@ export default function UploadCrateImages({
 			<ScreenHeader title="Upload Crate Images" onBack={onBack} />
 
 			<div className="flex flex-1 flex-col px-4">
-				<p className="text-sm text-gray-500">Crate #{crateId}</p>
+				<p className="text-sm font-medium text-brand-dark50">Crate ID {crateId}</p>
 
 				<Button
 					type="button"
@@ -62,21 +63,22 @@ export default function UploadCrateImages({
 					onChange={handleFilesSelected}
 				/>
 
-				<div className="mt-4 flex items-center justify-between">
-					<p className="text-sm font-medium text-gray-700">Added Photos</p>
-					<p className="text-xs text-gray-400">{photos.length} photos added</p>
+				<div className="mt-4 space-y-1">
+					<div className="flex items-center justify-between">
+						<p className="text-sm font-medium text-brand-dark50">Added Photos</p>
+						<p className="text-xs text-gray-400">{photos.length} photos added</p>
+					</div>
+
+					{photos.length > 0 && (
+						<div className="mt-[-2]">
+							<PhotoGrid photos={photos} onRemove={removePhoto} />
+						</div>
+					)}
 				</div>
 
-				{photos.length > 0 && (
-					<div className="mt-2">
-						<PhotoGrid photos={photos} onRemove={removePhoto} />
-					</div>
-				)}
+				<div className="mt-4 space-y-1">
+					<FormLabelRequired label="Note (optional)" htmlFor="crate-note" />
 
-				<div className="mt-4 flex flex-col gap-1.5 rounded-2xl border border-gray-100 bg-white p-3">
-					<label htmlFor="crate-note" className="text-sm font-medium text-gray-700">
-						Note (optional)
-					</label>
 					<Textarea
 						id="crate-note"
 						value={note}
@@ -93,14 +95,14 @@ export default function UploadCrateImages({
 				)}
 			</div>
 
-			<div className="px-4 pb-8 pt-4">
+			<div className="px-4 py-4">
 				<Button
 					type="button"
 					variant="filled"
 					onClick={() => onSubmit({ photos, note })}
 					loading={isSubmitting}
 					loadingText="Submitting..."
-					className="h-auto w-full rounded-2xl py-4 text-sm"
+					className="h-10 w-full"
 				>
 					{sealIntact ? "Submit" : "Continue"}
 				</Button>

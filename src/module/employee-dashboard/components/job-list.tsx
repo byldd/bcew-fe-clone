@@ -266,7 +266,7 @@ export function JobList({
 									{employeeDayTime && showLateBanner && !isLatenessResponseSentOrHandled && (
 										<div
 											className={cn(
-												"w-full rounded bg-brand-red800/10 py-2 text-center font-inter text-xs font-medium text-brand-red800"
+												"w-full rounded bg-brand-red800/10 py-2 text-left font-inter text-xs font-medium text-brand-red800"
 											)}
 										>
 											<div>

@@ -75,18 +75,26 @@ export const routes = {
 		},
 		storageUnitReport: "/admin/storage-unit-report",
 		crateActivity: "/admin/crate-activity",
+		crateIssues: "/admin/crate-issues",
 		materialRequests: "/admin/material-requests",
 		missingItemRequests: "/admin/missing-item-requests",
 		gpsExceptionEvents: "/admin/gps-exception-events",
 		warehouseFingerprint: "/admin/warehouse-fingerprint",
 		projectMap: "/admin/project-management/map",
 		payroll: "/admin/schedule-management/payroll",
+		weekReport: "/admin/schedule-management/week-report",
 		config: "/admin/setting/config",
 		pages: "/admin/setting/config/pages",
 		drivingSafetyDashboard: "/admin/driving-safety/dashboard",
 		drivingSafetyPolicies: "/admin/driving-safety/policies",
 		drivingSafetyIncidentReports: "/admin/driving-safety/incident-reports",
 		drivingSafetyAccidentReview: (id: string) => `/admin/driving-safety/incident-reports/${id}`,
+		drivingSafetyBreakdownReview: (id: string) => `/admin/driving-safety/incident-reports/breakdown/${id}`,
+		drivingSafetyViolationReview: (id: string) => `/admin/driving-safety/incident-reports/violation/${id}`,
+		drivingSafetyLegacyAccidentReview: (id: string) =>
+			`/admin/driving-safety/incident-reports/legacy-accident/${encodeURIComponent(id)}`,
+		drivingSafetyLegacyBreakdownReview: (id: string) =>
+			`/admin/driving-safety/incident-reports/legacy-breakdown/${encodeURIComponent(id)}`,
 		jobSiteSafetyAddNewRecord: "/admin/job-site-safety/add-new-record",
 		jobSiteSafetyDashboard: "/admin/job-site-safety/dashboard",
 		jobSiteSafetyIncidentReports: "/admin/job-site-safety/incident-reports",
@@ -97,6 +105,10 @@ export const routes = {
 			`/admin/job-site-safety/incident-reports/violation/${id}/insurance-email`,
 		drivingSafetyInsuranceEmailReview: (id: string) => `/admin/driving-safety/incident-reports/${id}/insurance-email`,
 		drivingSafetyAddNewRecord: "/admin/driving-safety/add-new-record",
+		attendanceDashboard: "/admin/attendance/dashboard",
+		attendanceRecordsApprovals: "/admin/attendance/records-approvals",
+		attendanceCreateNewRecord: "/admin/attendance/create-new-record",
+		attendancePolicies: "/admin/attendance/policies",
 	},
 	subContractorAdminDesktop: {
 		dashboard: "/admin/sub-contractor/dashboard",
@@ -154,8 +166,14 @@ export const routes = {
 		vehicleDocuments: (truckNumber: string) =>
 			`/employee/safety/vehicle-documents?truckNumber=${encodeURIComponent(truckNumber)}`,
 		crateManagement: "/employee/crate-management",
-		crateManagementScanReceive: "/employee/crate-management/scan-receive",
-		crateManagementScanReturn: "/employee/crate-management/scan-return",
+		crateManagementScanReceive: (jobnum?: number, tasknum?: number) =>
+			jobnum !== undefined && tasknum !== undefined
+				? `/employee/crate-management/scan-receive?jobnum=${jobnum}&tasknum=${tasknum}`
+				: "/employee/crate-management/scan-receive",
+		crateManagementScanReturn: (jobnum?: number, tasknum?: number) =>
+			jobnum !== undefined && tasknum !== undefined
+				? `/employee/crate-management/scan-return?jobnum=${jobnum}&tasknum=${tasknum}`
+				: "/employee/crate-management/scan-return",
 		crateManagementReportIssue: "/employee/crate-management/report-issue",
 		crateManagementHistory: "/employee/crate-management/history",
 		safetyPolicies: "/employee/safety/policies",

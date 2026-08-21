@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { AxiosError } from "axios";
 import { FieldErrors, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import { FormInputWrapper } from "@/components/common/form/form-input-wrapper";
 import { openErrorToast, openSuccessToast } from "@/components/toast";
 import { useHandleFileUpload } from "@/hooks/useFile";
 import { dateToUTCString } from "@/lib/utils/date";
+import { isValidLatLng } from "@/lib/utils/coordinates";
 import { YES_NO } from "@/module/employee-safety/enums";
 import ReportSection from "@/module/employee-safety/components/report-section";
 import BcewVehicleInfoFields from "@/module/employee-safety/components/bcew-vehicle-info-fields";
@@ -21,7 +22,9 @@ import OtherVehiclesSection from "@/module/employee-safety/components/other-vehi
 import PersonStruckSection from "@/module/employee-safety/components/person-struck-section";
 import PoliceSection from "@/module/employee-safety/components/police-section";
 import FollowUpQuestionsSection from "@/module/employee-safety/components/follow-up-questions-section";
-import { useSafetyFormOptions } from "@/module/employee-safety/hooks/useVehicleAccident";
+import InjuryReportSection from "@/module/employee-safety/components/injury-report-section";
+import InjuryReportPage from "@/module/employee-safety/components/injury-report-page";
+import { useMedicalTreatmentLocations, useSafetyFormOptions } from "@/module/employee-safety/hooks/useVehicleAccident";
 import { IAccidentReportDetail, IFormOption } from "@/module/employee-safety/types";
 import {
 	accidentRequiredFieldsSchema,
@@ -47,6 +50,7 @@ import { useAccidentReportForEdit, useUpdateAccidentTechnicianInfo } from "../ho
 import { IAccidentReviewDetail } from "../types";
 import { orDash } from "../utils/accident-review-display";
 import { ReviewCard } from "./review-card";
+import { isProductionEnv } from "@/utils";
 
 const ReadOnlyField = ({ label, value }: { label: string; value: string | null }) => (
 	<div className="space-y-1">
@@ -62,15 +66,19 @@ const EditForm = ({
 	report,
 	editReport,
 	weatherOptions,
+	painLevels,
 	onClose,
 }: {
 	report: IAccidentReviewDetail;
 	editReport: IAccidentReportDetail;
 	weatherOptions: IFormOption[];
+	painLevels: IFormOption[];
 	onClose: () => void;
 }) => {
 	const updateReport = useUpdateAccidentTechnicianInfo(report.id);
 	const { getSignedUrls, getFilesToUpload, handleFileUpload } = useHandleFileUpload();
+	const { data: treatmentLocations } = useMedicalTreatmentLocations();
+	const [showInjuryReport, setShowInjuryReport] = useState(false);
 
 	const defaultValues = useMemo<IAccidentReportSchema>(() => {
 		const seed = mapReportToForm(editReport);
@@ -131,6 +139,18 @@ const EditForm = ({
 		</div>
 	);
 
+	if (showInjuryReport) {
+		return (
+			<InjuryReportPage
+				form={form}
+				painLevels={painLevels}
+				treatmentLocations={treatmentLocations ?? []}
+				onCancel={() => setShowInjuryReport(false)}
+				onCreate={() => setShowInjuryReport(false)}
+			/>
+		);
+	}
+
 	return (
 		<ReviewCard title="Information from Technician" action={actions}>
 			<Form {...form}>
@@ -188,9 +208,11 @@ const EditForm = ({
 								)}
 							/>
 						</div>
-						{accidentDetailFields.map((fieldConfig) => (
-							<FormInputWrapper key={fieldConfig.name} form={form} fieldConfig={fieldConfig} />
-						))}
+						{accidentDetailFields
+							.filter((fieldConfig) => fieldConfig.name !== "speedLimit" || isValidLatLng(watchedValues.location))
+							.map((fieldConfig) => (
+								<FormInputWrapper key={fieldConfig.name} form={form} fieldConfig={fieldConfig} />
+							))}
 					</ReportSection>
 
 					<ReportSection title="What happened?">
@@ -208,6 +230,8 @@ const EditForm = ({
 						<FormInputWrapper form={form} fieldConfig={bcewVehiclePhotosField} canDelete />
 						<FormInputWrapper form={form} fieldConfig={otherVehiclePropertyPhotosField} canDelete />
 					</ReportSection>
+
+					{isProductionEnv() && <InjuryReportSection form={form} onOpenInjury={() => setShowInjuryReport(true)} />}
 				</div>
 			</Form>
 		</ReviewCard>
@@ -233,6 +257,7 @@ const AccidentTechnicianEditForm = ({ report, onClose }: { report: IAccidentRevi
 			report={report}
 			editReport={editReport}
 			weatherOptions={formOptions.weatherConditions}
+			painLevels={formOptions.painLevels}
 			onClose={onClose}
 		/>
 	);

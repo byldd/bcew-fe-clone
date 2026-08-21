@@ -15,16 +15,16 @@ export default function ReceiveSuccess({ summary, onScanNext, onDone }: ReceiveS
 	const sealBroken = summary.sealStatus === false;
 
 	return (
-		<div className="flex min-h-screen flex-col bg-brand-bgLightgrey px-6 pb-8 pt-16">
+		<div className="flex min-h-screen flex-col bg-brand-bgLightgrey px-2 pb-4 pt-16">
 			<div className="flex flex-1 flex-col items-center">
-				<div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-					<CheckCircle2 className="h-9 w-9 text-green-600" />
+				<div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E7F9E8]">
+					<CheckCircle2 className="h-9 w-9 text-[#0CC312]" />
 				</div>
 				<p className="mt-4 text-lg font-semibold text-gray-900">Crate Received!</p>
 				<p className="mt-1 text-center text-xs text-gray-400">Arrival logged and synced to admin dashboard.</p>
 
 				<div className="mt-6 flex w-full max-w-xs items-center justify-center gap-2 rounded-xl bg-white p-3">
-					<QrCode className="h-4 w-4 text-green-600" />
+					<QrCode className="h-4 w-4 text-[#0CC312]" />
 					<span className="text-sm font-medium text-gray-900">CRATE-{summary.assetId}</span>
 				</div>
 
@@ -59,15 +59,10 @@ export default function ReceiveSuccess({ summary, onScanNext, onDone }: ReceiveS
 			</div>
 
 			<div className="flex gap-3">
-				<Button
-					type="button"
-					variant="outline"
-					onClick={onScanNext}
-					className="h-auto flex-1 rounded-2xl bg-white py-3 text-sm"
-				>
+				<Button type="button" variant="outline" onClick={onScanNext} className="h-10 w-full">
 					Scan Next Crate
 				</Button>
-				<Button type="button" variant="filled" onClick={onDone} className="h-auto flex-1 rounded-2xl py-3 text-sm">
+				<Button type="button" variant="filled" onClick={onDone} className="h-10 w-full">
 					Done
 				</Button>
 			</div>

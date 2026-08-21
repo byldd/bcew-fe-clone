@@ -12,6 +12,7 @@ export const truckField: BreakdownField = {
 	label: "Truck Number*",
 	placeholder: "Type Here",
 	className: "h-10",
+	numericOnly: true,
 };
 
 export const buildIssueCategoryField = (options: IOptions[]): BreakdownField => ({

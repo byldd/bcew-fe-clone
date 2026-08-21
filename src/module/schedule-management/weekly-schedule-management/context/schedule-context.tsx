@@ -87,7 +87,6 @@ const ScheduleProvider = ({ children }: { children: React.ReactNode }) => {
 	const searchParams = useSearchParams();
 	const employeeName = searchParams.get("employeeName");
 
-	const { data: moduleAccessLevel } = useGetUserModuleAccess(MODULE.WEEKLY_SCHEDULE);
 	const { pageAccess } = useAdminPageAccessContext();
 
 	const { data: holidays } = useHolidayConfiguration();
@@ -243,7 +242,7 @@ const ScheduleProvider = ({ children }: { children: React.ReactNode }) => {
 		weekendWorks: weekendWorks || [],
 	});
 
-	const accessLevel = isProductionEnv() ? moduleAccessLevel?.data.accessLevel : pageAccess?.accessLevel;
+	const accessLevel = pageAccess?.accessLevel;
 
 	const jobOnSaturday = !!schduleData?.dailyJobs?.some((dailyJob) => toDate(dailyJob?.date).getDay() === 6);
 	const jobOnSunday = !!schduleData?.dailyJobs?.some((dailyJob) => toDate(dailyJob?.date).getDay() === 0);

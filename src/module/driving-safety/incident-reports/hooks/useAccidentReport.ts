@@ -10,14 +10,18 @@ import {
 	IApproveAccidentReportPayload,
 	IAssignSecondReviewPayload,
 	IInsuranceEmailDraft,
+	IRawLegacyAccidentDetail,
 	IRequestTechnicianInfoPayload,
 	ISecondReviewActionPayload,
 	IThirdReviewActionPayload,
 } from "../types";
 import { ACCIDENT_STATUS_ACTION, SECOND_REVIEW_ACTION } from "../utils/enums";
+import { mapLegacyAccidentDetail } from "../utils/legacy-accident";
 
 const ACCIDENT_ENDPOINT = "/admin/driving-safety/incident-reports/accident";
+const LEGACY_ACCIDENT_ENDPOINT = "/admin/driving-safety/incident-reports/legacy-accident";
 const ACCIDENT_DETAIL_KEY = "driving-safety-accident-detail";
+const LEGACY_ACCIDENT_DETAIL_KEY = "driving-safety-legacy-accident-detail";
 const ACCIDENT_HISTORY_KEY = "driving-safety-accident-history";
 const INCIDENT_REPORTS_KEY = "driving-safety-incident-reports";
 
@@ -28,6 +32,18 @@ export const useAccidentReportDetail = (id: string) =>
 			const { data } = await apiClient.get<IApiResponse<IAccidentReviewDetail>>(`${ACCIDENT_ENDPOINT}/${id}`);
 			return data.data;
 		},
+	});
+
+export const useLegacyAccidentDetail = (id: string) =>
+	useQuery({
+		queryKey: [LEGACY_ACCIDENT_DETAIL_KEY, id],
+		queryFn: async () => {
+			const { data } = await apiClient.get<IApiResponse<IRawLegacyAccidentDetail>>(
+				`${LEGACY_ACCIDENT_ENDPOINT}/${encodeURIComponent(id)}`
+			);
+			return data.data;
+		},
+		select: mapLegacyAccidentDetail,
 	});
 
 // Loads the report in the full technician shape the report form round-trips, so the

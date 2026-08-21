@@ -1,4 +1,11 @@
+import {
+	ICreateFilterSavedViewPayload,
+	IFilterSavedView,
+	IFilterSavedViewsResponse,
+	IUpdateFilterSavedViewPayload,
+} from "@/types";
 import { EMPLOYEE_ZONE_FILTER, MAP_ZONE_CREATE_MODE, PROJECT_ZONE_STATUS } from "../utils/enums";
+import { IMapZoneParams } from "../hooks/useMapZoneParams";
 
 // X/Y (not lat/lng) to match the legacy geoTabAdapter Points format this data is seeded from
 // (X = longitude, Y = latitude) - converted to google.maps LatLng only at the map render boundary.
@@ -107,3 +114,11 @@ export type IProjectPickerOption = {
 	name: string;
 	address: string | null;
 };
+
+// Saved filter views (FilterSavedView table, pageKey = FILTER_SAVED_VIEW_PAGE_KEY.PROJECT_MAP) -
+// derived from the shared IFilterSavedView<T> generic (@/types), same as the material-requests
+// module's MaterialRequestSavedView.
+export type IMapZoneSavedView = IFilterSavedView<IMapZoneParams>;
+export type IMapZoneSavedViewsResponse = IFilterSavedViewsResponse<IMapZoneParams>;
+export type ICreateMapZoneSavedViewPayload = ICreateFilterSavedViewPayload<IMapZoneParams>;
+export type IUpdateMapZoneSavedViewPayload = IUpdateFilterSavedViewPayload<IMapZoneParams>;

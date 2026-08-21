@@ -30,6 +30,7 @@ export const mapDraftToRecordForm = (draft: IAdminAccidentDraft, employeeId: str
 		accidentTime: draft.accidentDate ?? "",
 		location: draft.location ?? "",
 		nearestCrossStreet: draft.nearestCrossStreet ?? "",
+		speedLimit: toNumber(draft.speedLimit),
 		weather: draft.weather ?? "",
 
 		propertyDamage: draft.propertyDamage

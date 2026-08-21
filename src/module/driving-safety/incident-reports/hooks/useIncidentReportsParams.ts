@@ -15,6 +15,8 @@ type IncidentReportsParams = {
 	typeFilter: INCIDENT_TYPE[];
 	severityFilter: INCIDENT_SEVERITY[];
 	statusFilter: INCIDENT_REPORT_STATUS[];
+	page: number;
+	pageSize: number;
 };
 
 const paramsKey: Record<keyof IncidentReportsParams, string> = {
@@ -26,6 +28,8 @@ const paramsKey: Record<keyof IncidentReportsParams, string> = {
 	typeFilter: "type",
 	severityFilter: "severity",
 	statusFilter: "status",
+	page: "page",
+	pageSize: "pageSize",
 };
 
 const asEnumList = <T extends string>(value: string | null, allowed: T[]): T[] =>
@@ -39,6 +43,8 @@ export const useIncidentReportsParams = () => {
 		const paramTab = searchParams.get(paramsKey.tab) as INCIDENT_TYPE_TAB;
 		const paramStartDate = searchParams.get(paramsKey.startDate);
 		const paramEndDate = searchParams.get(paramsKey.endDate);
+		const paramPage = searchParams.get(paramsKey.page);
+		const paramPageSize = searchParams.get(paramsKey.pageSize);
 
 		return {
 			tab: Object.values(INCIDENT_TYPE_TAB).includes(paramTab) ? paramTab : INCIDENT_TYPE_TAB.ALL,
@@ -49,6 +55,8 @@ export const useIncidentReportsParams = () => {
 			typeFilter: asEnumList(searchParams.get(paramsKey.typeFilter), Object.values(INCIDENT_TYPE)),
 			severityFilter: asEnumList(searchParams.get(paramsKey.severityFilter), Object.values(INCIDENT_SEVERITY)),
 			statusFilter: asEnumList(searchParams.get(paramsKey.statusFilter), Object.values(INCIDENT_REPORT_STATUS)),
+			page: paramPage ? parseInt(paramPage, 10) : 1,
+			pageSize: paramPageSize ? parseInt(paramPageSize, 10) : 25,
 		};
 	};
 
@@ -79,6 +87,12 @@ export const useIncidentReportsParams = () => {
 		}
 		if (merged.statusFilter.length) {
 			newParams.set(paramsKey.statusFilter, merged.statusFilter.join(","));
+		}
+		if (merged.page !== 1) {
+			newParams.set(paramsKey.page, merged.page.toString());
+		}
+		if (merged.pageSize !== 25) {
+			newParams.set(paramsKey.pageSize, merged.pageSize.toString());
 		}
 
 		router.replace(`?${newParams.toString()}`, { scroll: false });

@@ -318,6 +318,7 @@ export type EmployeeRolePermissionCardProps = {
 	handlePastDateScheduleUpdatePermission: (value: boolean) => void;
 	handleExemptChange: (value: boolean) => void;
 	isPermissionEditable: boolean;
+	setIsPermissionEditable: Dispatch<SetStateAction<boolean>>;
 	currentPermission: string;
 	teamName?: string;
 	userRole?: IRoleWithPermissions;
@@ -334,6 +335,7 @@ export type IUserPagesPermissionPayload = {
 		accessLevel?: ACCESS_LEVEL | null;
 	}[];
 
+	isPermissionOverridden: boolean;
 	isWeekendSelfSchedulingAllowed: boolean;
 	isSelfSchedulingAllowed: boolean;
 	isMaterialRequestAllowed: boolean;

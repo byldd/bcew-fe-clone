@@ -42,7 +42,7 @@ export default function ConfirmAction({
 	const detailRows = getCrateConfirmationDetailRows(details);
 
 	return (
-		<div className="flex min-h-screen flex-col bg-brand-bgLightgrey pb-8">
+		<div className="flex min-h-screen flex-col bg-brand-bgLightgrey pb-4">
 			<ScreenHeader title={sealIntact ? "Confirm Action" : "Broken/Missing Seal Report"} onBack={onBack} />
 
 			<div className="flex-1 space-y-4 px-4">
@@ -54,8 +54,8 @@ export default function ConfirmAction({
 								<p className="mt-0.5 text-sm font-medium text-gray-900">{details.jobName ?? "—"}</p>
 							</div>
 							<div className="text-right">
-								<p className="text-xs text-gray-400">Crate Number</p>
-								<p className="mt-0.5 text-sm font-medium text-gray-900">Crate - {details.assetId}</p>
+								<p className="text-xs text-gray-400">Crate ID</p>
+								<p className="mt-0.5 text-sm font-medium text-gray-900">{details.assetId}</p>
 							</div>
 						</div>
 
@@ -123,7 +123,7 @@ export default function ConfirmAction({
 							</div>
 						</div>
 
-						<div className="rounded-xl bg-red-50 p-3">
+						<div className="rounded-[8px] bg-red-50 p-2">
 							<p className="text-sm font-medium text-red-600">Error Detected</p>
 							<p className="mt-1 text-xs text-red-600">
 								A broken/missing seal has been detected. This requires a separate security review. Do not open or move
@@ -135,14 +135,14 @@ export default function ConfirmAction({
 
 				{photos.length > 0 && (
 					<div>
-						<p className="mb-2 text-xs font-medium text-gray-500">Crate {sealIntact ? "images" : "Photos"}</p>
+						<p className="mb-2 text-xs font-medium text-gray-500">Crate {sealIntact ? "Images" : "Photos"}</p>
 						<PhotoGrid photos={photos} />
 					</div>
 				)}
 
-				<div>
-					<p className="mb-1 text-xs font-medium text-gray-500">Note (optional)</p>
-					<p className="rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-700">{note || "—"}</p>
+				<div className="space-y-1">
+					<p className="text-xs font-medium text-gray-500">Note (optional)</p>
+					<p className="rounded-[8px] bg-gray-50 px-3 py-2 text-sm text-gray-700">{note || "—"}</p>
 				</div>
 			</div>
 
@@ -153,7 +153,7 @@ export default function ConfirmAction({
 					onClick={onConfirm}
 					loading={isSubmitting}
 					loadingText="Submitting..."
-					className="h-auto w-full rounded-2xl py-4 text-sm"
+					className="h-10 w-full"
 				>
 					{sealIntact ? "Confirm Received" : "Report & Continue"}
 				</Button>

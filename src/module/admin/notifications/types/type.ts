@@ -44,6 +44,7 @@ export const ADMIN_NOTIFICATION_GROUP = {
 	[NOTIFICATION_TYPE.JOB_MARKED_AS_DNW]: "Job Marked as Did Not Work",
 	[NOTIFICATION_TYPE.GPS_EXCEPTION_EVENT]: "Geotab Exception Events",
 	[NOTIFICATION_TYPE.MATERIAL_REQUEST]: "Material Requests",
+	[NOTIFICATION_TYPE.CRATE_MANAGEMENT]: "Crate Management",
 	[NOTIFICATION_TYPE.ROLES_AND_PERMISSIONS_UPDATED]: "Roles and Permissions Updated",
 	[NOTIFICATION_TYPE.VEHICLE_ACCIDENT_REPORT]: "Vehicle Accident",
 	[NOTIFICATION_TYPE.VEHICLE_BREAKDOWN_REPORT]: "Vehicle Breakdown",
@@ -82,6 +83,8 @@ export const ADMIN_NOTIFICATION_TOOLTIP: Partial<Record<NOTIFICATION_TYPE, strin
 	[NOTIFICATION_TYPE.GPS_EXCEPTION_EVENT]: "GPS Exception Event",
 	[NOTIFICATION_TYPE.MATERIAL_REQUEST]:
 		"Includes notifications for material requests and related updates such as submissions, approvals, rejections, assignments, responses, and notes.",
+	[NOTIFICATION_TYPE.CRATE_MANAGEMENT]:
+		"Includes notifications for crate seal issues, damaged or missing crates, and crate returns.",
 	[NOTIFICATION_TYPE.ROLES_AND_PERMISSIONS_UPDATED]: "Roles and Permissions Updated",
 	[NOTIFICATION_TYPE.VEHICLE_ACCIDENT_REPORT]: "Notifications related to vehicle accidents and required actions.",
 	[NOTIFICATION_TYPE.VEHICLE_BREAKDOWN_REPORT]: "Notifications related to vehicle breakdowns and required actions.",

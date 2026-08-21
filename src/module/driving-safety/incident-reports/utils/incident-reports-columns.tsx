@@ -19,6 +19,7 @@ import { IIncidentReportRow } from "../types";
 import {
 	buildGeotabExceptionUrl,
 	buildGoogleMapsUrl,
+	isCoordinateLocation,
 	INCIDENT_SOURCE_LABEL,
 	INCIDENT_STATUS_META,
 	INCIDENT_TYPE_LABEL,
@@ -47,11 +48,11 @@ const SortIcons = ({
 	<div className="flex flex-col gap-0">
 		<IoMdArrowDropup
 			onClick={onAsc}
-			className={cn("h-4 w-4 cursor-pointer", sorted === SORT_ORDER.ASC ? "text-brand-dark" : "text-gray-400")}
+			className={cn("-mb-1 h-4 w-4 cursor-pointer", sorted === SORT_ORDER.ASC ? "text-brand-dark" : "text-gray-400")}
 		/>
 		<IoMdArrowDropdown
 			onClick={onDesc}
-			className={cn("h-4 w-4 cursor-pointer", sorted === SORT_ORDER.DESC ? "text-brand-dark" : "text-gray-400")}
+			className={cn("-mt-1 h-4 w-4 cursor-pointer", sorted === SORT_ORDER.DESC ? "text-brand-dark" : "text-gray-400")}
 		/>
 	</div>
 );
@@ -100,23 +101,14 @@ export const getIncidentReportColumns = (
 	{
 		accessorKey: "recordNumber",
 		header: ({ column }) => <SortableHeader column={column} label="Record #" />,
-		cell: ({ row }) => {
-			const { recordNumber, geotabId } = row.original;
-			// GeoTab safety violations deep-link to their exception in Geotab.
-			if (geotabId) {
-				return (
-					<a
-						href={buildGeotabExceptionUrl(geotabId)}
-						target="_blank"
-						rel="noopener noreferrer"
-						className={cn(CELL_CLASS, "font-medium text-blue-600 underline-offset-2 hover:underline")}
-					>
-						{recordNumber}
-					</a>
-				);
-			}
-			return <span className={cn(CELL_CLASS, "font-medium")}>{recordNumber}</span>;
-		},
+		cell: ({ row }) => (
+			<span
+				className={cn(CELL_CLASS, "line-clamp-1 block max-w-[160px] font-medium")}
+				title={row.original.recordNumber}
+			>
+				{row.original.recordNumber}
+			</span>
+		),
 	},
 	{
 		accessorKey: "type",
@@ -126,7 +118,25 @@ export const getIncidentReportColumns = (
 	{
 		accessorKey: "source",
 		header: ({ column }) => <SortableHeader column={column} label="Source" />,
-		cell: ({ row }) => <span className={CELL_CLASS}>{INCIDENT_SOURCE_LABEL[row.original.source]}</span>,
+		cell: ({ row }) => {
+			const { source, geotabId } = row.original;
+			if (source === INCIDENT_SOURCE.GEOTAB && geotabId) {
+				return (
+					<div className="flex flex-col items-center gap-0.5">
+						<span className={CELL_CLASS}>{INCIDENT_SOURCE_LABEL[source]}</span>
+						<a
+							href={buildGeotabExceptionUrl(geotabId)}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-xs text-blue-600 underline underline-offset-2"
+						>
+							View Camera Footage
+						</a>
+					</div>
+				);
+			}
+			return <span className={CELL_CLASS}>{INCIDENT_SOURCE_LABEL[source]}</span>;
+		},
 	},
 	{
 		accessorKey: "detail",
@@ -145,16 +155,20 @@ export const getIncidentReportColumns = (
 	{
 		accessorKey: "truckNumber",
 		header: ({ column }) => <SortableHeader column={column} label="Truck #" />,
-		cell: ({ row }) => <span className={CELL_CLASS}>{row.original.truckNumber ?? "--"}</span>,
+		cell: ({ row }) => {
+			const { truckNumber } = row.original;
+			if (!truckNumber) return <span className={CELL_CLASS}>--</span>;
+			const display = /^truck\s/i.test(truckNumber) ? truckNumber : `Truck ${truckNumber}`;
+			return <span className={CELL_CLASS}>{display}</span>;
+		},
 	},
 	{
 		accessorKey: "severity",
 		header: ({ column }) => <SortableHeader column={column} label="Severity" />,
 		sortingFn: severitySortFn,
 		cell: ({ row }) =>
-			// GeoTab safety violations carry no severity and no admin workflow to set one.
-			row.original.source === INCIDENT_SOURCE.GEOTAB ? (
-				<span className={CELL_CLASS}>--</span>
+			row.original.source === INCIDENT_SOURCE.GEOTAB || row.original.isLegacyImport ? (
+				<span className={cn(CELL_CLASS, "flex h-8 items-center justify-center")}>--</span>
 			) : (
 				<SeveritySelectCell
 					value={row.original.severity}
@@ -176,19 +190,18 @@ export const getIncidentReportColumns = (
 		accessorKey: "location",
 		header: ({ column }) => <SortableHeader column={column} label="Location" />,
 		cell: ({ row }) => {
-			const { location, source } = row.original;
-			if (!location) return <span className={cn(CELL_CLASS, "line-clamp-1 max-w-[180px]")}>--</span>;
-			// GeoTab locations are "latitude, longitude" — open them on Google Maps.
-			if (source === INCIDENT_SOURCE.GEOTAB) {
+			const { location } = row.original;
+			if (!location) return <span className={CELL_CLASS}>--</span>;
+			if (isCoordinateLocation(location)) {
 				return (
 					<a
 						href={buildGoogleMapsUrl(location)}
 						target="_blank"
 						rel="noopener noreferrer"
 						title={location}
-						className={cn(CELL_CLASS, "line-clamp-1 max-w-[180px] text-blue-600 underline-offset-2 hover:underline")}
+						className="text-sm text-blue-600 underline underline-offset-2"
 					>
-						{location}
+						View
 					</a>
 				);
 			}
@@ -203,15 +216,22 @@ export const getIncidentReportColumns = (
 		accessorKey: "status",
 		header: ({ column }) => <SortableHeader column={column} label="Status" />,
 		cell: ({ row }) => {
-			const { status } = row.original;
+			const { status, statusLabel, type } = row.original;
+			const badgeClass = "inline-flex rounded-full px-3 py-1 text-xs font-medium";
+
+			// Breakdowns and driving-safety violations don't surface a status in the list.
+			if (type === INCIDENT_TYPE.VEHICLE_BREAKDOWN || type === INCIDENT_TYPE.DRIVING_SAFETY_VIOLATION) {
+				return <span className={CELL_CLASS}>--</span>;
+			}
+
 			if (!status) return <span className={CELL_CLASS}>--</span>;
 			const meta = INCIDENT_STATUS_META[status];
-			const badge = (
-				<span className={cn("inline-flex rounded-full px-3 py-1 text-xs font-medium", meta.className)}>
-					{meta.label}
-				</span>
-			);
 
+			if (row.original.isLegacyImport) {
+				return <span className={cn(badgeClass, meta.className)}>{statusLabel ?? meta.label}</span>;
+			}
+
+			const badge = <span className={cn(badgeClass, meta.className)}>{meta.label}</span>;
 			const actions = resolveAccidentStatusActions(row.original, roleName);
 			if (!actions.length) return badge;
 
@@ -239,19 +259,16 @@ export const getIncidentReportColumns = (
 		enableSorting: false,
 		header: () => <span className={HEADER_CLASS}>Action</span>,
 		cell: ({ row }) => {
-			// GeoTab safety violations have no review flow of their own — no action to offer.
-			if (row.original.source === INCIDENT_SOURCE.GEOTAB) return <span className={CELL_CLASS}>--</span>;
-
-			// Violations open a read-only details modal; accidents/breakdowns open their review flow.
-			// An admin-created accident draft reopens the create form to keep editing ("Continue").
+			// Breakdowns and violations (office + GeoTab) only ever open a read-only detail page.
 			const isViolation = row.original.type === INCIDENT_TYPE.DRIVING_SAFETY_VIOLATION;
+			const isBreakdown = row.original.type === INCIDENT_TYPE.VEHICLE_BREAKDOWN;
 			const isDraftAccident =
 				row.original.type === INCIDENT_TYPE.VEHICLE_ACCIDENT && row.original.status === INCIDENT_REPORT_STATUS.DRAFT;
-			// Violations and closed reports (resolved/rejected) are read-only — no review action left to take.
+			// Closed reports (resolved/rejected) are read-only — no review action left to take.
 			const isClosed =
 				row.original.status === INCIDENT_REPORT_STATUS.RESOLVED ||
 				row.original.status === INCIDENT_REPORT_STATUS.REJECTED;
-			const isReadOnly = isViolation || isClosed;
+			const isReadOnly = isViolation || isBreakdown || isClosed || row.original.isLegacyImport;
 			const label = isReadOnly ? "See Details" : isDraftAccident ? "Continue" : "Review";
 			return (
 				<Button

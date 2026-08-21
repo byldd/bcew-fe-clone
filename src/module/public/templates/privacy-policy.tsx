@@ -47,13 +47,13 @@ const PrivacyPolicy = () => {
 				{/* Header */}
 				<div className="mb-12 flex flex-col items-center justify-center text-center lg:mb-20">
 					<div className="mb-8 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-900/5">
-						<Image
+						{/* <Image
 							src="/assets/svg/bcew-logo.svg"
 							alt="Company Logo"
 							width={140}
 							height={140}
 							className="object-contain"
-						/>
+						/> */}
 					</div>
 					<h1 className="text-4xl font-extrabold tracking-tight text-brand-dark sm:text-5xl lg:text-6xl">
 						Privacy Policy

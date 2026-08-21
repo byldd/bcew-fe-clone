@@ -53,6 +53,7 @@ export type IAdminCreateAccidentPayload = {
 	accidentDate: string | null;
 	location: string | null;
 	nearestCrossStreet: string | null;
+	speedLimit: number | null;
 	weather: string | null;
 
 	policeContacted: boolean;

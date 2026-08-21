@@ -17,6 +17,7 @@ import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
 import { Spinner } from "@/components/ui/spinner";
 import { TRAVEL_PAY_VALIDATION_TYPE } from "@/module/employee-travel-pay/types";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 const EditTravelPayModal = ({ id, onClose }: { id: string; onClose: () => void }) => {
 	const { data: travelPayRequest, isLoading } = useGetTravelPayRequest(id);
@@ -136,51 +137,53 @@ const EditTravelPayModal = ({ id, onClose }: { id: string; onClose: () => void }
 			{/* Update Status */}
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-					<FormField
-						control={form.control}
-						name="status"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel className="font-inter text-sm font-normal text-brand-grey">
-									{tTravelPay.updateStatus}
-								</FormLabel>
-								<FormControl>
-									<SelectField
-										placeholder={tTravelPay.select}
-										options={[
-											{ label: tEmployee.approved, value: TRAVEL_PAY_REQUEST_STATUS.APPROVED },
-											{ label: tTravelPay.rejected, value: TRAVEL_PAY_REQUEST_STATUS.REJECTED },
-										]}
-										value={field.value}
-										onValueChange={(value) => {
-											field.onChange(value);
-											if (value === TRAVEL_PAY_REQUEST_STATUS.APPROVED) {
-												form.clearErrors("note");
-											}
-										}}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+					<WriteAccessWrapper>
+						<FormField
+							control={form.control}
+							name="status"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="font-inter text-sm font-normal text-brand-grey">
+										{tTravelPay.updateStatus}
+									</FormLabel>
+									<FormControl>
+										<SelectField
+											placeholder={tTravelPay.select}
+											options={[
+												{ label: tEmployee.approved, value: TRAVEL_PAY_REQUEST_STATUS.APPROVED },
+												{ label: tTravelPay.rejected, value: TRAVEL_PAY_REQUEST_STATUS.REJECTED },
+											]}
+											value={field.value}
+											onValueChange={(value) => {
+												field.onChange(value);
+												if (value === TRAVEL_PAY_REQUEST_STATUS.APPROVED) {
+													form.clearErrors("note");
+												}
+											}}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-					<FormField
-						control={form.control}
-						name="note"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel className="font-inter text-sm font-normal text-brand-grey">
-									{tTravelPay.reason}{" "}
-									{status === TRAVEL_PAY_REQUEST_STATUS.REJECTED && <span className="text-red-600">*</span>}
-								</FormLabel>
-								<FormControl>
-									<Textarea placeholder={tEmployee.typeHere} rows={3} disabled={isPending} {...field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+						<FormField
+							control={form.control}
+							name="note"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="font-inter text-sm font-normal text-brand-grey">
+										{tTravelPay.reason}{" "}
+										{status === TRAVEL_PAY_REQUEST_STATUS.REJECTED && <span className="text-red-600">*</span>}
+									</FormLabel>
+									<FormControl>
+										<Textarea placeholder={tEmployee.typeHere} rows={3} disabled={isPending} {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</WriteAccessWrapper>
 
 					{/* Status History */}
 					<div className="space-y-1">
@@ -253,9 +256,11 @@ const EditTravelPayModal = ({ id, onClose }: { id: string; onClose: () => void }
 							<Button type="button" variant="outline" className="flex-1" onClick={onClose}>
 								{tEmployee.cancel}
 							</Button>
-							<Button type="submit" variant="filled" className="flex-1" loading={isPending}>
-								{tEmployee.save}
-							</Button>
+							<WriteAccessWrapper>
+								<Button type="submit" variant="filled" className="flex-1" loading={isPending}>
+									{tEmployee.save}
+								</Button>
+							</WriteAccessWrapper>
 						</div>
 					</div>
 				</form>

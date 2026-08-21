@@ -28,7 +28,6 @@ import SpecialJobExemptToggleLabel from "./special-job-exempt copy";
 import RolePagePermissions from "@/module/people-management/role/components/role-page-permissions";
 import RoleMapZoneTabPermissions from "@/module/people-management/role/components/role-map-zone-tab-permissions";
 import { Form } from "@/components/ui/form";
-import { isProductionEnv } from "@/utils";
 import { IPage } from "@/module/admin/types/sideb-bar-page";
 import { IMapZoneTab } from "@/module/project-management/mapv2/types/zone";
 
@@ -329,81 +328,11 @@ const RolePermissionEditModal = ({
 						</div>
 					</div>
 				</div>
-				{/* Permissions Table */}
-				{!isProductionEnv() ? (
-					<RolePagePermissions disabled={disabled} />
-				) : (
-					<div className="space-y-2 border-t pt-4">
-						<p className="text-sm font-semibold text-brand-dark">{tPmanagement.moduleAccess}</p>
-						<div className="overflow-x-auto">
-							<Table>
-								<TableHeader>
-									<TableRow className="text-brand-dark50">
-										<TableHead className="w-1/3">{tPmanagement.moduleAccess}</TableHead>
-										<TableHead className="text-center">
-											<div className="flex items-center justify-center gap-1">{tPmanagement.readOnlyAccess}</div>
-										</TableHead>
-										<TableHead className="text-center">
-											<div className="flex items-center justify-center gap-1">{tPmanagement.writeEditAccess}</div>
-										</TableHead>
-									</TableRow>
-								</TableHeader>
-								<TableBody>
-									{Object.entries(MODULE_HEADING_WITH_DISPLAY_ORDER).map(([heading, modules]) => (
-										<React.Fragment key={heading}>
-											{!Object.values(SKIP_HEADINGS)?.includes(heading as SKIP_HEADINGS) && (
-												<TableRow>
-													<TableCell colSpan={3} className="font-medium">
-														{heading}
-													</TableCell>
-												</TableRow>
-											)}
-											{modules.map((module) => {
-												const perm = permissions.find((p) => p.module === module);
-												if (!perm) return null;
 
-												const isLocked = LOCKED_MODULES.includes(module);
+				<RolePagePermissions disabled={disabled} />
 
-												return (
-													<TableRow key={module}>
-														<TableCell
-															className={`${
-																module !== MODULE.DASHBOARD &&
-																module !== MODULE.REPORTS_AND_EXPORTS &&
-																module !== MODULE.BUILDER_COMMUNICATIONS &&
-																"pl-6"
-															} font-medium`}
-														>
-															{MODULE_LABELS[module] ?? module}
-														</TableCell>
-														<TableCell className="text-center">
-															<Switch
-																checked={
-																	perm.accessLevel === ACCESS_LEVEL.READ || perm.accessLevel === ACCESS_LEVEL.WRITE
-																}
-																onCheckedChange={() => handleAccessChange(module, ACCESS_LEVEL.READ)}
-																disabled={isLocked}
-															/>
-														</TableCell>
-														<TableCell className="text-center">
-															<Switch
-																checked={perm.accessLevel === ACCESS_LEVEL.WRITE}
-																onCheckedChange={() => handleAccessChange(module, ACCESS_LEVEL.WRITE)}
-																disabled={isLocked}
-															/>
-														</TableCell>
-													</TableRow>
-												);
-											})}
-										</React.Fragment>
-									))}
-								</TableBody>
-							</Table>
-						</div>
-					</div>
-				)}
 				{/* Actions */}
-				{(isProductionEnv() || showFooterActions) && (
+				{showFooterActions && (
 					<div className="flex gap-3 border-t pt-4">
 						<Button disabled={isUpdatingPermissions} variant="outline" className="w-full">
 							{tCommon.cancel}

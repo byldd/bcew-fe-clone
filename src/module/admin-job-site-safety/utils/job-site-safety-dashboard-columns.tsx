@@ -21,6 +21,7 @@ import {
 	resolveJobSiteSafetyAction,
 	resolveSafetyReportStatusMeta,
 } from "./dashboard-constants";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
 
 const HEADER_CLASS = "text-xs font-semibold text-brand-dark50";
 const CELL_CLASS = "text-sm text-brand-dark";
@@ -30,9 +31,11 @@ export const getJobSiteSafetyDashboardColumns = (
 	{
 		roleName,
 		onStatusAction,
+		accessLevel,
 	}: {
 		roleName?: string;
 		onStatusAction: (row: IJobSiteSafetyDashboardRow, action: JOB_SITE_SAFETY_STATUS_ACTION) => void;
+		accessLevel?: ACCESS_LEVEL;
 	}
 ): ColumnDef<IJobSiteSafetyDashboardRow>[] => [
 	{
@@ -101,7 +104,7 @@ export const getJobSiteSafetyDashboardColumns = (
 
 			return (
 				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
+					<DropdownMenuTrigger disabled={accessLevel !== ACCESS_LEVEL.WRITE} asChild>
 						<button type="button" className="inline-flex items-center gap-1">
 							{badge}
 							<ChevronDown size={14} className="text-brand-dark50" />

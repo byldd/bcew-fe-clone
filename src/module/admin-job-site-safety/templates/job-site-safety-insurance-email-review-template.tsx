@@ -19,6 +19,7 @@ import { useJobSiteInjuryReportDetail, useSendInsuranceEmail } from "../hooks/us
 import { EMPTY_EMAIL_DRAFT, buildInjuryEmailDraft } from "../utils/insurance-email";
 import JobSiteInjuryReportSummary from "../components/job-site-injury-report-summary";
 import JobSiteSafetyEmailPreview from "../components/job-site-safety-email-preview";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 interface JobSiteSafetyInsuranceEmailReviewTemplateProps {
 	id: string;
@@ -89,7 +90,7 @@ const JobSiteSafetyInsuranceEmailReviewTemplate = ({ id }: JobSiteSafetyInsuranc
 
 		if (isFleetManager && report.approvedForInsuranceAt) {
 			return (
-				<>
+				<WriteAccessWrapper>
 					<Button
 						type="button"
 						variant="filled"
@@ -100,7 +101,7 @@ const JobSiteSafetyInsuranceEmailReviewTemplate = ({ id }: JobSiteSafetyInsuranc
 						Approve &amp; Send Email
 					</Button>
 					<p className="mt-2 text-xs text-brand-dark50">Approving will send the email directly to Insurance Company.</p>
-				</>
+				</WriteAccessWrapper>
 			);
 		}
 

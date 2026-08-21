@@ -38,7 +38,7 @@ const DeleteCrewModal: React.FC<DeleteCrewModalProps> = ({ onClose, crew, handle
 				<Button variant={"outline"} onClick={onClose} className="w-full">
 					{tCommon.cancel}
 				</Button>
-				<Button variant={"filled"} onClick={handleDeleteCrew} className="w-full bg-brand-red hover:bg-red-600">
+				<Button variant={"filled"} onClick={handleDeleteCrew} className="w-full">
 					{tPmanagement.delete}
 				</Button>
 			</div>

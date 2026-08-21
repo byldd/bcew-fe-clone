@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import SuccessModal from "@/components/success-modal";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { NAMESPACE } from "@/i18n/type";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 const CreateNewRoleTriggerModal = () => {
 	const { openModal, closeModal, Modal } = useModal();
@@ -30,7 +31,7 @@ const CreateNewRoleTriggerModal = () => {
 		});
 	};
 	return (
-		<>
+		<WriteAccessWrapper>
 			<Button
 				onClick={() =>
 					openModal({
@@ -47,7 +48,7 @@ const CreateNewRoleTriggerModal = () => {
 				{tPmanagement.createNewRole}
 			</Button>
 			<Modal />
-		</>
+		</WriteAccessWrapper>
 	);
 };
 export default CreateNewRoleTriggerModal;

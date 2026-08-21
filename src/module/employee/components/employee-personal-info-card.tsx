@@ -21,7 +21,7 @@ export default function EmployeePersonalInfoCard({ employee, trigger }: Employee
 					{trigger}
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="p-0">
+			<CardContent className="py-2">
 				<div className="grid grid-cols-1 gap-x-6 gap-y-4 text-xs sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
 					<div>
 						<p className="mb-2 text-xs font-medium text-brand-dark50">{tPeople.fullName}</p>

@@ -136,7 +136,7 @@ const NavMain = ({ items }: NavMainProps) => {
 				<div className="flex items-center gap-4">
 					<SidebarToggleButton onClick={toggleSidebar} />
 					<div className="relative h-[46px] w-[162px]">
-						<Image src="/assets/svg/bcew-logo.svg" alt="bcew-logo" fill className="object-contain" priority />
+						{/* <Image src="/assets/svg/bcew-logo.svg" alt="bcew-logo" fill className="object-contain" priority /> */}
 					</div>
 				</div>
 			</div>

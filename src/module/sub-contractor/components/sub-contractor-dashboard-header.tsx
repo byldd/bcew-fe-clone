@@ -8,7 +8,6 @@ import { LegendContent } from "@/module/employee-dashboard/components/legend-mod
 import React from "react";
 import { HeaderButton } from "@/module/employee-dashboard/types";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { clearCookies } from "@/module/auth/utils/helpers";
 import { useModal } from "@/hooks/useModal";
 import ProfileModal from "@/components/common/profile-modal";
 
@@ -23,12 +22,15 @@ import { NAMESPACE } from "@/i18n/type";
 import UnreadNotificationCount from "./unread-notification-count";
 import SmsConsent from "@/components/shared/sms-consent";
 import CrewLeaderUnreadNotificationCount from "./crew-leader-unread-notification-count";
+import { useAuthAPI } from "@/module/auth/hooks/useAuth";
 
 export function SubContractorDashboardHeader() {
 	const { user, subcontractorCrew } = useAuthStore((state) => state);
 	const router = useRouter();
 	const tCommon = useTypedTranslations(NAMESPACE.COMMON);
 	const tschedule = useTypedTranslations(NAMESPACE.SCHEDULE);
+	const { useSignout } = useAuthAPI();
+	const { signout } = useSignout();
 
 	const defaultButtons: HeaderButton[] = [
 		{
@@ -74,7 +76,7 @@ export function SubContractorDashboardHeader() {
 	const handleSignOut = () => {
 		if (!user && !subcontractorCrew) return;
 
-		clearCookies();
+		signout();
 
 		if (subcontractorCrew) {
 			const url = new URL(routes.signIn, window.location.origin);

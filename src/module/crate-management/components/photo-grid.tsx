@@ -8,9 +8,12 @@ interface PhotoGridProps {
 
 export default function PhotoGrid({ photos, onRemove }: PhotoGridProps) {
 	return (
-		<div className="grid grid-cols-3 gap-2 rounded-xl border border-gray-100">
+		<div className="flex flex-wrap gap-2 rounded-xl border border-gray-100 p-2">
 			{photos.map((photo, index) => (
-				<div key={`${photo.name}-${index}`} className="relative aspect-square overflow-hidden rounded-xl bg-gray-100">
+				<div
+					key={`${photo.name}-${index}`}
+					className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-100"
+				>
 					{/* eslint-disable-next-line @next/next/no-img-element */}
 					<img
 						src={URL.createObjectURL(photo)}

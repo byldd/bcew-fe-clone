@@ -21,6 +21,7 @@ import ZoneMap from "../components/zone-map";
 import ZoneList from "../components/zone-list";
 import ZoneFormModal from "../components/zone-form-modal";
 import ZoneFilters from "../components/zone-filters";
+import ZoneSavedViews from "../components/zone-saved-views";
 import TabManager from "../components/tab-manager";
 import ZoneTypeManager from "../components/zone-type-manager";
 import ProjectZoneTable from "../components/project-zone-table";
@@ -249,6 +250,8 @@ const ProjectMapPage = () => {
 					</WriteAccessWrapper>
 				</div>
 			</div>
+
+			<ZoneSavedViews params={getParams()} setParams={setParams} />
 
 			{isTableView ? (
 				<>

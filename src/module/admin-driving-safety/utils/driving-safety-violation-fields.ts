@@ -5,6 +5,14 @@ import { IDrivingSafetyViolationSchema } from "./driving-safety-violation-schema
 
 type ViolationField = FormFieldConfig<IDrivingSafetyViolationSchema>;
 
+export const buildEmployeeField = (options: IOptions[]): ViolationField => ({
+	name: "employeeId",
+	fieldVariant: FIELD_VARIANT.SEARCHABLE_SELECT,
+	label: "Employee Name*",
+	placeholder: "Select Employee",
+	options,
+});
+
 export const buildTruckField = (options: IOptions[]): ViolationField => ({
 	name: "truckNumber",
 	fieldVariant: FIELD_VARIANT.SELECT,

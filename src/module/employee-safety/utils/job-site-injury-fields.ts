@@ -1,6 +1,14 @@
 import { FIELD_VARIANT, type FormFieldConfig, type IOptions } from "@/components/common/form/types";
+import { toFormattedDate } from "@/lib/utils/date";
+import { DATE_FORMAT } from "@/types/date";
 import { JOB_SITE_INJURY_MEDICAL_ACTION, YES_NO } from "../enums";
 import { IJobSiteInjurySchema } from "./job-site-injury-schema";
+
+// Shared by the Job Site Injury (technician + admin) and Job Site Safety
+// Violation forms — all three gate their job-site select on the same
+// assigned-jobs lookup.
+export const buildNoJobAssignmentMessage = (date: Date): string =>
+	`No job assignment found for ${toFormattedDate(date, DATE_FORMAT.MM_SLASH_DD_YYYY)}.`;
 
 type JobSiteInjuryField = FormFieldConfig<IJobSiteInjurySchema>;
 

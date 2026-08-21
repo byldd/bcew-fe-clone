@@ -14,6 +14,8 @@ type JobSiteSafetyDashboardParams = {
 	typeFilter: JOB_SITE_SAFETY_REPORT_TYPE[];
 	sourceFilter: REPORT_SOURCE[];
 	statusFilter: SAFETY_REPORT_STATUS[];
+	page: number;
+	pageSize: number;
 };
 
 const paramsKey: Record<keyof JobSiteSafetyDashboardParams, string> = {
@@ -25,6 +27,8 @@ const paramsKey: Record<keyof JobSiteSafetyDashboardParams, string> = {
 	typeFilter: "type",
 	sourceFilter: "source",
 	statusFilter: "status",
+	page: "page",
+	pageSize: "pageSize",
 };
 
 const asEnumList = <T extends string>(value: string | null, allowed: T[]): T[] =>
@@ -38,6 +42,8 @@ export const useJobSiteSafetyDashboardParams = () => {
 		const paramStartDate = searchParams.get(paramsKey.startDate);
 		const paramEndDate = searchParams.get(paramsKey.endDate);
 		const paramTab = searchParams.get(paramsKey.tab) as JOB_SITE_SAFETY_TAB;
+		const paramPage = searchParams.get(paramsKey.page);
+		const paramPageSize = searchParams.get(paramsKey.pageSize);
 
 		return {
 			startDate: paramStartDate ? toDate(paramStartDate) : null,
@@ -48,6 +54,8 @@ export const useJobSiteSafetyDashboardParams = () => {
 			typeFilter: asEnumList(searchParams.get(paramsKey.typeFilter), Object.values(JOB_SITE_SAFETY_REPORT_TYPE)),
 			sourceFilter: asEnumList(searchParams.get(paramsKey.sourceFilter), Object.values(REPORT_SOURCE)),
 			statusFilter: asEnumList(searchParams.get(paramsKey.statusFilter), Object.values(SAFETY_REPORT_STATUS)),
+			page: paramPage ? parseInt(paramPage, 10) : 1,
+			pageSize: paramPageSize ? parseInt(paramPageSize, 10) : 25,
 		};
 	};
 
@@ -78,6 +86,12 @@ export const useJobSiteSafetyDashboardParams = () => {
 		}
 		if (merged.statusFilter.length) {
 			newParams.set(paramsKey.statusFilter, merged.statusFilter.join(","));
+		}
+		if (merged.page !== 1) {
+			newParams.set(paramsKey.page, merged.page.toString());
+		}
+		if (merged.pageSize !== 25) {
+			newParams.set(paramsKey.pageSize, merged.pageSize.toString());
 		}
 
 		router.replace(`?${newParams.toString()}`, { scroll: false });

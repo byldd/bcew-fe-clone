@@ -6,7 +6,7 @@ const DASHBOARD_STAT_CARDS: IStatCardConfig[] = [
 	{ key: "totalVehicleAccidents", label: "Total Vehicle Accidents" },
 	{ key: "totalVehicleBreakdowns", label: "Total Vehicle Breakdowns" },
 	{ key: "totalDrivingSafetyViolations", label: "Total Driving Safety Violation" },
-	{ key: "pendingSecondReview", label: "Pending 2nd review" },
+	{ key: "pendingSecondReview", label: "Pending 2nd Review" },
 	{ key: "totalDamageCost", label: "Total Damage Cost", isCurrency: true },
 ];
 
@@ -27,13 +27,13 @@ const SEVERITY_LABEL: Record<INCIDENT_SEVERITY, string> = {
 
 const SEVERITY_COLOR: Record<INCIDENT_SEVERITY, string> = {
 	[INCIDENT_SEVERITY.CRITICAL]: "#EF4444",
-	[INCIDENT_SEVERITY.HIGH]: "#F97316",
-	[INCIDENT_SEVERITY.MEDIUM]: "#F59E0B",
-	[INCIDENT_SEVERITY.LOW]: "#22C55E",
+	[INCIDENT_SEVERITY.HIGH]: "#6EE7B7",
+	[INCIDENT_SEVERITY.MEDIUM]: "#FCD34D",
+	[INCIDENT_SEVERITY.LOW]: "#FDBA74",
 };
 
 // Violation types are dynamic, so bars cycle through a fixed palette by index.
-const VIOLATION_TYPE_BAR_COLORS = ["#2563EB", "#FCD34D", "#FCA5A5", "#FCD34D", "#22C55E", "#A855F7"];
+const VIOLATION_TYPE_BAR_COLORS = ["#93C5FD", "#FCD34D", "#5EEAD4", "#6EE7B7", "#22C55E", "#FDBA74"];
 
 const RADIUS = 48;
 const STROKE_WIDTH = 16;

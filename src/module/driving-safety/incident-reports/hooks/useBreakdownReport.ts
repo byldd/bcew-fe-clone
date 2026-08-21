@@ -3,10 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api";
 import { IApiResponse } from "@/types";
 
-import { IBreakdownReportDetail, IUpdateBreakdownCostPayload } from "../types";
+import { IBreakdownReportDetail, IRawLegacyBreakdownDetail, IUpdateBreakdownCostPayload } from "../types";
+import { mapLegacyBreakdownDetail } from "../utils/legacy-breakdown";
 
 const BREAKDOWN_ENDPOINT = "/admin/driving-safety/incident-reports/breakdown";
+const LEGACY_BREAKDOWN_ENDPOINT = "/admin/driving-safety/incident-reports/legacy-breakdown";
 const BREAKDOWN_DETAIL_KEY = "driving-safety-breakdown-detail";
+const LEGACY_BREAKDOWN_DETAIL_KEY = "driving-safety-legacy-breakdown-detail";
 const INCIDENT_REPORTS_KEY = "driving-safety-incident-reports";
 
 export const useBreakdownReportDetail = (id: string) =>
@@ -16,6 +19,18 @@ export const useBreakdownReportDetail = (id: string) =>
 			const { data } = await apiClient.get<IApiResponse<IBreakdownReportDetail>>(`${BREAKDOWN_ENDPOINT}/${id}`);
 			return data.data;
 		},
+	});
+
+export const useLegacyBreakdownDetail = (id: string) =>
+	useQuery({
+		queryKey: [LEGACY_BREAKDOWN_DETAIL_KEY, id],
+		queryFn: async () => {
+			const { data } = await apiClient.get<IApiResponse<IRawLegacyBreakdownDetail>>(
+				`${LEGACY_BREAKDOWN_ENDPOINT}/${encodeURIComponent(id)}`
+			);
+			return data.data;
+		},
+		select: mapLegacyBreakdownDetail,
 	});
 
 export const useUpdateBreakdownReport = (id: string) => {

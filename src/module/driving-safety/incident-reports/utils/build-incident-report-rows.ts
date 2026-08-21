@@ -1,18 +1,23 @@
+import { FALLBACK } from "@/module/job-level-details/constants";
 import {
 	IIncidentReportRow,
 	IIncidentReportsResponse,
 	IRawAccidentReport,
 	IRawBreakdownReport,
+	IRawLegacyAccidentReport,
+	IRawLegacyBreakdownReport,
 	IRawSafetyViolationReport,
 	IRawViolationReport,
 } from "../types";
 import {
 	ACCIDENT_REPORT_PREFIX,
+	asUtcInstant,
 	BREAKDOWN_REPORT_PREFIX,
 	formatReportNumber,
 	VIOLATION_REPORT_PREFIX,
 } from "./constants";
-import { INCIDENT_REPORT_STATUS, INCIDENT_SOURCE, INCIDENT_TYPE } from "./enums";
+import { INCIDENT_SOURCE, INCIDENT_TYPE } from "./enums";
+import { resolveLegacyStatus } from "./legacy-accident";
 
 // A missing source means the report came straight from a driver's submission.
 const resolveSource = (source: INCIDENT_SOURCE | null): INCIDENT_SOURCE => source ?? INCIDENT_SOURCE.DRIVER;
@@ -64,17 +69,9 @@ const toViolationRow = (report: IRawViolationReport): IIncidentReportRow => ({
 	createdAt: report.createdAt,
 });
 
-// The bcew view returns timezone-naive datetimes (no trailing Z), so the shared
-// cell's toLocalFormattedDate would read them as already-local and never convert.
-// Tag them as the UTC instants they are so the local conversion happens. No-op if
-// the value already carries a zone designator.
-const asUtcInstant = (value: string): string => (/[zZ]|[+-]\d{2}:?\d{2}$/.test(value) ? value : `${value}Z`);
-
-// GeoTab-sourced driving safety violations; carry no severity or review workflow.
-// A blank Decision means it hasn't been acted on yet (Pending), otherwise Resolved.
 const toSafetyViolationRow = (report: IRawSafetyViolationReport): IIncidentReportRow => ({
 	id: report.id,
-	recordNumber: report.id,
+	recordNumber: report.geotabId,
 	type: INCIDENT_TYPE.DRIVING_SAFETY_VIOLATION,
 	source: INCIDENT_SOURCE.GEOTAB,
 	detail: report.description,
@@ -83,20 +80,68 @@ const toSafetyViolationRow = (report: IRawSafetyViolationReport): IIncidentRepor
 	severity: null,
 	dateTime: report.activeFrom ? asUtcInstant(report.activeFrom) : null,
 	location: report.latitude !== null && report.longitude !== null ? `${report.latitude}, ${report.longitude}` : null,
-	status: report.decision ? INCIDENT_REPORT_STATUS.RESOLVED : INCIDENT_REPORT_STATUS.PENDING,
+	status: null,
+	statusLabel: report.decision,
 	geotabId: report.geotabId,
 	createdAt: asUtcInstant(report.activeFrom ?? report.recordLastChangedUtc),
 });
+
+const toLegacyAccidentRow = (report: IRawLegacyAccidentReport): IIncidentReportRow => {
+	const id = report.id.trim();
+	const dateTime = report.acc_dte ? asUtcInstant(report.acc_dte) : null;
+	const { status, label } = resolveLegacyStatus(report.report_status);
+	return {
+		id,
+		recordNumber: id,
+		type: INCIDENT_TYPE.VEHICLE_ACCIDENT,
+		source: INCIDENT_SOURCE.MANUAL,
+		detail: report.eqpmnt_dam,
+		employeeName: report.emp_nme,
+		truckNumber: report.eqpmnt_recnum,
+		severity: null,
+		dateTime,
+		location: report.acc_loc,
+		status,
+		statusLabel: label,
+		isLegacyImport: true,
+		createdAt: dateTime ?? new Date(0).toISOString(),
+	};
+};
+
+const toLegacyBreakdownRow = (report: IRawLegacyBreakdownReport): IIncidentReportRow => {
+	const dateTime = report.date ? asUtcInstant(report.date) : null;
+	return {
+		id: report.id,
+		recordNumber: report.id,
+		type: INCIDENT_TYPE.VEHICLE_BREAKDOWN,
+		source: INCIDENT_SOURCE.MANUAL,
+		detail: report.issue,
+		employeeName: report.employeeName,
+		truckNumber: report.eqpmnt_recnum,
+		severity: null,
+		dateTime,
+		location: null,
+		status: null,
+		isLegacyImport: true,
+		createdAt: dateTime ?? new Date(0).toISOString(),
+	};
+};
 
 export const buildIncidentReportRows = ({
 	accidentReports,
 	breakdownReports,
 	violationReports,
 	safetyViolationReports,
+	legacyAccidentReports,
+	legacyBreakdownReports,
 }: IIncidentReportsResponse): IIncidentReportRow[] =>
 	[
 		...accidentReports.map(toAccidentRow),
 		...breakdownReports.map(toBreakdownRow),
 		...violationReports.map(toViolationRow),
 		...safetyViolationReports.map(toSafetyViolationRow),
+		...legacyAccidentReports.map(toLegacyAccidentRow),
+		...legacyBreakdownReports.map(toLegacyBreakdownRow),
 	].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+export const displayYesNo = (value: boolean | null): string => (value === null ? FALLBACK : value ? "Yes" : "No");

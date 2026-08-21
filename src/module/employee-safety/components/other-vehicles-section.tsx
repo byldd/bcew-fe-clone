@@ -61,18 +61,18 @@ const OtherVehicleBlock = ({
 	const vehicle = useWatch({ control: form.control, name: `otherVehicles.${index}` });
 
 	return (
-		<>
+		<div className="space-y-6">
 			<ReportSection title={`Other Details: Vehicle ${index + 1}`}>
 				<div className="space-y-3">
-					<div className="grid grid-cols-2 gap-3">
+					<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 						<FormInputWrapper form={form} fieldConfig={fields.make} disabled={disabled} />
 						<FormInputWrapper form={form} fieldConfig={fields.model} disabled={disabled} />
 					</div>
-					<div className="grid grid-cols-2 gap-3">
+					<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 						<FormInputWrapper form={form} fieldConfig={fields.whatWasStruck} disabled={disabled} />
 						<FormInputWrapper form={form} fieldConfig={fields.vin} disabled={disabled} />
 					</div>
-					<div className="grid grid-cols-2 gap-3">
+					<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 						<FormInputWrapper form={form} fieldConfig={fields.driverFullName} disabled={disabled} />
 						<div className="space-y-2">
 							<FormInputWrapper
@@ -129,7 +129,7 @@ const OtherVehicleBlock = ({
 					/>
 				</div>
 			</ReportSection>
-		</>
+		</div>
 	);
 };
 

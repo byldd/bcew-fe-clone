@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 
-import { IEmployeePermissionsResponse, IUserPagesPermissionPayload } from "@/module/employee/types";
+import { IUserPagesPermissionPayload } from "@/module/employee/types";
 import { ACCESS_LEVEL } from "@/module/employee/enums";
 import RolePagePermissions from "@/module/people-management/role/components/role-page-permissions";
 import { Form } from "@/components/ui/form";
@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { IPage } from "@/module/admin/types/sideb-bar-page";
 
 interface Props {
-	userPagePermission: IEmployeePermissionsResponse["items"]["userPagePermissions"];
+	userPagePermission?: { pageId: string; accessLevel?: ACCESS_LEVEL }[];
 	adminAllPages: IPage[];
 	disabled?: boolean;
 	pagePermissionsRef: React.MutableRefObject<IUserPagesPermissionPayload["userPagePermissions"]>;

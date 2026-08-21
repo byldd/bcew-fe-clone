@@ -11,6 +11,7 @@ export const useGetUserData = () => {
 			return response.data;
 		},
 		enabled: true,
+		staleTime: 0,
 	});
 };
 

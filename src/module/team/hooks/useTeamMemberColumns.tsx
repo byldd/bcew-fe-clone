@@ -1,10 +1,13 @@
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { ITeamUser } from "@/module/team/types";
 import { toFormattedDate } from "@/lib/utils/date";
 import { DATE_FORMAT } from "@/types/date";
 import RemoveTeamMemberTrigger from "@/module/team/components/remove-team-member-trigger";
+import { useAdminPageAccessContext } from "@/module/admin/context/page-access";
+import { ACCESS_LEVEL } from "@/module/employee/enums";
 
 export const useTeamMemberColumns = (teamId: string) => {
+	const { pageAccess } = useAdminPageAccessContext();
 	const columns: ColumnDef<ITeamUser>[] = [
 		{
 			accessorKey: "name",
@@ -29,15 +32,20 @@ export const useTeamMemberColumns = (teamId: string) => {
 			header: "Expected Output",
 			cell: () => "-",
 		},
-		{
-			id: "actions",
-			header: "Action",
-			cell: ({ row }) => (
-				<div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
-					<RemoveTeamMemberTrigger userId={row.original.id} userName={row.original.name} currentTeamId={teamId} />
-				</div>
-			),
-		},
+
+		...(pageAccess?.accessLevel === ACCESS_LEVEL.WRITE
+			? [
+					{
+						id: "actions",
+						header: "Action",
+						cell: ({ row }: { row: Row<ITeamUser> }) => (
+							<div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
+								<RemoveTeamMemberTrigger userId={row.original.id} userName={row.original.name} currentTeamId={teamId} />
+							</div>
+						),
+					},
+				]
+			: []),
 	];
 
 	return columns;

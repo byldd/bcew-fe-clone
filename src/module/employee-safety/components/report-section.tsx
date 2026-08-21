@@ -6,7 +6,7 @@ type ReportSectionProps = {
 };
 
 const ReportSection = ({ title, children }: ReportSectionProps) => (
-	<section className="space-y-2 border-b bg-white p-2">
+	<section className="space-y-3 rounded-[8px] bg-white p-3">
 		<h4 className="text-sm font-semibold text-brand-grey">{title}</h4>
 		{children}
 	</section>

@@ -36,7 +36,7 @@ export const useRolesWithPermissions = () => {
 
 export const useRoleWithPermissions = (roleID: string) => {
 	return useQuery({
-		queryKey: ["roleWithPermissions"],
+		queryKey: ["roleWithPermissions", roleID],
 		queryFn: async () => {
 			const { data } = await apiClient.get<{ data: IRoleWithPermissionsResponse }>(
 				`/admin/role/${roleID}/with-permissions`

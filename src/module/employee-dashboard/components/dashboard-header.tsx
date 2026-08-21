@@ -11,7 +11,6 @@ import { useModal } from "@/hooks/useModal";
 
 import Image from "next/image";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { clearCookies } from "@/module/auth/utils/helpers";
 import ProfileModal from "@/components/common/profile-modal";
 import useAuthStore from "@/store/auth-store";
 import ReportTechnicalIssue from "../../employee-technical-issue/report-technical-bug/components/report-technical-issue";
@@ -22,6 +21,7 @@ import { NAMESPACE } from "@/i18n/type";
 import UnreadNotificationCount from "./unread-notification-count";
 import { E_ROLES, TEAM_NAME } from "@/utils/enums";
 import QuickToolsDrawer from "./quick-tools-drawer";
+import { useAuthAPI } from "@/module/auth/hooks/useAuth";
 
 export function DashboardHeader({
 	isTimeLogPending,
@@ -36,6 +36,8 @@ export function DashboardHeader({
 	const tCommon = useTypedTranslations(NAMESPACE.COMMON);
 	const tTechnician = useTypedTranslations(NAMESPACE.RELEASE_NOTE);
 	const [quickToolsOpen, setQuickToolsOpen] = useState(false);
+	const { useSignout } = useAuthAPI();
+	const { signout } = useSignout();
 
 	const defaultButtons: HeaderButton[] = [
 		...[
@@ -97,7 +99,7 @@ export function DashboardHeader({
 	];
 
 	const handleSignOut = () => {
-		clearCookies();
+		signout();
 		router.replace(routes.signIn);
 	};
 

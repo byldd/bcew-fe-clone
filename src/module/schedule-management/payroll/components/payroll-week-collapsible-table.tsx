@@ -16,6 +16,7 @@ import { DATE_FORMAT } from "@/types/date";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import { cn } from "@/lib/utils/utils";
 import { SORT_ORDER } from "@/types";
+import WriteAccessWrapper from "@/module/admin/components/write-access-wrapper";
 
 type PayRollWeek = IGetPayRollWeeksResponse[number];
 type PayRollChange = NonNullable<PayRollWeek["payRollChanges"]>[number];
@@ -215,27 +216,30 @@ const PayrollChangesExpandedSection = ({ changes }: { changes: PayRollChange[] }
 								<th className="text-nowrap border-b border-r px-4 text-center text-sm font-semibold text-brand-dark50">
 									Acknowledged At
 								</th>
-								<th className="text-nowrap border-b border-r px-4 text-center text-sm font-semibold text-brand-dark50">
-									<div className="flex items-center justify-center gap-2">
-										<p>Actions</p>
-										<div className="flex flex-col gap-0">
-											<IoMdArrowDropup
-												onClick={() => setSortAcknowledge(SORT_ORDER.ASC)}
-												className={cn(
-													"h-4 w-4 cursor-pointer",
-													sortAcknowledge === SORT_ORDER.ASC ? "text-brand-dark" : "text-gray-400"
-												)}
-											/>
-											<IoMdArrowDropdown
-												onClick={() => setSortAcknowledge(SORT_ORDER.DESC)}
-												className={cn(
-													"h-4 w-4 cursor-pointer",
-													sortAcknowledge === SORT_ORDER.DESC ? "text-brand-dark" : "text-gray-400"
-												)}
-											/>
+								<WriteAccessWrapper>
+									<th className="text-nowrap border-b border-r px-4 text-center text-sm font-semibold text-brand-dark50">
+										<div className="flex items-center justify-center gap-2">
+											<p>Actions</p>
+											<div className="flex flex-col gap-0">
+												<IoMdArrowDropup
+													onClick={() => setSortAcknowledge(SORT_ORDER.ASC)}
+													className={cn(
+														"h-4 w-4 cursor-pointer",
+														sortAcknowledge === SORT_ORDER.ASC ? "text-brand-dark" : "text-gray-400"
+													)}
+												/>
+												<IoMdArrowDropdown
+													onClick={() => setSortAcknowledge(SORT_ORDER.DESC)}
+													className={cn(
+														"h-4 w-4 cursor-pointer",
+														sortAcknowledge === SORT_ORDER.DESC ? "text-brand-dark" : "text-gray-400"
+													)}
+												/>
+											</div>
 										</div>
-									</div>
-								</th>
+									</th>
+								</WriteAccessWrapper>
+
 								<th className="text-nowrap border-b border-r px-4 text-center text-sm font-semibold text-brand-dark50">
 									<div className="flex items-center justify-center gap-2">
 										Payroll Reprocessed
@@ -327,11 +331,15 @@ const PayrollChangeRow = ({ change }: { change: PayRollChange }) => {
 			<td className="text-nowrap border-b border-r px-4 py-2 text-center text-sm text-brand-dark">
 				{acknowledgedAt ? toLocalFormattedDate(acknowledgedAt, DATE_FORMAT.DATE_AND_TIME) : "-"}
 			</td>
-			<td className="text-nowrap border-b border-r px-4 py-2 text-center text-sm text-brand-dark">
-				<Button size={"sm"} disabled={isPending || isAcknowledged} variant="filled" onClick={onAcknowledge}>
-					{isAcknowledged ? "Acknowledged" : "Acknowledge"}
-				</Button>
-			</td>
+			{
+				<WriteAccessWrapper>
+					<td className="text-nowrap border-b border-r px-4 py-2 text-center text-sm text-brand-dark">
+						<Button size={"sm"} disabled={isPending || isAcknowledged} variant="filled" onClick={onAcknowledge}>
+							{isAcknowledged ? "Acknowledged" : "Acknowledge"}
+						</Button>
+					</td>
+				</WriteAccessWrapper>
+			}
 			<td className="text-nowrap border-b border-r px-4 py-2 text-center text-sm text-brand-dark">
 				<span>
 					{isAcknowledged ? (
